@@ -11,4 +11,8 @@
     <ProjectReference Include="..\RChat.Infastructure.Contracts\RChat.Infrastructure.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Configurations\" />
+  </ItemGroup>
+
 </Project>
