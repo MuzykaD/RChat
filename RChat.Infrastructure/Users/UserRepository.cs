@@ -34,9 +34,14 @@ namespace RChat.Infrastructure.Users
             return await _context.Users.FindAsync(id);
         }
 
-        public Task UpdateAsync(User entity)
+        public async Task UpdateAsync(User entity)
         {
-            throw new NotImplementedException();
+            await _context.Users.Where(u => u.Id.Equals(entity.Id))
+                                .ExecuteUpdateAsync(
+                                    u => 
+                                    u.SetProperty(
+                                    selectedProperty => selectedProperty.Name,
+                                    propertyValue => entity.Name));
         }
     }
 }

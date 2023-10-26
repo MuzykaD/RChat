@@ -8,7 +8,7 @@ namespace RChat.Infrastructure.Contracts.Common
 {
     public interface IRepository<T>
     {
-        Task<T> GetByIdAsync(Guid id);
+        Task<T?> GetByIdAsync(Guid id);
         Task<IEnumerable<T>> GetAllAsync();
         Task CreateAsync(T entity);
         Task UpdateAsync(T entity);
