@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{4F384202-C09E-4A1E-B128-F117D82B7162}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RChat.Tests", "RChat.Tests\RChat.Tests.csproj", "{E44B1450-64CD-4F8E-8394-3621988E4C1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{1B12B094-8A09-4AA1-8658-7EBCFD5D9CE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B12B094-8A09-4AA1-8658-7EBCFD5D9CE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B12B094-8A09-4AA1-8658-7EBCFD5D9CE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E44B1450-64CD-4F8E-8394-3621988E4C1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E44B1450-64CD-4F8E-8394-3621988E4C1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E44B1450-64CD-4F8E-8394-3621988E4C1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E44B1450-64CD-4F8E-8394-3621988E4C1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
