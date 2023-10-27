@@ -3,12 +3,7 @@
     [MessageId] INT            NOT NULL,
     [FileName]  NVARCHAR (MAX) NOT NULL,
     [FileUrl]   NVARCHAR (MAX) NOT NULL,
-    CONSTRAINT [PK_Attachments] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_Attachments_Messages_MessageId] FOREIGN KEY ([MessageId]) REFERENCES [dbo].[Messages] ([Id]) ON DELETE CASCADE
+    PRIMARY KEY CLUSTERED ([Id] ASC),
+    FOREIGN KEY ([MessageId]) REFERENCES [dbo].[Messages] ([Id])
 );
-
-
-GO
-CREATE NONCLUSTERED INDEX [IX_Attachments_MessageId]
-    ON [dbo].[Attachments]([MessageId] ASC);
 
