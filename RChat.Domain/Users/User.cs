@@ -16,8 +16,8 @@ namespace RChat.Domain.Users
         public string? LastName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public virtual ICollection<Chat> Chats { get; set; } = new List<Chat>();
-        public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
-        public virtual ICollection<Chat> ChatsNavigation { get; set; } = new List<Chat>();
+        public  ICollection<Chat> Chats { get; set; }
+        public  ICollection<Message> Messages { get; set; }
+        public  ICollection<Chat> ChatsNavigation { get; set; }
     }
 }

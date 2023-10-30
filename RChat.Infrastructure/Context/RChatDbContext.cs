@@ -13,18 +13,13 @@ public partial class RChatDbContext : DbContext
     public RChatDbContext()
     {
     }
-
     public RChatDbContext(DbContextOptions<RChatDbContext> options)
         : base(options)
     {
     }
-
     public virtual DbSet<Attachment> Attachments { get; set; }
-
     public virtual DbSet<Chat> Chats { get; set; }
-
     public virtual DbSet<Message> Messages { get; set; }
-
     public virtual DbSet<User> Users { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

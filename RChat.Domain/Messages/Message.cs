@@ -9,8 +9,8 @@ namespace RChat.Domain.Messages
         public int Id { get; set; }
         public int SenderId { get; set; }
         public int ChatId { get; set; }
-        public virtual ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
-        public virtual Chat Chat { get; set; }
-        public virtual User Sender { get; set; }
+        public  ICollection<Attachment> Attachments { get; set; }
+        public  Chat Chat { get; set; }
+        public  User Sender { get; set; }
     }
 }

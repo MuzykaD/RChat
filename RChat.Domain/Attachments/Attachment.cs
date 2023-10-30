@@ -17,6 +17,6 @@ namespace RChat.Domain.Attachments
 
         public string FileUrl { get; set; }
 
-        public virtual Message Message { get; set; }
+        public Message Message { get; set; }
     }
 }
