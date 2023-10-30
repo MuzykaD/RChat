@@ -10,13 +10,9 @@ namespace RChat.Domain.Attachments
     public class Attachment
     {
         public int Id { get; set; }
-
         public int MessageId { get; set; }
-
         public string FileName { get; set; }
-
         public string FileUrl { get; set; }
-
         public Message Message { get; set; }
     }
 }
