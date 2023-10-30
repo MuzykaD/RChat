@@ -14,8 +14,8 @@ namespace RChat.Infrastructure.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private ApplicationContext _context;
-        public UnitOfWork(ApplicationContext context)
+        private RChatDbContext _context;
+        public UnitOfWork(RChatDbContext context)
         {
             _context = context;
         }

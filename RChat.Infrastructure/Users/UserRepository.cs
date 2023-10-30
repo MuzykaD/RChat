@@ -9,8 +9,8 @@ namespace RChat.Infrastructure.Users
 {
     public class UserRepository : IUserRepository
     {
-        private ApplicationContext _context;
-        public UserRepository(ApplicationContext context)
+        private RChatDbContext _context;
+        public UserRepository(RChatDbContext context)
         {
             _context = context;
         }
@@ -40,8 +40,8 @@ namespace RChat.Infrastructure.Users
                                 .ExecuteUpdateAsync(
                                     u => 
                                     u.SetProperty(
-                                    selectedProperty => selectedProperty.Name,
-                                    propertyValue => entity.Name));
+                                    selectedProperty => selectedProperty.FirstName,
+                                    propertyValue => entity.FirstName));
         }
     }
 }
