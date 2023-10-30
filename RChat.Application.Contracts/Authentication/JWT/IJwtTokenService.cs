@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace RChat.Application.Contracts.Authentication.JWT
 {
-    internal interface IJwtTokenService
+    public interface IJwtTokenService
     {
+        Task<string> GenerateJwtTokenAsync(int userId, string userName, string userEmail);
     }
 }

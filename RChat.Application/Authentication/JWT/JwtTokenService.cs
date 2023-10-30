@@ -28,6 +28,7 @@ namespace RChat.Application.Authentication.JWT
                 new (ClaimTypes.Name, userName),
                 new (ClaimTypes.Email, userEmail),
             };
+
             var jwtToken = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],

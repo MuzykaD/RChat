@@ -1,4 +1,11 @@
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using RChat.WebApi.Extensions;
+using System.Text;
+
 namespace RChat.WebApi
 {
     public class Program
@@ -13,6 +20,10 @@ namespace RChat.WebApi
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddJwtAuthentication(builder.Configuration.GetJwtSettings());
+
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
