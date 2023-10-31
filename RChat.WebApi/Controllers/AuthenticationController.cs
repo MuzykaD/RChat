@@ -31,7 +31,9 @@ namespace RChat.WebApi.Controllers
         public async Task<IActionResult> RegisterAsync([FromForm] RegisterUserDto registerUserDto)
         {
             var result = await _authenticationService.RegisterUserAsync(registerUserDto);
-            return result ? Ok() : BadRequest();
+            return result ? 
+                Ok("Account created! You can use credentials to log in!") : 
+                BadRequest("Account with such email already exists, try another one!");
         }
 
     }

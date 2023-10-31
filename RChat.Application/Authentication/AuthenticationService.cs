@@ -49,6 +49,7 @@ namespace RChat.Application.Authentication
                     UserName = registerUserDto.Username,
                     EmailConfirmed = false,
                     PhoneNumberConfirmed = false,
+                    PasswordHash = registerUserDto.Password
                 };
                 var result = await _userManager.CreateAsync(createdUser, createdUser.PasswordHash);
                 return result.Succeeded;
