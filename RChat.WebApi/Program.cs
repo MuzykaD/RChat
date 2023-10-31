@@ -31,6 +31,17 @@ namespace RChat.WebApi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins("https://localhost:7206")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+
+                });
+            });
+
             builder.Services.AddIdentity<User, IdentityRole<int>>()
                 .AddEntityFrameworkStores<RChatDbContext>()
                 .AddDefaultTokenProviders();
@@ -48,9 +59,9 @@ namespace RChat.WebApi
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            
             app.UseHttpsRedirection();
-
+            app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
 

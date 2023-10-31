@@ -1,0 +1,32 @@
+﻿@page "/register"
+@inherits RegisterComponent
+<h3>Register</h3>
+
+<EditForm Model="@ViewModel" OnValidSubmit="Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div>
+        <label for="Email">Email: </label>
+        <InputText type="email" id="Email" @bind-Value="ViewModel.Email" />
+    </div>
+    <br>
+    <div>
+        <label for="UserName">UserName: </label>
+        <InputText id="UserName" @bind-Value="ViewModel.Username" />
+    </div>
+    <br>
+    <div>
+        <label for="Password">Password: </label>
+        <InputText id="Password" type="password" @bind-Value="ViewModel.Password" />
+    </div>
+    <br>
+    <div>
+        <label for="ConfirmPassword">Confirm Password: </label>
+        <InputText id="ComfirmPassword" type="password" @bind-Value="ViewModel.ConfirmPassword" />
+    </div>
+    <br>
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</EditForm>
+

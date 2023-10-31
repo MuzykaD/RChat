@@ -45,7 +45,6 @@ namespace RChat.Application.Authentication
                 var createdUser = new User()
                 {
                     Email = registerUserDto.Email,
-                    PhoneNumber = registerUserDto.PhoneNumber,
                     UserName = registerUserDto.Username,
                     EmailConfirmed = false,
                     PhoneNumberConfirmed = false,
