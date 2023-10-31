@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RChat.Application.Contracts\RChat.Application.Contracts.csproj" />
+    <ProjectReference Include="..\RChat.Application\RChat.Application.csproj" />
     <ProjectReference Include="..\RChat.Infrastructure\RChat.Infrastructure.csproj" />
   </ItemGroup>
 
