@@ -15,19 +15,22 @@ namespace RChat.UI.Common.HttpClientPwa
         public const string RegisterApiUrl = "https://localhost:7089/api/v1/authentication/register";
         public const string TestApiUrl = "https://localhost:7089/api/v1/authentication/access-point";
         private ILocalStorageService LocalStorageService { get; set; }
+        private bool _jwtRequired;
         public HttpClientPwa(ILocalStorageService storageService)
         {
             LocalStorageService = storageService;
         }
-        public async Task<ApiRequestResult<TResult>> SendPostRequestAsync<TArgument, TResult>(string url, TArgument data, bool addJwt = true)
+        public async Task<ApiRequestResult<TResult>> SendPostRequestAsync<TArgument, TResult>(string url, TArgument data)
         {
             using (var httpClient = new HttpClient())
             {
 
-                if (addJwt)
+                if (_jwtRequired)
                     httpClient.DefaultRequestHeaders.Authorization = 
                         new AuthenticationHeaderValue("Bearer", await LocalStorageService.GetItemAsync<string>("auth-jwt-token"));
                 var apiResponse = await httpClient.PostAsJsonAsync(url, data);
+
+                _jwtRequired = false;
 
                 return (apiResponse.StatusCode.Equals(HttpStatusCode.Unauthorized)
                    && !apiResponse.IsSuccessStatusCode) ?
@@ -45,6 +48,12 @@ namespace RChat.UI.Common.HttpClientPwa
                        StatusCode = apiResponse.StatusCode,
                    };
             }
+        }
+
+        public IHttpClientPwa UsingJwtToken()
+        {
+            _jwtRequired = true;
+            return this;
         }
 
     }

@@ -23,7 +23,7 @@ namespace RChat.UI.Services.BlazorAuthService
         public async Task<ApiRequestResult<UserTokenResponse>> LoginUserAsync(LoginViewModel registerViewModel)
         {
             var response = await _httpClientPwa.
-                SendPostRequestAsync<LoginViewModel, UserTokenResponse>(HttpClientPwa.LoginApiUrl, registerViewModel, false);
+                SendPostRequestAsync<LoginViewModel, UserTokenResponse>(HttpClientPwa.LoginApiUrl, registerViewModel);
             if (response.IsSuccessStatusCode && response.Result.IsSucceed)
                 await _localStorageService.SetItemAsync("auth-jwt-token", response.Result.Token);
             return response;
@@ -38,7 +38,7 @@ namespace RChat.UI.Services.BlazorAuthService
         public async Task<ApiRequestResult<ApiResponse>> RegisterUserAsync(RegisterViewModel registerViewModel)
         {
             return await _httpClientPwa.
-                  SendPostRequestAsync<RegisterViewModel, ApiResponse>(HttpClientPwa.RegisterApiUrl, registerViewModel, false);
+                  SendPostRequestAsync<RegisterViewModel, ApiResponse>(HttpClientPwa.RegisterApiUrl, registerViewModel);
         }
     }
 }

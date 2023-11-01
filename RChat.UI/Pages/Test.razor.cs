@@ -17,7 +17,7 @@ namespace RChat.UI.Pages
 
         public async Task TestPoint()
         {
-            var response = await HttpClient.
+            var response = await HttpClient.WithJwt().
                 SendPostRequestAsync<LoginViewModel, ApiResponse>(HttpClientPwa.TestApiUrl, new LoginViewModel() { Email = "asd@asd.net", Password = "123" });
 
             Message = response.IsSuccessStatusCode ? response.Result.Message : response.Message;
