@@ -5,6 +5,12 @@
 <EditForm Model="@ViewModel" OnValidSubmit="Submit">
     <DataAnnotationsValidator />
     <ValidationSummary />
+    @if (ShowMessage)
+    {
+        <div>
+            <p>@Message</p>
+        </div>
+    }
     <div>
         <label for="Email">Email: </label>
         <InputText type="email" id="Email" @bind-Value="ViewModel.Email" />

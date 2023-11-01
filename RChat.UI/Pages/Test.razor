@@ -1,0 +1,10 @@
+﻿@inherits TestComponent
+@page "/test"
+<h3>Test</h3>
+@if(ResponseReceived)
+{
+    <p>@Message</p>
+}
+<button @onclick="async () => await TestPoint()">Test</button>
+
+

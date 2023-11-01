@@ -59,8 +59,9 @@ namespace RChat.WebApi
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            
+           
             app.UseHttpsRedirection();
+            app.UseRouting();
             app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();

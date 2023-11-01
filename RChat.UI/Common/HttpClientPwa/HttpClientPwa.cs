@@ -1,27 +1,51 @@
-﻿using System.Net.Http.Json;
+﻿using Blazored.LocalStorage;
+using RChat.UI.Common.HttpClientPwa.Interfaces;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace RChat.UI.Common.HttpClientPwa
 {
-    internal class HttpClientPwa
+    internal class HttpClientPwa : IHttpClientPwa
     {
+
         public const string LoginApiUrl = "https://localhost:7089/api/v1/authentication/login";
         public const string RegisterApiUrl = "https://localhost:7089/api/v1/authentication/register";
-
-
-        public async Task<ApiRequestResult<TResult>> SendPostRequestAsync<TArgument, TResult>(string url, TArgument data)
+        public const string TestApiUrl = "https://localhost:7089/api/v1/authentication/access-point";
+        private ILocalStorageService LocalStorageService { get; set; }
+        public HttpClientPwa(ILocalStorageService storageService)
+        {
+            LocalStorageService = storageService;
+        }
+        public async Task<ApiRequestResult<TResult>> SendPostRequestAsync<TArgument, TResult>(string url, TArgument data, bool addJwt = true)
         {
             using (var httpClient = new HttpClient())
             {
-                var result = await httpClient.PostAsJsonAsync(url, data);
-                return new ApiRequestResult<TResult>()
-                {
-                    IsSuccessStatusCode = result.IsSuccessStatusCode,
-                    Result = await result.Content.ReadFromJsonAsync<TResult>(),
-                    StatusCode = result.StatusCode,
-                };
+
+                if (addJwt)
+                    httpClient.DefaultRequestHeaders.Authorization = 
+                        new AuthenticationHeaderValue("Bearer", await LocalStorageService.GetItemAsync<string>("auth-jwt-token"));
+                var apiResponse = await httpClient.PostAsJsonAsync(url, data);
+
+                return (apiResponse.StatusCode.Equals(HttpStatusCode.Unauthorized)
+                   && !apiResponse.IsSuccessStatusCode) ?
+                   new ApiRequestResult<TResult>()
+                   {
+                       IsSuccessStatusCode = apiResponse.IsSuccessStatusCode,
+                       Result = default,
+                       StatusCode = apiResponse.StatusCode,
+                       Message = "Please, log in to the RChat to continue!"
+                   } :
+                   new ApiRequestResult<TResult>()
+                   {
+                       IsSuccessStatusCode = apiResponse.IsSuccessStatusCode,
+                       Result = await apiResponse.Content.ReadFromJsonAsync<TResult>(),
+                       StatusCode = apiResponse.StatusCode,
+                   };
             }
         }
+
     }
 }

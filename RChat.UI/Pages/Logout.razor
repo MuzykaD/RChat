@@ -1,0 +1,12 @@
+﻿@page "/logout"
+@inherits LogoutComponent;
+
+<h3>Logout</h3>
+<h4> Are you sure? </h4>
+<div>
+    <button @onclick="async () => await Logout()">Yes</button>
+</div>
+<div>
+    <button @onclick="Cancel">No</button>
+</div>
+

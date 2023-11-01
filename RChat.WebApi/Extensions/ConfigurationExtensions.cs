@@ -8,9 +8,9 @@ namespace RChat.WebApi.Extensions
         {
             return new JwtSettings()
             {
-                Issuer = configurationManager.GetValue<string>("JwtSettings:Issuer")!,
-                Audience = configurationManager.GetValue<string>("JwtSettings:Audience")!,
-                Key = configurationManager.GetValue<string>("JwtSettings:Key")!,
+                Issuer = configurationManager.GetValue<string>("Jwt:Issuer")!,
+                Audience = configurationManager.GetValue<string>("Jwt:Audience")!,
+                Key = configurationManager.GetValue<string>("Jwt:Key")!,
             };
         }
     }

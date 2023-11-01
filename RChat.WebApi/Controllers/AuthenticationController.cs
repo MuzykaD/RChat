@@ -12,7 +12,6 @@ namespace RChat.WebApi.Controllers
 {
     [ApiController]
     [Route("api/v1/authentication")]
-    [AllowAnonymous]
     public class AuthenticationController : ControllerBase
     {
         private IAuthenticationService _authenticationService;
@@ -21,6 +20,7 @@ namespace RChat.WebApi.Controllers
             _authenticationService = authenticationService;
         }
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> LoginAsync([FromBody] LoginUserDto loginUser)
         {
             var token = await _authenticationService
@@ -35,10 +35,12 @@ namespace RChat.WebApi.Controllers
                 Ok(new UserTokenResponse()
                 {
                     IsSucceed = true,
+                    Message = "Welcome to RChat!",
                     Token = token,
                 });
         }
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserDto registerUserDto)
         {
             var result = await _authenticationService.RegisterUserAsync(registerUserDto);
@@ -52,9 +54,14 @@ namespace RChat.WebApi.Controllers
                 {
                     IsSucceed = true,
                     Message = "Account with such email already exists, try another one!"
-                });
-            
+                });            
         }
-
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpPost("access-point")]
+        public async Task<IActionResult> TestAuthorize([FromBody] LoginUserDto dto)
+        {
+            var result = await Task.FromResult(new ApiResponse() { IsSucceed = true, Message = "HELLO" });
+            return Ok(result);
+        }
     }
 }
