@@ -3,6 +3,7 @@ using RChat.Domain.Repsonses;
 using RChat.UI.Common.HttpClientPwa;
 using RChat.UI.Common.HttpClientPwa.Interfaces;
 using RChat.UI.ViewModels;
+using System.Net;
 
 namespace RChat.UI.Pages
 {
