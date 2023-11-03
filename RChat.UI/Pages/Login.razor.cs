@@ -2,6 +2,7 @@
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using RChat.Domain.Users.DTO;
+using RChat.UI.Common.ComponentHelpers;
 using RChat.UI.Common.HttpClientPwa;
 using RChat.UI.Common.HttpClientPwa.Interfaces;
 using RChat.UI.Services.BlazorAuthService;
@@ -9,16 +10,16 @@ using RChat.UI.ViewModels;
 
 namespace RChat.UI.Pages
 {
-    public partial class LoginComponent : ComponentBase
+    public partial class LoginFormComponent : ComponentBase, IFormComponentBase<LoginViewModel>
     {
         [Inject]
         private NavigationManager NavigationManager { get; set; }
         [Inject]
         private IBlazorAuthService AuthService { get; set; }
-        protected LoginViewModel ViewModel { get; set; } = new();
+        public LoginViewModel ViewModel { get; set; } = new();
         protected bool ShowMessage { get; set; }
         protected string Message { get; set; }
-        public async void Submit()
+        public async Task SubmitFormAsync()
         {
             var response = await AuthService.LoginUserAsync(ViewModel);
             if (response.IsSuccessStatusCode && response.Result.IsSucceed)
@@ -26,7 +27,7 @@ namespace RChat.UI.Pages
             
             else
             {
-                Message = response.Result.Message;
+                Message = response.Message;
                 ShowMessage = true;
             }
         }

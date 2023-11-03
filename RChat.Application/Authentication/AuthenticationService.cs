@@ -32,11 +32,6 @@ namespace RChat.Application.Authentication
                 return null;
         }
 
-        public Task<string> LogoutUserAsync()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> RegisterUserAsync(RegisterUserDto registerUserDto)
         {
             var userByEmail = await _userManager.FindByEmailAsync(registerUserDto.Email);

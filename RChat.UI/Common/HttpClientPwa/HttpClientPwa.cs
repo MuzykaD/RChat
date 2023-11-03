@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using RChat.UI.Common.HttpClientPwa.Interfaces;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -13,9 +14,8 @@ namespace RChat.UI.Common.HttpClientPwa
 
         public const string LoginApiUrl = "https://localhost:7089/api/v1/authentication/login";
         public const string RegisterApiUrl = "https://localhost:7089/api/v1/authentication/register";
-        public const string TestApiUrl = "https://localhost:7089/api/v1/authentication/access-point";
+        public const string TestApiUrl = "https://localhost:7089/api/v1/users/change-password";
         private ILocalStorageService LocalStorageService { get; set; }
-        private bool _jwtRequired;
         public HttpClientPwa(ILocalStorageService storageService)
         {
             LocalStorageService = storageService;
@@ -24,13 +24,9 @@ namespace RChat.UI.Common.HttpClientPwa
         {
             using (var httpClient = new HttpClient())
             {
+                await TryAddJwtToken(httpClient);
 
-                if (_jwtRequired)
-                    httpClient.DefaultRequestHeaders.Authorization = 
-                        new AuthenticationHeaderValue("Bearer", await LocalStorageService.GetItemAsync<string>("auth-jwt-token"));
                 var apiResponse = await httpClient.PostAsJsonAsync(url, data);
-
-                _jwtRequired = false;
 
                 return (apiResponse.StatusCode.Equals(HttpStatusCode.Unauthorized)
                    && !apiResponse.IsSuccessStatusCode) ?
@@ -50,10 +46,14 @@ namespace RChat.UI.Common.HttpClientPwa
             }
         }
 
-        public IHttpClientPwa UsingJwtToken()
+        private async Task TryAddJwtToken(HttpClient client)
         {
-            _jwtRequired = true;
-            return this;
+            var token = await LocalStorageService.GetItemAsync<string>("auth-jwt-token");
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
         }
 
     }

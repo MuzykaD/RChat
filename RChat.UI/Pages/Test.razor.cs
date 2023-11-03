@@ -14,10 +14,10 @@ namespace RChat.UI.Pages
         public bool ResponseReceived { get; set; }
         [Inject]
         public IHttpClientPwa HttpClient { get; set; }
-
+        //try add
         public async Task TestPoint()
         {
-            var response = await HttpClient.WithJwt().
+            var response = await HttpClient.
                 SendPostRequestAsync<LoginViewModel, ApiResponse>(HttpClientPwa.TestApiUrl, new LoginViewModel() { Email = "asd@asd.net", Password = "123" });
 
             Message = response.IsSuccessStatusCode ? response.Result.Message : response.Message;

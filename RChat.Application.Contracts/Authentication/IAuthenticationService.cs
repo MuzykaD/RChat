@@ -12,6 +12,5 @@ namespace RChat.Application.Contracts.Authentication
     {
         Task<string?> GetTokenByCredentials(string email, string password);
         Task<bool> RegisterUserAsync(RegisterUserDto registerUserDto);
-        Task<string> LogoutUserAsync();
     }
 }

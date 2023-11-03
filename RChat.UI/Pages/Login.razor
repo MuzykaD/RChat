@@ -1,8 +1,8 @@
 ﻿@page "/login"
-@inherits LoginComponent;
+@inherits LoginFormComponent;
 <h3>Login</h3>
 
-<EditForm class="form-control" Model="@ViewModel" OnValidSubmit="Submit">
+<EditForm class="form-control" Model="@ViewModel" OnValidSubmit="async () => await SubmitFormAsync()">
     <DataAnnotationsValidator />
     <ValidationSummary />
     @if(ShowMessage)

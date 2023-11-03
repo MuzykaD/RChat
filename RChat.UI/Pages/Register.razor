@@ -2,7 +2,7 @@
 @inherits RegisterComponent
 <h3>Register</h3>
 
-<EditForm class="form-control" Model="@ViewModel" OnValidSubmit="Submit">
+<EditForm class="form-control" Model="@ViewModel" OnValidSubmit="async() => await SubmitFormAsync()">
     <DataAnnotationsValidator />
     <ValidationSummary />
     @if (ShowMessage)

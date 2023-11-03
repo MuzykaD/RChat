@@ -12,6 +12,8 @@ using RChat.Application.Contracts.Authentication.JWT;
 using RChat.Application.Authentication.JWT;
 using RChat.Application.Contracts.Authentication;
 using RChat.Application.Authentication;
+using RChat.Application.Contracts.Users;
+using RChat.Application.Users;
 
 namespace RChat.WebApi
 {
@@ -51,6 +53,7 @@ namespace RChat.WebApi
 
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

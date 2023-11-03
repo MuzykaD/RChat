@@ -52,16 +52,10 @@ namespace RChat.WebApi.Controllers
                 }) : 
                 BadRequest(new ApiResponse()
                 {
-                    IsSucceed = true,
+                    IsSucceed = false,
                     Message = "Account with such email already exists, try another one!"
                 });            
         }
-        [Authorize(AuthenticationSchemes = "Bearer")]
-        [HttpPost("access-point")]
-        public async Task<IActionResult> TestAuthorize([FromBody] LoginUserDto dto)
-        {
-            var result = await Task.FromResult(new ApiResponse() { IsSucceed = true, Message = "HELLO" });
-            return Ok(result);
-        }
+        
     }
 }
