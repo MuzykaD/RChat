@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RChat.Domain.Attachments;
 using RChat.Domain.Chats;
@@ -8,7 +10,7 @@ using RChat.Infrastructure.Configurations;
 
 namespace RChat.Infrastructure.Context;
 
-public partial class RChatDbContext : DbContext
+public partial class RChatDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
     public RChatDbContext()
     {
@@ -20,7 +22,7 @@ public partial class RChatDbContext : DbContext
     public virtual DbSet<Attachment> Attachments { get; set; }
     public virtual DbSet<Chat> Chats { get; set; }
     public virtual DbSet<Message> Messages { get; set; }
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<User> AspNetUsers { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new UserConfiguration());
@@ -29,6 +31,7 @@ public partial class RChatDbContext : DbContext
         modelBuilder.ApplyConfiguration(new ChatConfiguration());
 
         OnModelCreatingPartial(modelBuilder);
+        base.OnModelCreating(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

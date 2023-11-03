@@ -18,11 +18,11 @@ namespace RChat.Infrastructure.Configurations
 
             builder.HasKey(e => e.Id).HasName("PK__Chats__3214EC073B91F95D");
 
-            builder.HasOne(d => d.Creator).WithMany(p => p.Chats)
+            builder.HasOne(d => d.Creator).WithMany(p => p.CreatedChats)
                     .HasForeignKey(d => d.CreatorId)
                     .HasConstraintName("FK__Chats__CreatorId__398D8EEE");
 
-            builder.HasMany(d => d.Users).WithMany(p => p.ChatsNavigation)
+            builder.HasMany(d => d.Users).WithMany(p => p.Chats)
                     .UsingEntity<Dictionary<string, object>>(
                         "ChatUser",
                         r => r.HasOne<User>().WithMany()
