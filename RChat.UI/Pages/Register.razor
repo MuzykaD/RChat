@@ -1,0 +1,38 @@
+﻿@page "/register"
+@inherits RegisterComponent
+<h3>Register</h3>
+
+<EditForm class="form-control" Model="@ViewModel" OnValidSubmit="async() => await SubmitFormAsync()">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    @if (ShowMessage)
+    {
+        <div>
+            <p>@Message</p>
+        </div>
+    }
+    <div>
+        <label for="Email">Email: </label>
+        <InputText class="input-group-text" type="email" id="Email" @bind-Value="ViewModel.Email" />
+    </div>
+    <br>
+    <div>
+        <label for="UserName">UserName: </label>
+        <InputText class="input-group-text" id="UserName" @bind-Value="ViewModel.Username" />
+    </div>
+    <br>
+    <div>
+        <label for="Password">Password: </label>
+        <InputText class="input-group-text" id="Password" type="password" @bind-Value="ViewModel.Password" />
+    </div>
+    <br>
+    <div>
+        <label for="ConfirmPassword">Confirm Password: </label>
+        <InputText class="input-group-text" id="ComfirmPassword" type="password" @bind-Value="ViewModel.ConfirmPassword" />
+    </div>
+    <br>
+    <div>
+        <button class="btn-primary" type="submit">Submit</button>
+    </div>
+</EditForm>
+

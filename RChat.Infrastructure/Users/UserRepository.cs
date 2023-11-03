@@ -40,8 +40,8 @@ namespace RChat.Infrastructure.Users
                                 .ExecuteUpdateAsync(
                                     u => 
                                     u.SetProperty(
-                                    selectedProperty => selectedProperty.FirstName,
-                                    propertyValue => entity.FirstName));
+                                    selectedProperty => selectedProperty.UserName,
+                                    propertyValue => entity.UserName));
         }
     }
 }

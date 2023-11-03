@@ -1,0 +1,27 @@
+﻿@page "/login"
+@inherits LoginFormComponent;
+<h3>Login</h3>
+
+<EditForm class="form-control" Model="@ViewModel" OnValidSubmit="async () => await SubmitFormAsync()">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    @if(ShowMessage)
+    {
+       <h5 class="text-danger">@Message</h5>
+       <hr>
+    }
+    <div>
+        <label class="form-label" for="Email">Email: </label>
+        <InputText class="input-group-text" type="email" id="Email" @bind-Value="ViewModel.Email"/>
+    </div>
+    <br>
+    <div>
+        <label class="form-label" for="Password">Password: </label>
+        <InputText class="input-group-text" id="Password" type="password" @bind-Value="ViewModel.Password"/>
+    </div>
+    <br>
+    <div>
+        <button class="btn-primary" type="submit">Submit</button>
+    </div>
+</EditForm>
+
