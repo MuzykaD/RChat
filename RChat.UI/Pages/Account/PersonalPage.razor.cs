@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components;
-using RChat.UI.Services.UserService;
+using RChat.UI.Services.AccountService;
 using RChat.UI.ViewModels;
 
-namespace RChat.UI.Pages.Users
+namespace RChat.UI.Pages.Account
 {
     public partial class PersonalPageComponent : ComponentBase
     {
         [Inject]
-        public IUserService UserService { get; set; }
-        public PersonalPageViewModel ViewModel { get; set; } = new();
+        public IAccountService UserService { get; set; }
+        public UserInformationViewModel ViewModel { get; set; } = new();
 
         protected override async Task OnInitializedAsync()
         {

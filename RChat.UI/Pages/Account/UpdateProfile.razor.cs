@@ -1,22 +1,22 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using RChat.UI.Common.ComponentHelpers;
-using RChat.UI.Services.UserService;
+using RChat.UI.Services.AccountService;
 using RChat.UI.ViewModels;
 
-namespace RChat.UI.Pages.Users
+namespace RChat.UI.Pages.Account
 {
-    public class UpdateProfileComponent : ComponentBase, IFormComponentBase<PersonalPageViewModel>
+    public class UpdateProfileComponent : ComponentBase, IFormComponentBase<UserInformationViewModel>
     {
         [Inject]
-        public IUserService UserService { get; set; }
+        public IAccountService UserService { get; set; }
         [Inject]
         public ILocalStorageService LocalStorageService { get; set; }
         [Inject]
         NavigationManager NavigationManager { get; set; }
         public bool ShowMessage { get; set; }
         public string Message { get; set; }
-        public PersonalPageViewModel ViewModel { get; set; } = new();
+        public UserInformationViewModel ViewModel { get; set; } = new();
 
         public async Task SubmitFormAsync()
         {

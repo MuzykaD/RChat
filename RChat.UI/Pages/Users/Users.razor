@@ -1,0 +1,14 @@
+﻿@page "/users"
+@using RChat.UI.ViewModels;
+@inherits UsersListComponent
+<h3>RChat Users!</h3>
+
+<RadzenDataGrid
+   PageSize="5" AllowPaging="true" Data="@EntityList" TItem="UserInformationViewModel">
+    <Columns>
+        <RadzenDataGridColumn TItem="UserInformationViewModel" Property="Email" Title="Email"> </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="UserInformationViewModel" Property="UserName" Title="UserName"> </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="UserInformationViewModel" Property="PhoneNumber" Title="PhoneNumber"> </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+

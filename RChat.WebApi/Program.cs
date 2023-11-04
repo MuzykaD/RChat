@@ -1,17 +1,15 @@
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using RChat.WebApi.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System.Text;
 using RChat.Domain.Users;
 using RChat.Infrastructure.Context;
 using RChat.Application.Contracts.Authentication.JWT;
 using RChat.Application.Authentication.JWT;
 using RChat.Application.Contracts.Authentication;
 using RChat.Application.Authentication;
+using RChat.Application.Contracts.Account;
+using RChat.Application.Account;
 using RChat.Application.Contracts.Users;
 using RChat.Application.Users;
 
@@ -53,6 +51,7 @@ namespace RChat.WebApi
 
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IUserService, UserService>();
             var app = builder.Build();
 

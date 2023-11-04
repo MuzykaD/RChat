@@ -1,6 +1,6 @@
 ﻿namespace RChat.UI.ViewModels
 {
-    public class PersonalPageViewModel
+    public class UserInformationViewModel
     {
         public string UserName { get; set; } = "Loading";
         public string Email { get; set; } = "Loading";

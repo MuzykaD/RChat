@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RChat.Application.Contracts.Authentication;
 using RChat.Application.Contracts.Authentication.JWT;
-using RChat.Application.Contracts.Users;
+using RChat.Application.Contracts.Account;
 using RChat.Domain.Repsonses;
 using RChat.Domain.Users.DTO;
 using System.Security.Claims;
@@ -14,9 +14,9 @@ namespace RChat.WebApi.Controllers
     [Authorize]
     public class AccountController : ControllerBase
     {
-        private IUserService _userService;
+        private IAccountService _userService;
         private IJwtTokenService _jwtService;
-        public AccountController(IUserService userService, IJwtTokenService jwtService)
+        public AccountController(IAccountService userService, IJwtTokenService jwtService)
         {
             _userService = userService;
             _jwtService = jwtService;
