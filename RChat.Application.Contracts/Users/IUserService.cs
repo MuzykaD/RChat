@@ -10,5 +10,6 @@ namespace RChat.Application.Contracts.Users
     public interface IUserService
     {
         Task<IEnumerable<UserInformationDto>> GetUsersInformationListAsync();
+        Task<IEnumerable<UserInformationDto>> SearchUsersInformationListAsync(string searchValue);
     }
 }

@@ -28,5 +28,22 @@ namespace RChat.Application.Users
 
             return await Task.FromResult(userInformation);
         }
+
+        public async Task<IEnumerable<UserInformationDto>> SearchUsersInformationListAsync(string searchValue)
+        {
+            var userInformation = _userManager.Users
+                .Where(u =>
+                u.Email!.Contains(searchValue)
+                || u.UserName!.Contains(searchValue)
+                || (u.PhoneNumber ?? string.Empty).Contains(searchValue))
+                .Select(u => new UserInformationDto()
+                {
+                    Email = u.Email!,
+                    UserName = u.UserName!,
+                    PhoneNumber = u.PhoneNumber
+                });
+
+            return await Task.FromResult(userInformation);
+        }
     }
 }

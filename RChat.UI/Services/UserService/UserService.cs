@@ -17,5 +17,10 @@ namespace RChat.UI.Services.UserService
         {
             return await _httpClientPwa.SendGetRequestAsync<IEnumerable<UserInformationViewModel>>(HttpClientPwa.Users);
         }
+
+        public async Task<ApiRequestResult<IEnumerable<UserInformationViewModel>>> SearchUsersByValueAsync(string searchValue)
+        {
+            return await _httpClientPwa.SendGetRequestAsync<IEnumerable<UserInformationViewModel>>(HttpClientPwa.SearchUsers + $"?value={searchValue}");
+        }
     }
 }

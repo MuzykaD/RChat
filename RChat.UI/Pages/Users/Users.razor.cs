@@ -9,12 +9,20 @@ namespace RChat.UI.Pages.Users
     {
         [Inject]
         private IUserService UserService { get; set; }
+        public string? SearchValue { get; set; }
         public IEnumerable<UserInformationViewModel> EntityList { get; set; } = new List<UserInformationViewModel>();
 
         protected override async Task OnInitializedAsync()
         {
             var apiResponse = await UserService.GetUsersListAsync();
             EntityList = apiResponse.Result!;
+        }
+        public async Task OnChangeAsync()
+        {
+            var apiResult = string.IsNullOrWhiteSpace(SearchValue) ?
+                await UserService.GetUsersListAsync() :
+                await UserService.SearchUsersByValueAsync(SearchValue);
+            EntityList = apiResult.Result!;
         }
     }
 }

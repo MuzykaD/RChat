@@ -1,12 +1,9 @@
 ﻿using Blazored.LocalStorage;
 using RChat.UI.Common.HttpClientPwa.Interfaces;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace RChat.UI.Common.HttpClientPwa
 {
@@ -19,6 +16,7 @@ namespace RChat.UI.Common.HttpClientPwa
         public const string Info = "https://localhost:7089/api/v1/account/profile";
         public const string UpdateInfo = "https://localhost:7089/api/v1/account/update-profile";
         public const string Users = "https://localhost:7089/api/v1/users";
+        public const string SearchUsers = "https://localhost:7089/api/v1/users/search";
         private ILocalStorageService LocalStorageService { get; set; }
         public HttpClientPwa(ILocalStorageService storageService)
         {

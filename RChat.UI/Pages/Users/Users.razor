@@ -2,7 +2,7 @@
 @using RChat.UI.ViewModels;
 @inherits UsersListComponent
 <h3>RChat Users!</h3>
-
+<RadzenTextBox Placeholder="Search" @bind-Value=@SearchValue TValue="string" Change="async () => await OnChangeAsync()" />
 <RadzenDataGrid
    PageSize="5" AllowPaging="true" Data="@EntityList" TItem="UserInformationViewModel">
     <Columns>

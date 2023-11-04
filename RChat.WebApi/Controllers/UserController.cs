@@ -19,5 +19,9 @@ namespace RChat.WebApi.Controllers
         public async Task<IActionResult> GetUsersInformation()
                 =>  Ok(await _userService.GetUsersInformationListAsync());
 
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchUsersInformation([FromQuery]string value)
+               => Ok(await _userService.SearchUsersInformationListAsync(value));
+
     }
 }
