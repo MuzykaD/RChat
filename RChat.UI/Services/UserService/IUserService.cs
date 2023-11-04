@@ -1,4 +1,5 @@
 ﻿using RChat.Domain.Repsonses;
+using RChat.Domain.Users.DTO;
 using RChat.UI.Common;
 using RChat.UI.ViewModels;
 
@@ -7,5 +8,9 @@ namespace RChat.UI.Services.UserService
     public interface IUserService
     {
         public Task<ApiRequestResult<ApiResponse>> ChangeUserPasswordAsync(ChangePasswordViewModel changePasswordModel);
+        public Task<ApiRequestResult<PersonalPageViewModel>> GetPersonalInformationAsync();
+        public Task<ApiRequestResult<UserTokenResponse>> UpdatePersonalInformationAsync(PersonalPageViewModel personalPageViewModel);
+
+
     }
 }

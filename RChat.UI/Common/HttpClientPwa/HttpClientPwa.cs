@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RChat.UI.Common.HttpClientPwa
 {
@@ -14,7 +15,9 @@ namespace RChat.UI.Common.HttpClientPwa
 
         public const string LoginApiUrl = "https://localhost:7089/api/v1/authentication/login";
         public const string RegisterApiUrl = "https://localhost:7089/api/v1/authentication/register";
-        public const string TestApiUrl = "https://localhost:7089/api/v1/users/change-password";
+        public const string TestApiUrl = "https://localhost:7089/api/v1/account/change-password";
+        public const string Info = "https://localhost:7089/api/v1/account/profile";
+        public const string UpdateInfo = "https://localhost:7089/api/v1/account/update-profile";
         private ILocalStorageService LocalStorageService { get; set; }
         public HttpClientPwa(ILocalStorageService storageService)
         {
@@ -45,7 +48,31 @@ namespace RChat.UI.Common.HttpClientPwa
                    };
             }
         }
+        public async Task<ApiRequestResult<TResult>> SendGetRequestAsync<TResult>(string url)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                await TryAddJwtToken(httpClient);
 
+                var apiResponse = await httpClient.GetAsync(url);
+
+                return (apiResponse.StatusCode.Equals(HttpStatusCode.Unauthorized)
+                   && !apiResponse.IsSuccessStatusCode) ?
+                   new ApiRequestResult<TResult>()
+                   {
+                       IsSuccessStatusCode = apiResponse.IsSuccessStatusCode,
+                       Result = default,
+                       StatusCode = apiResponse.StatusCode,
+                       Message = "Please, log in to the RChat to continue!"
+                   } :
+                   new ApiRequestResult<TResult>()
+                   {
+                       IsSuccessStatusCode = apiResponse.IsSuccessStatusCode,
+                       Result = await apiResponse.Content.ReadFromJsonAsync<TResult>(),
+                       StatusCode = apiResponse.StatusCode,
+                   };
+            }
+        }
         private async Task TryAddJwtToken(HttpClient client)
         {
             var token = await LocalStorageService.GetItemAsync<string>("auth-jwt-token");
@@ -56,5 +83,6 @@ namespace RChat.UI.Common.HttpClientPwa
 
         }
 
+      
     }
 }

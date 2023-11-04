@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using RChat.UI.Services.BlazorAuthService;
 
-namespace RChat.UI.Pages
+namespace RChat.UI.Pages.Authentication
 {
     public partial class LogoutComponent : ComponentBase
     {

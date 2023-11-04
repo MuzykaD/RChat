@@ -3,7 +3,7 @@ using RChat.UI.Common.ComponentHelpers;
 using RChat.UI.Services.UserService;
 using RChat.UI.ViewModels;
 
-namespace RChat.UI.Pages
+namespace RChat.UI.Pages.Users
 {
     public partial class ChangePasswordFormComponent : ComponentBase, IFormComponentBase<ChangePasswordViewModel>
     {

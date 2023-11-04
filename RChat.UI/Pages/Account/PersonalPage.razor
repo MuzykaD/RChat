@@ -1,0 +1,19 @@
+﻿@page "/profile"
+@inherits PersonalPageComponent
+<h3>PersonalInformation</h3>
+<CascadingAuthenticationState>
+    <AuthorizeView>
+        <Authorized>
+            <PageTitle>Counter</PageTitle>
+
+            <p>@ViewModel.UserName</p>
+            <p>@ViewModel.Email</p>
+            <p>@(ViewModel.PhoneNumber ?? "Not set yet!")</p>
+            <br>
+            <a href="update-profile" class="btn btn-primary">Update profile</a>
+        </Authorized>
+        <NotAuthorized>
+            400
+        </NotAuthorized>
+    </AuthorizeView>
+</CascadingAuthenticationState>

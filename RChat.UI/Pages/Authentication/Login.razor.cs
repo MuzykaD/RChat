@@ -8,7 +8,7 @@ using RChat.UI.Common.HttpClientPwa.Interfaces;
 using RChat.UI.Services.BlazorAuthService;
 using RChat.UI.ViewModels;
 
-namespace RChat.UI.Pages
+namespace RChat.UI.Pages.Authentication
 {
     public partial class LoginFormComponent : ComponentBase, IFormComponentBase<LoginViewModel>
     {
@@ -24,7 +24,7 @@ namespace RChat.UI.Pages
             var response = await AuthService.LoginUserAsync(ViewModel);
             if (response.IsSuccessStatusCode && response.Result.IsSucceed)
                 NavigationManager.NavigateTo("/");
-            
+
             else
             {
                 Message = response.Message;
