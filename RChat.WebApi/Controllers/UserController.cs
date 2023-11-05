@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using RChat.Application.Contracts.Users;
 using RChat.Domain.Repsonses;
-
 namespace RChat.WebApi.Controllers
 {
     [ApiController]
@@ -16,8 +15,8 @@ namespace RChat.WebApi.Controllers
             _userService = userService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetUsersInformation()
-                =>  Ok(await _userService.GetUsersInformationListAsync());
+        public async Task<IActionResult> GetUsersInformation([FromQuery] int skip, int take, string? value)
+                => Ok(await _userService.GetUsersInformationListAsync(value, skip, take));
 
         [HttpGet("search")]
         public async Task<IActionResult> SearchUsersInformation([FromQuery]string value)

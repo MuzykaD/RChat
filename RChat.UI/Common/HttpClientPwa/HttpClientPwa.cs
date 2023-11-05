@@ -17,6 +17,7 @@ namespace RChat.UI.Common.HttpClientPwa
         public const string UpdateInfo = "https://localhost:7089/api/v1/account/update-profile";
         public const string Users = "https://localhost:7089/api/v1/users";
         public const string SearchUsers = "https://localhost:7089/api/v1/users/search";
+        public const string Qur = "https://localhost:7089/api/v1/users/qur";
         private ILocalStorageService LocalStorageService { get; set; }
         public HttpClientPwa(ILocalStorageService storageService)
         {

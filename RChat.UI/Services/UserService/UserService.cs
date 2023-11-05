@@ -2,6 +2,9 @@
 using RChat.UI.Common.HttpClientPwa.Interfaces;
 using RChat.UI.Common.HttpClientPwa;
 using RChat.UI.ViewModels;
+using RChat.Domain.Users;
+using BlazorBootstrap;
+using RChat.Domain.Repsonses;
 
 namespace RChat.UI.Services.UserService
 {
@@ -13,9 +16,11 @@ namespace RChat.UI.Services.UserService
         {
             _httpClientPwa = httpClientPwa;
         }
-        public async Task<ApiRequestResult<IEnumerable<UserInformationViewModel>>> GetUsersListAsync()
+
+        public async Task<ApiRequestResult<GridListDto<UserInformationViewModel>>> GetUsersListAsync(int take, int skip = 0, string? searchValue = null)
         {
-            return await _httpClientPwa.SendGetRequestAsync<IEnumerable<UserInformationViewModel>>(HttpClientPwa.Users);
+            string searchValueQuery = string.IsNullOrWhiteSpace(searchValue) ? string.Empty : $"&value={searchValue}";
+            return await _httpClientPwa.SendGetRequestAsync<GridListDto<UserInformationViewModel>>(HttpClientPwa.Users + $"?skip={skip}&take={take}{searchValueQuery}" );
         }
 
         public async Task<ApiRequestResult<IEnumerable<UserInformationViewModel>>> SearchUsersByValueAsync(string searchValue)

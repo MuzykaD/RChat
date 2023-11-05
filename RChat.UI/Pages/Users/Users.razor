@@ -3,12 +3,18 @@
 @inherits UsersListComponent
 <h3>RChat Users!</h3>
 <RadzenTextBox Placeholder="Search" @bind-Value=@SearchValue TValue="string" Change="async () => await OnChangeAsync()" />
-<RadzenDataGrid
-   PageSize="5" AllowPaging="true" Data="@EntityList" TItem="UserInformationViewModel">
+<RadzenDataGrid Data="@EntityList" TItem="UserInformationViewModel">
+    <EmptyTemplate>
+        <p style="color: lightgrey; font-size: 24px; text-align: center; margin: 2rem;">No records to display.</p>
+    </EmptyTemplate>
     <Columns>
         <RadzenDataGridColumn TItem="UserInformationViewModel" Property="Email" Title="Email"> </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="UserInformationViewModel" Property="UserName" Title="UserName"> </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="UserInformationViewModel" Property="PhoneNumber" Title="PhoneNumber"> </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="UserInformationViewModel" Property="PhoneNumber" Title="PhoneNumber">
+            <FooterTemplate>
+                Found users: <b>@Count</b>
+            </FooterTemplate>
+        </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
-
+<RadzenPager HorizontalAlign="HorizontalAlign.Right" Count="@Count" PageSize="@PageSize" PageNumbersCount="3" PageChanged="@PageChanged" />
