@@ -14,20 +14,18 @@ namespace RChat.Application.Users
     public class UserService : IUserService
     {
         private UserManager<User> _userManager;
-        public UserService(UserManager<User> userManager)
+        private IUserQueryBuilder _userQueryBuilder;
+        public UserService(UserManager<User> userManager, IUserQueryBuilder userQueryBuilder)
         {
             _userManager = userManager;
+            _userQueryBuilder = userQueryBuilder;
         }
         public async Task<GridListDto<UserInformationDto>> GetUsersInformationListAsync(string? value, int skip = 0, int takeCount = 5)
         {
             var users = _userManager.Users;
-            if(!string.IsNullOrWhiteSpace(value))
-            {
-                users = users.Where(u =>
-                u.Email!.Contains(value)
-                || u.UserName!.Contains(value)
-                || (u.PhoneNumber ?? string.Empty).Contains(value));
-            }
+            if (!string.IsNullOrWhiteSpace(value))
+                users = users.Where(_userQueryBuilder.SearchQuery(value));
+
             var totalCount = users.Count();
             var userInformation = users.Skip(skip).Take(takeCount).Select(u => new UserInformationDto()
             {
