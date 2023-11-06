@@ -21,7 +21,7 @@ namespace RChat.UI.Services.AccountService
 
         public async Task<ApiRequestResult<UserInformationViewModel>> GetPersonalInformationAsync()
         {
-            return await _httpClientPwa.SendGetRequestAsync<UserInformationViewModel>(HttpClientPwa.Info);
+            return await _httpClientPwa.SendGetRequestAsync<UserInformationViewModel>(RChatApiRoutes.Info);
         }
 
         public async Task<ApiRequestResult<UserTokenResponse>> UpdatePersonalInformationAsync(UserInformationViewModel personalPageViewModel)

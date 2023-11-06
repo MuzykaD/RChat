@@ -31,12 +31,12 @@ namespace RChat.WebApi.Controllers
                 Ok(new ApiResponse()
                 {
                     IsSucceed = passwordChangeResult,
-                    Message = "Password successfully update!"
+                    Message = "Password successfully updated!"
                 }) :
                 BadRequest(new ApiResponse()
                 {
                     IsSucceed = passwordChangeResult,
-                    Message = "It seems that you have entered a wrong current password! Try again"
+                    Message = "It seems that you have entered a wrong current password! Try again!"
                 });
         }
 

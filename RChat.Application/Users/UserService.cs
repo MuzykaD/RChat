@@ -34,7 +34,7 @@ namespace RChat.Application.Users
                 Email = u.Email,
                 UserName = u.UserName,
                 PhoneNumber = u.PhoneNumber
-            });
+            }).ToList();
 
             return await Task.FromResult(new GridListDto<UserInformationDto>()
             {

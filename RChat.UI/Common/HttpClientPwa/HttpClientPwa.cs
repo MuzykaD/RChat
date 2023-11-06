@@ -8,16 +8,7 @@ using System.Net.Http.Json;
 namespace RChat.UI.Common.HttpClientPwa
 {
     internal class HttpClientPwa : IHttpClientPwa
-    {
-
-        public const string LoginApiUrl = "https://localhost:7089/api/v1/authentication/login";
-        public const string RegisterApiUrl = "https://localhost:7089/api/v1/authentication/register";
-        public const string TestApiUrl = "https://localhost:7089/api/v1/account/change-password";
-        public const string Info = "https://localhost:7089/api/v1/account/profile";
-        public const string UpdateInfo = "https://localhost:7089/api/v1/account/update-profile";
-        public const string Users = "https://localhost:7089/api/v1/users";
-        public const string SearchUsers = "https://localhost:7089/api/v1/users/search";
-        public const string Qur = "https://localhost:7089/api/v1/users/qur";
+    {      
         private ILocalStorageService LocalStorageService { get; set; }
         private HttpClient HttpClient { get; set; }
         public HttpClientPwa(ILocalStorageService storageService, HttpClient httpClient)
