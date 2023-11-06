@@ -13,7 +13,10 @@ namespace RChat.UI.Pages.Account
         protected override async Task OnInitializedAsync()
         {
             var apiResult = await UserService.GetPersonalInformationAsync();
-            ViewModel = apiResult.Result!;
+            if (apiResult.IsSuccessStatusCode)
+            {
+                ViewModel = apiResult.Result!;
+            }
         }
     }
 }

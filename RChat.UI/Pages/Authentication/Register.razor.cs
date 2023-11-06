@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Components;
+using Radzen;
 using RChat.UI.Common.ComponentHelpers;
 using RChat.UI.Services.BlazorAuthService;
 using RChat.UI.ViewModels;
@@ -10,6 +11,8 @@ namespace RChat.UI.Pages.Authentication
     {
         [Inject]
         public IBlazorAuthService AuthService { get; set; }
+        [Inject]
+        NotificationService NotificationService { get; set; }
         public bool ShowMessage { get; set; }
         public string Message { get; set; }
         protected bool _successfullyRegistered;
@@ -20,6 +23,12 @@ namespace RChat.UI.Pages.Authentication
             Message = response.Result.Message;
             ShowMessage = true;
             _successfullyRegistered = response.IsSuccessStatusCode;
+
+            NotificationService.Notify(new()
+            {
+                Severity = NotificationSeverity.Info,
+                Summary = Message
+            });
         }
     }
 }

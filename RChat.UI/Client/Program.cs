@@ -27,6 +27,7 @@ namespace RChat.UI
 
             builder.Services.ConfigureHttpClient(builder.Configuration);
             builder.Services.AddRadzenComponents();
+            builder.Services.AddScoped<NotificationService>();
             builder.Services.AddScoped<IJwtTokenParser, JwtTokenParser>();
             builder.Services.AddScoped<IHttpClientPwa, HttpClientPwa>();
             builder.Services.AddScoped<IBlazorAuthService, BlazorAuthService>();

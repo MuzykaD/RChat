@@ -1,10 +1,10 @@
 ﻿@page "/users"
+
 @using RChat.UI.ViewModels;
 @inherits UsersListComponent
+@attribute [Authorize]
 <h3>RChat Users!</h3>
-<CascadingAuthenticationState>
-<AuthorizeView>
-    <Authorized>
+
 <RadzenTextBox Placeholder="Search" @bind-Value=@SearchValue TValue="string" Change="async () => await OnSearchChangeAsync()" />
 <RadzenDropDown Placeholder="Sort Column" Disabled="@IsSortingDisabled" @bind-Value=@SortFieldValue TValue="string" Data="@SortingFieldDropDown" Change="async () => await OnSortChangeAsync()" />
 <RadzenDropDown Placeholder="Sort Type" Disabled="@IsSortingDisabled" @bind-Value=@SortTypeValue TValue="string" Data="@SortingTypeDropDown" Change="async () => await OnSortChangeAsync()" />
@@ -24,9 +24,3 @@
     </Columns>
 </RadzenDataGrid>
 <RadzenPager HorizontalAlign="HorizontalAlign.Right" Count="@Count" PageSize="@PageSize" PageNumbersCount="3" PageChanged="@PageChanged" />
-        </Authorized>
-        <NotAuthorized>
-            400
-        </NotAuthorized>
-    </AuthorizeView>
-</CascadingAuthenticationState>

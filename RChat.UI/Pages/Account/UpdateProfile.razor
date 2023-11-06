@@ -1,6 +1,7 @@
 ﻿@page "/update-profile"
 @using RChat.UI.Pages.Account;
 @inherits UpdateProfileComponent;
+@attribute [Authorize]
 <h3>Update profile information</h3>
 
 <EditForm class="form-control" Model="@ViewModel" OnValidSubmit="async () => await SubmitFormAsync()">
