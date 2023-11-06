@@ -1,20 +1,18 @@
 ﻿@page "/profile"
 @using RChat.UI.Pages.Account;
 @inherits PersonalPageComponent
-<h3>Persona lInformation</h3>
+<h3>Personal Information</h3>
 <CascadingAuthenticationState>
     <AuthorizeView>
         <Authorized>
-            <PageTitle>Counter</PageTitle>
-
-            <p>@ViewModel.UserName</p>
-            <p>@ViewModel.Email</p>
-            <p>@(ViewModel.PhoneNumber ?? "Not set yet!")</p>
+            <p>Your name: @ViewModel.UserName</p>
+            <p>Your email: @ViewModel.Email</p>
+            <p>your phone number: @(ViewModel.PhoneNumber ?? "Not set yet!")</p>
             <br>
             <a href="update-profile" class="btn btn-primary">Update profile</a>
         </Authorized>
         <NotAuthorized>
-            400
+            401
         </NotAuthorized>
     </AuthorizeView>
 </CascadingAuthenticationState>

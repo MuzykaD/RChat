@@ -12,15 +12,18 @@ namespace RChat.UI.Pages.Users
         [Inject]
         private IUserService UserService { get; set; }
         public string? SearchValue { get; set; }
-        protected int Count { get; set; }
-        protected int PageSize { get; set; } = 5;
+        public int Count { get; set; }
+        public int PageSize { get; set; } = 5;
         public IEnumerable<UserInformationViewModel> EntityList { get; set; } = new List<UserInformationViewModel>();
 
         protected override async Task OnInitializedAsync()
         {
             var apiResponse = await UserService.GetUsersListAsync(PageSize);
-            EntityList = apiResponse.Result.SelectedEntities!;
-            Count = apiResponse.Result.TotalCount;
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                EntityList = apiResponse.Result.SelectedEntities!;
+                Count = apiResponse.Result.TotalCount;
+            }
         }
         public async Task OnChangeAsync()
         {
@@ -29,7 +32,7 @@ namespace RChat.UI.Pages.Users
             Count = apiResponse.Result.TotalCount;
         }
 
-       protected async Task PageChanged(PagerEventArgs args)
+        protected async Task PageChanged(PagerEventArgs args)
         {
             var apiResult = await UserService.GetUsersListAsync(args.Top, args.Skip, SearchValue);
             EntityList = apiResult.Result.SelectedEntities;

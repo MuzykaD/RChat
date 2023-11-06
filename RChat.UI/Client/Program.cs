@@ -12,6 +12,7 @@ using RChat.UI.Common.JwtTokenParser.Interfaces;
 using RChat.UI.Services.BlazorAuthService;
 using RChat.UI.Services.AccountService;
 using RChat.UI.Services.UserService;
+using RChat.UI.Extensions;
 
 namespace RChat.UI
 {
@@ -23,8 +24,8 @@ namespace RChat.UI
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
             builder.Services.AddBlazorBootstrap();
-            
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+            builder.Services.ConfigureHttpClient(builder.Configuration);
             builder.Services.AddRadzenComponents();
             builder.Services.AddScoped<IJwtTokenParser, JwtTokenParser>();
             builder.Services.AddScoped<IHttpClientPwa, HttpClientPwa>();
