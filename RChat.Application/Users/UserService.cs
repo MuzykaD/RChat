@@ -3,11 +3,8 @@ using RChat.Application.Contracts.Users;
 using RChat.Domain.Repsonses;
 using RChat.Domain.Users;
 using RChat.Domain.Users.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Dynamic.Core;
+
 
 namespace RChat.Application.Users
 {
@@ -20,13 +17,16 @@ namespace RChat.Application.Users
             _userManager = userManager;
             _userQueryBuilder = userQueryBuilder;
         }
-        public async Task<GridListDto<UserInformationDto>> GetUsersInformationListAsync(string? value, int skip = 0, int takeCount = 5)
+        public async Task<GridListDto<UserInformationDto>> GetUsersInformationListAsync(string? value, int skip = 0, int takeCount = 5, string? orderBy = null, string? orderByType = null)
         {
-            var users = _userManager.Users;
+            var users = _userManager.Users.AsQueryable();
             if (!string.IsNullOrWhiteSpace(value))
                 users = users.Where(_userQueryBuilder.SearchQuery(value));
-
+            if (!string.IsNullOrWhiteSpace(orderBy) && !string.IsNullOrWhiteSpace(orderByType))
+                users = users.OrderBy(orderBy);
+            
             var totalCount = users.Count();
+            
             var userInformation = users.Skip(skip).Take(takeCount).Select(u => new UserInformationDto()
             {
                 Email = u.Email,
