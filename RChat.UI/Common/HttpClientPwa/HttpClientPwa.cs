@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using RChat.UI.Common.HttpClientPwa.Interfaces;
+using System.Linq.Dynamic.Core.Tokenizer;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -8,7 +9,7 @@ using System.Net.Http.Json;
 namespace RChat.UI.Common.HttpClientPwa
 {
     internal class HttpClientPwa : IHttpClientPwa
-    {      
+    {
         private ILocalStorageService LocalStorageService { get; set; }
         private HttpClient HttpClient { get; set; }
         public HttpClientPwa(ILocalStorageService storageService, HttpClient httpClient)
@@ -18,32 +19,32 @@ namespace RChat.UI.Common.HttpClientPwa
         }
         public async Task<ApiRequestResult<TResult>> SendPostRequestAsync<TArgument, TResult>(string url, TArgument data)
         {
-            
-                await TryAddJwtToken(HttpClient);
 
-                var apiResponse = await HttpClient.PostAsJsonAsync(url, data);
+            //await TryAddJwtToken(HttpClient);
 
-                return (apiResponse.StatusCode.Equals(HttpStatusCode.Unauthorized)
-                   && !apiResponse.IsSuccessStatusCode) ?
-                   new ApiRequestResult<TResult>()
-                   {
-                       IsSuccessStatusCode = apiResponse.IsSuccessStatusCode,
-                       Result = default,
-                       StatusCode = apiResponse.StatusCode,
-                       Message = "Please, log in to the RChat to continue!"
-                   } :
-                   new ApiRequestResult<TResult>()
-                   {
-                       IsSuccessStatusCode = apiResponse.IsSuccessStatusCode,
-                       Result = await apiResponse.Content.ReadFromJsonAsync<TResult>(),
-                       StatusCode = apiResponse.StatusCode,
-                   };
-            
+            var apiResponse = await HttpClient.PostAsJsonAsync(url, data);
+
+            return (apiResponse.StatusCode.Equals(HttpStatusCode.Unauthorized)
+               && !apiResponse.IsSuccessStatusCode) ?
+               new ApiRequestResult<TResult>()
+               {
+                   IsSuccessStatusCode = apiResponse.IsSuccessStatusCode,
+                   Result = default,
+                   StatusCode = apiResponse.StatusCode,
+                   Message = "Please, log in to the RChat to continue!"
+               } :
+               new ApiRequestResult<TResult>()
+               {
+                   IsSuccessStatusCode = apiResponse.IsSuccessStatusCode,
+                   Result = await apiResponse.Content.ReadFromJsonAsync<TResult>(),
+                   StatusCode = apiResponse.StatusCode,
+               };
+
         }
         public async Task<ApiRequestResult<TResult>> SendGetRequestAsync<TResult>(string url)
         {
 
-            await TryAddJwtToken(HttpClient);
+            //await TryAddJwtToken(HttpClient);
 
             var apiResponse = await HttpClient.GetAsync(url);
 
@@ -64,16 +65,16 @@ namespace RChat.UI.Common.HttpClientPwa
                };
 
         }
-        private async Task TryAddJwtToken(HttpClient client)
+        public  void TryAddJwtToken(string token)
         {
-            var token = await LocalStorageService.GetItemAsync<string>("auth-jwt-token");
-            if (!string.IsNullOrWhiteSpace(token))
-            {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
 
+
+        public void TryDeleteJwtToken()
+        {
+            HttpClient.DefaultRequestHeaders.Authorization = null;
+        }
     }
 }
