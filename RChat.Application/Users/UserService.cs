@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using RChat.Application.Contracts.Common;
 using RChat.Application.Contracts.Users;
 using RChat.Domain.Repsonses;
 using RChat.Domain.Users;
@@ -11,8 +12,8 @@ namespace RChat.Application.Users
     public class UserService : IUserService
     {
         private UserManager<User> _userManager;
-        private IUserQueryBuilder _userQueryBuilder;
-        public UserService(UserManager<User> userManager, IUserQueryBuilder userQueryBuilder)
+        private IQueryBuilder<User> _userQueryBuilder;
+        public UserService(UserManager<User> userManager, IQueryBuilder<User> userQueryBuilder)
         {
             _userManager = userManager;
             _userQueryBuilder = userQueryBuilder;
@@ -20,10 +21,12 @@ namespace RChat.Application.Users
         public async Task<GridListDto<UserInformationDto>> GetUsersInformationListAsync(string? value, int skip = 0, int takeCount = 5, string? orderBy = null, string? orderByType = null)
         {
             var users = _userManager.Users.AsQueryable();
+
             if (!string.IsNullOrWhiteSpace(value))
-                users = users.Where(_userQueryBuilder.SearchQuery(value));
+                users = users.Where(_userQueryBuilder.SearchQuery<User>(value, "UserName","Email","PhoneNumber"));
+
             if (!string.IsNullOrWhiteSpace(orderBy) && !string.IsNullOrWhiteSpace(orderByType))
-                users = users.OrderBy(orderBy);
+                users = _userQueryBuilder.OrderByQuery(users, orderBy, orderByType);
             
             var totalCount = users.Count();
             
@@ -39,23 +42,6 @@ namespace RChat.Application.Users
                 SelectedEntities = userInformation,
                 TotalCount = totalCount,
             });
-        }
-
-        public async Task<IEnumerable<UserInformationDto>> SearchUsersInformationListAsync(string searchValue)
-        {
-            var userInformation = _userManager.Users
-                .Where(u =>
-                u.Email!.Contains(searchValue)
-                || u.UserName!.Contains(searchValue)
-                || (u.PhoneNumber ?? string.Empty).Contains(searchValue))
-                .Select(u => new UserInformationDto()
-                {
-                    Email = u.Email!,
-                    UserName = u.UserName!,
-                    PhoneNumber = u.PhoneNumber
-                });
-
-            return await Task.FromResult(userInformation);
         }
     }
 }

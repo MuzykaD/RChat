@@ -28,6 +28,10 @@ namespace RChat.UI.Common.AuthenticationProvider
                  new AuthenticationState(new ClaimsPrincipal(
                      new ClaimsIdentity(_jwtTokenParser.ParseJwtToClaims(jwtToken), "JwtAuth"
                      )));
+            if (string.IsNullOrWhiteSpace(jwtToken))
+                _httpClientPwa.TryDeleteJwtToken();
+            else
+                _httpClientPwa.TryAddJwtToken(jwtToken);
 
             NotifyAuthenticationStateChanged(Task.FromResult(authState));
 

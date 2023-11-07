@@ -18,12 +18,9 @@ namespace RChat.UI.Common.HttpClientPwa
             HttpClient = httpClient;
         }
         public async Task<ApiRequestResult<TResult>> SendPostRequestAsync<TArgument, TResult>(string url, TArgument data)
-        {
-
-            //await TryAddJwtToken(HttpClient);
+        {           
 
             var apiResponse = await HttpClient.PostAsJsonAsync(url, data);
-
             return (apiResponse.StatusCode.Equals(HttpStatusCode.Unauthorized)
                && !apiResponse.IsSuccessStatusCode) ?
                new ApiRequestResult<TResult>()
@@ -39,8 +36,28 @@ namespace RChat.UI.Common.HttpClientPwa
                    Result = await apiResponse.Content.ReadFromJsonAsync<TResult>(),
                    StatusCode = apiResponse.StatusCode,
                };
-
         }
+
+        public async Task<ApiRequestResult<TResult>> SendPutRequestAsync<TArgument, TResult>(string url, TArgument data)
+        {
+            var apiResponse = await HttpClient.PutAsJsonAsync(url, data);
+            return (apiResponse.StatusCode.Equals(HttpStatusCode.Unauthorized)
+               && !apiResponse.IsSuccessStatusCode) ?
+               new ApiRequestResult<TResult>()
+               {
+                   IsSuccessStatusCode = apiResponse.IsSuccessStatusCode,
+                   Result = default,
+                   StatusCode = apiResponse.StatusCode,
+                   Message = "Please, log in to the RChat to continue!"
+               } :
+               new ApiRequestResult<TResult>()
+               {
+                   IsSuccessStatusCode = apiResponse.IsSuccessStatusCode,
+                   Result = await apiResponse.Content.ReadFromJsonAsync<TResult>(),
+                   StatusCode = apiResponse.StatusCode,
+               };
+        }
+
         public async Task<ApiRequestResult<TResult>> SendGetRequestAsync<TResult>(string url)
         {
 
@@ -76,5 +93,7 @@ namespace RChat.UI.Common.HttpClientPwa
         {
             HttpClient.DefaultRequestHeaders.Authorization = null;
         }
+
+       
     }
 }

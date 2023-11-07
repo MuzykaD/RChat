@@ -16,7 +16,7 @@ namespace RChat.UI.Services.AccountService
         }
         public async Task<ApiRequestResult<ApiResponse>> ChangeUserPasswordAsync(ChangePasswordViewModel changePasswordModel)
         {
-            return await _httpClientPwa.SendPostRequestAsync<ChangePasswordViewModel, ApiResponse>(RChatApiRoutes.ChangePassword, changePasswordModel);
+            return await _httpClientPwa.SendPutRequestAsync<ChangePasswordViewModel, ApiResponse>(RChatApiRoutes.ChangePassword, changePasswordModel);
         }
 
         public async Task<ApiRequestResult<UserInformationViewModel>> GetPersonalInformationAsync()
@@ -26,7 +26,7 @@ namespace RChat.UI.Services.AccountService
 
         public async Task<ApiRequestResult<UserTokenResponse>> UpdatePersonalInformationAsync(UserInformationViewModel personalPageViewModel)
         {
-            return await _httpClientPwa.SendPostRequestAsync<UserInformationViewModel, UserTokenResponse>(RChatApiRoutes.UpdateInfo, personalPageViewModel);
+            return await _httpClientPwa.SendPutRequestAsync<UserInformationViewModel, UserTokenResponse>(RChatApiRoutes.UpdateInfo, personalPageViewModel);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace RChat.WebApi.Controllers
             _userService = userService;
             _jwtService = jwtService;
         }
-        [HttpPost("change-password")]
+        [HttpPut("change-password")]
         public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangeUserPasswordDto dto)
         {
             string currentUserEmail = User.FindFirstValue(ClaimTypes.Email)!;
@@ -48,7 +48,7 @@ namespace RChat.WebApi.Controllers
             return Ok(currentUser);               
         }
 
-        [HttpPost("update-profile")]
+        [HttpPut("update-profile")]
         public async Task<IActionResult> UpdateProfileAsync([FromBody] UpdateUserDto updateDto)
         {
             var result = await _userService.UpdateUserAsync(User.FindFirstValue(ClaimTypes.Email)!, updateDto);

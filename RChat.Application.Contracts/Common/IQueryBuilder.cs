@@ -10,7 +10,8 @@ namespace RChat.Application.Contracts.Common
 {
     public interface IQueryBuilder<T>
     {
-        Expression<Func<User, bool>> SearchQuery(string searchValues);
-        Expression<Func<User, TKey>> OrderByQuery<TKey>(string orderByValue, string orderByType);
+        Expression<Func<T, bool>> SearchQuery<T>(string searchValues, params string[] namesOfProperties);
+
+        IQueryable<TEntity> OrderByQuery<TEntity>(IQueryable<TEntity> source, string orderByValue, string orderByType);
     }
 }
