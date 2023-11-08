@@ -52,7 +52,10 @@ namespace RChat.Application.Common
         private string[] GetTypeStringProperties()
         {
             return CurrentType.GetProperties()
-                .Where(p => p.PropertyType == typeof(string) && !ForbiddenPatterns.Columns.Any(forbiden => p.Name.Contains(forbiden)))
+                .Where(p => 
+                       p.PropertyType == typeof(string) 
+                       && !ForbiddenPatterns.Columns
+                       .Any(forbidden => p.Name.Contains(forbidden, StringComparison.OrdinalIgnoreCase)))
                 .Select(p => p.Name)
                 .ToArray();
         }       

@@ -19,6 +19,9 @@ using RChat.Infrastructure.UnitOfWork;
 using RChat.Application.Contracts.Chats;
 using RChat.Application.Chats;
 using RChat.Domain.Chats;
+using RChat.Domain.Messages;
+using RChat.Application.Contracts.Messages;
+using RChat.Application.Messages;
 
 namespace RChat.WebApi
 {
@@ -64,8 +67,10 @@ namespace RChat.WebApi
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IChatService, ChatService>();
+            builder.Services.AddScoped<IMessageService, MessageService>();
             builder.Services.AddScoped<IQueryBuilder<User>, QueryBuilder<User>>();
             builder.Services.AddScoped<IQueryBuilder<Chat>, QueryBuilder<Chat>>();
+            builder.Services.AddScoped<IQueryBuilder<Message>, QueryBuilder<Message>>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

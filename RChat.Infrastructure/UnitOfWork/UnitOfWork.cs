@@ -1,10 +1,12 @@
 ﻿using RChat.Domain.Chats;
+using RChat.Domain.Messages;
 using RChat.Domain.Users;
 using RChat.Infrastructure.Chats;
 using RChat.Infrastructure.Context;
 using RChat.Infrastructure.Contracts.Common;
 using RChat.Infrastructure.Contracts.UnitOfWork;
 using RChat.Infrastructure.Contracts.Users;
+using RChat.Infrastructure.Messages;
 using RChat.Infrastructure.Users;
 using System;
 using System.Collections.Generic;
@@ -29,6 +31,7 @@ namespace RChat.Infrastructure.UnitOfWork
             {
                nameof(User) => new UserRepository(_context) as IRepository<T>,
                nameof(Chat) => new ChatRepository(_context) as IRepository<T>,
+               nameof(Message) => new MessageRepository(_context) as IRepository<T>,
                _ => null
             };
 

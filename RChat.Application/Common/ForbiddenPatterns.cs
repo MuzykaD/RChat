@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace RChat.Application.Common
 {
-    internal class ForbidenPatterns
+    internal class ForbiddenPatterns
     {
+        internal static string[] Columns = new string[]
+        {
+            "Password", "Hash", "Security", "Stamp", "Salt", "Secret", "Url"
+        };
     }
 }
