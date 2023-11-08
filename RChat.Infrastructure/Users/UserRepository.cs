@@ -19,9 +19,15 @@ namespace RChat.Infrastructure.Users
             await _context.Users.AddAsync(entity);
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(int id)
         {
             await _context.Users.Where(u => u.Id.Equals(id)).ExecuteDeleteAsync();
+        }
+
+        public async Task<IQueryable<User>> GetAllAsQueryableAsync()
+        {
+            var query = _context.Users.AsQueryable();
+            return await Task.FromResult(query);
         }
 
         public async Task<IEnumerable<User>> GetAllAsync()
@@ -29,7 +35,7 @@ namespace RChat.Infrastructure.Users
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<User?> GetByIdAsync(Guid id)
+        public async Task<User?> GetByIdAsync(int id)
         {
             return await _context.Users.FindAsync(id);
         }

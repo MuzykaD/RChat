@@ -23,15 +23,10 @@ namespace RChat.Application.Users
         {
             var users = _userManager.Users.AsQueryable();
             if (searchArguments.SearchRequired)
-            {
-                var properties = typeof(UserInformationDto).GetProperties().Select(p => p.Name).ToArray();
-                users = users
-                    .Where(_userQueryBuilder.SearchQuery<User>(searchArguments.Value!, properties));
-            }
+                users = _userQueryBuilder.BuildSearchQuery(users, searchArguments.Value!);
 
             if (searchArguments.OrderByRequired)
-                users = _userQueryBuilder
-                    .OrderByQuery(users, searchArguments.OrderBy!, searchArguments.OrderByType!);
+                users = _userQueryBuilder.BuildOrderByQuery(users, searchArguments.OrderBy!, searchArguments.OrderByType!);
 
             var totalCount = users.Count();
 

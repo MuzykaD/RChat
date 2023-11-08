@@ -23,7 +23,7 @@ namespace RChat.UI.Services.UserService
                 .SendGetRequestAsync<GridListDto<UserInformationViewModel>>
                 (
                 RChatApiRoutes.Users +
-                HttpQueryBuilder.BuildGridListQuery(skip, take, searchValue!, orderBy, orderByType)
+                HttpQueryBuilder.BuildGridListQuery(page, size, value!, orderBy, orderByType)
                 );
         }
     }

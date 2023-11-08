@@ -14,6 +14,11 @@ using RChat.Application.Contracts.Users;
 using RChat.Application.Users;
 using RChat.Application.Contracts.Common;
 using RChat.Application.Common;
+using RChat.Infrastructure.Contracts.UnitOfWork;
+using RChat.Infrastructure.UnitOfWork;
+using RChat.Application.Contracts.Chats;
+using RChat.Application.Chats;
+using RChat.Domain.Chats;
 
 namespace RChat.WebApi
 {
@@ -52,10 +57,15 @@ namespace RChat.WebApi
             builder.Services.AddAuthorization();
 
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
+
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<IQueryBuilder<User>, QueryBuilder<User>>();
+            builder.Services.AddScoped<IQueryBuilder<Chat>, QueryBuilder<Chat>>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

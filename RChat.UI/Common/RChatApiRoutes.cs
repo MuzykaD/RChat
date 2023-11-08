@@ -8,7 +8,7 @@
         public const string Info = "/api/v1/account/profile";
         public const string UpdateInfo = "/api/v1/account/update-profile";
         public const string Users = "/api/v1/users";
-        public const string SearchUsers = "/api/v1/users/search";
+        public const string Chats = "/api/v1/chats";
 
     }
 }

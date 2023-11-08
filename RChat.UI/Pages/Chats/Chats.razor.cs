@@ -1,17 +1,16 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Radzen;
-using RChat.Domain.Users;
 using RChat.UI.Common;
 using RChat.UI.Common.ComponentHelpers;
-using RChat.UI.Services.UserService;
+using RChat.UI.Services.ChatService;
 using RChat.UI.ViewModels;
 
-namespace RChat.UI.Pages.Users
+namespace RChat.UI.Pages.Chats
 {
-    public partial class UsersListComponent : ComponentBase, IListComponentBase<UserInformationViewModel>, ISortComponent, ISearchComponent
+    public partial class ChatsListComponent : ComponentBase, IListComponentBase<ChatInformationViewModel>, ISortComponent, ISearchComponent
     {
         [Inject]
-        private IUserService UserService { get; set; }
+        private IChatService ChatService { get; set; }
         [Inject]
         private NavigationManager NavigationManager { get; set; }
         [SupplyParameterFromQuery]
@@ -34,9 +33,9 @@ namespace RChat.UI.Pages.Users
         public bool IsSortingDisabled { get; set; } = true;
 
         public int Count { get; set; }
-        private string _navigationQuery => "/users" + HttpQueryBuilder.BuildGridListQuery(Page, Size, Value, OrderBy, OrderByType);
+        private string _navigationQuery => "/chats" + HttpQueryBuilder.BuildGridListQuery(Page, Size, Value, OrderBy, OrderByType);
 
-        public IEnumerable<UserInformationViewModel> EntityList { get; set; } = new List<UserInformationViewModel>();
+        public IEnumerable<ChatInformationViewModel> EntityList { get; set; } = new List<ChatInformationViewModel>();
         public IEnumerable<string> SortingFieldDropDown { get; set; }
         public IEnumerable<string> SortingTypeDropDown { get; set; }
 
@@ -45,7 +44,8 @@ namespace RChat.UI.Pages.Users
             if (Size == 0)
                 Size = 5;
             await UpdateEntityList();
-            SortingFieldDropDown = typeof(UserInformationViewModel).GetProperties().Select(p => p.Name);
+            SortingFieldDropDown = new List<string>() { "Id", "Name", "CreatorId" };
+
             SortingTypeDropDown = new List<string>()
                 {
                     "Ascending",
@@ -87,7 +87,7 @@ namespace RChat.UI.Pages.Users
 
         private async Task UpdateEntityList()
         {
-            var apiResponse = await UserService.GetUsersListAsync(Page, Size, Value, OrderBy, OrderByType);
+            var apiResponse = await ChatService.GetChatsListAsync(Page, Size, Value, OrderBy, OrderByType);
             if (apiResponse.IsSuccessStatusCode)
             {
                 EntityList = apiResponse.Result.SelectedEntities!;

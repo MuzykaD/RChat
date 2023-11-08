@@ -1,4 +1,6 @@
-﻿using RChat.Domain.Users;
+﻿using RChat.Domain.Chats;
+using RChat.Domain.Users;
+using RChat.Infrastructure.Chats;
 using RChat.Infrastructure.Context;
 using RChat.Infrastructure.Contracts.Common;
 using RChat.Infrastructure.Contracts.UnitOfWork;
@@ -26,6 +28,7 @@ namespace RChat.Infrastructure.UnitOfWork
             IRepository<T>? result = typeof(T).Name switch
             {
                nameof(User) => new UserRepository(_context) as IRepository<T>,
+               nameof(Chat) => new ChatRepository(_context) as IRepository<T>,
                _ => null
             };
 
