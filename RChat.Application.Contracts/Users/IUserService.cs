@@ -1,4 +1,8 @@
-﻿using System;
+﻿using RChat.Domain;
+using RChat.Domain.Repsonses;
+using RChat.Domain.Users;
+using RChat.Domain.Users.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +12,6 @@ namespace RChat.Application.Contracts.Users
 {
     public interface IUserService
     {
-        Task<bool> ChangeUserPasswordAsync(string userEmail, string currentPassword, string newPassword);
+        Task<GridListDto<UserInformationDto>> GetUsersInformationListAsync(SearchArguments searchArguments);
     }
 }

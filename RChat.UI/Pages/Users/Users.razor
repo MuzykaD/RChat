@@ -1,0 +1,26 @@
+﻿@page "/users"
+
+@using RChat.UI.ViewModels;
+@inherits UsersListComponent
+@attribute [Authorize]
+<h3>RChat Users!</h3>
+
+<RadzenTextBox Placeholder="Search" @bind-Value=@Value TValue="string" Change="async () => await OnSearchChangeAsync()" />
+<RadzenDropDown Placeholder="Sort Column" Disabled="@IsSortingDisabled" @bind-Value=@OrderBy TValue="string" Data="@SortingFieldDropDown" Change="async () => await OnSortChangeAsync()" />
+<RadzenDropDown Placeholder="Sort Type" Disabled="@IsSortingDisabled" @bind-Value=@OrderByType TValue="string" Data="@SortingTypeDropDown" Change="async () => await OnSortChangeAsync()" />
+Sorting disabled:<RadzenSwitch @bind-Value=@IsSortingDisabled Change=@OnSortSwitchAsync/>
+<RadzenDataGrid Data="@EntityList" TItem="UserInformationViewModel">
+    <EmptyTemplate>
+        <p style="color: lightgrey; font-size: 24px; text-align: center; margin: 2rem;">No records to display.</p>
+    </EmptyTemplate>
+    <Columns>
+        <RadzenDataGridColumn Sortable="true" TItem="UserInformationViewModel" Property="Email" Title="Email"> </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="UserInformationViewModel" Property="UserName" Title="UserName"> </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="UserInformationViewModel" Property="PhoneNumber" Title="PhoneNumber">
+            <FooterTemplate>
+                Found users: <b>@Count</b>
+            </FooterTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+<RadzenPager HorizontalAlign="HorizontalAlign.Right" Count="@Count" PageSize="@Size" PageNumbersCount="3" PageChanged="@OnPageChangedAsync" />

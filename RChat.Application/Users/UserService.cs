@@ -1,32 +1,56 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using RChat.Application.Contracts.Common;
 using RChat.Application.Contracts.Users;
+using RChat.Domain;
+using RChat.Domain.Repsonses;
 using RChat.Domain.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RChat.Domain.Users.DTO;
+using System.Linq.Dynamic.Core;
+
 
 namespace RChat.Application.Users
 {
     public class UserService : IUserService
     {
         private UserManager<User> _userManager;
-        public UserService(UserManager<User> userManager)
+        private IQueryBuilder<User> _userQueryBuilder;
+        public UserService(UserManager<User> userManager, IQueryBuilder<User> userQueryBuilder)
         {
-            _userManager = userManager; 
+            _userManager = userManager;
+            _userQueryBuilder = userQueryBuilder;
         }
-        public async Task<bool> ChangeUserPasswordAsync(string userEmail, string currentPassword, string newPassword)
+        public async Task<GridListDto<UserInformationDto>> GetUsersInformationListAsync(SearchArguments searchArguments)
         {
-            var user = await _userManager.FindByEmailAsync(userEmail);
+            var users = _userManager.Users.AsQueryable();
+            if (searchArguments.SearchRequired)
+            {
+                var properties = typeof(UserInformationDto).GetProperties().Select(p => p.Name).ToArray();
+                users = users
+                    .Where(_userQueryBuilder.SearchQuery<User>(searchArguments.Value!, properties));
+            }
 
-            if (user == null)
-                return false;
+            if (searchArguments.OrderByRequired)
+                users = _userQueryBuilder
+                    .OrderByQuery(users, searchArguments.OrderBy!, searchArguments.OrderByType!);
 
-            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            var totalCount = users.Count();
 
-            return result.Succeeded;
+            var userInformation =
+                users
+                .Skip(searchArguments.Skip)
+                .Take(searchArguments.Take)
+                .Select(u => new UserInformationDto()
+                {
+                    Email = u.Email!,
+                    UserName = u.UserName!,
+                    PhoneNumber = u.PhoneNumber
+                }).ToList();
 
+            return await Task.FromResult(new GridListDto<UserInformationDto>()
+            {
+                SelectedEntities = userInformation,
+                TotalCount = totalCount,
+            });
         }
     }
 }

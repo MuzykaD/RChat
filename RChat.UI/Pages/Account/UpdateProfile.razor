@@ -1,0 +1,36 @@
+﻿@page "/update-profile"
+@using RChat.UI.Pages.Account;
+@inherits UpdateProfileComponent;
+@attribute [Authorize]
+<h3>Update profile information</h3>
+
+<EditForm class="form-control" Model="@ViewModel" OnValidSubmit="async () => await SubmitFormAsync()">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    @if (ShowMessage)
+    {
+        <h5 class="text-danger">@Message</h5>
+        <hr>
+    }
+    <div>
+        <label class="form-label" for="Email">Email: </label>
+        <InputText class="input-group-text" type="email" id="Email" @bind-Value="ViewModel.Email" />
+    </div>
+    <br>
+    <div>
+        <label class="form-label" for="UserName">UserName: </label>
+        <InputText  class="input-group-text" id="UserName" type="text" @bind-Value="ViewModel.UserName" />
+    </div>
+    <br>
+    <div>
+        <label class="form-label" for="Phone">Phone: </label>
+        <InputText  class="input-group-text" id="Phone" type="tel" @bind-Value="ViewModel.PhoneNumber" />
+    </div>
+    <br>
+    <div>
+        <button class="btn btn-primary" type="submit">Submit</button> |
+        <a href="change-password" class="btn btn-primary">Change password</a> |
+        <a href="profile" class="btn btn-primary">Back</a>
+    </div>
+</EditForm>
+
