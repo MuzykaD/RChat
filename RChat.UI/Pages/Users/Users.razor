@@ -5,10 +5,10 @@
 @attribute [Authorize]
 <h3>RChat Users!</h3>
 
-<RadzenTextBox Placeholder="Search" @bind-Value=@SearchValue TValue="string" Change="async () => await OnSearchChangeAsync()" />
-<RadzenDropDown Placeholder="Sort Column" Disabled="@IsSortingDisabled" @bind-Value=@SortFieldValue TValue="string" Data="@SortingFieldDropDown" Change="async () => await OnSortChangeAsync()" />
-<RadzenDropDown Placeholder="Sort Type" Disabled="@IsSortingDisabled" @bind-Value=@SortTypeValue TValue="string" Data="@SortingTypeDropDown" Change="async () => await OnSortChangeAsync()" />
-<RadzenSwitch @bind-Value=@IsSortingDisabled Change=@OnSwitch/>
+<RadzenTextBox Placeholder="Search" @bind-Value=@Value TValue="string" Change="async () => await OnSearchChangeAsync()" />
+<RadzenDropDown Placeholder="Sort Column" Disabled="@IsSortingDisabled" @bind-Value=@OrderBy TValue="string" Data="@SortingFieldDropDown" Change="async () => await OnSortChangeAsync()" />
+<RadzenDropDown Placeholder="Sort Type" Disabled="@IsSortingDisabled" @bind-Value=@OrderByType TValue="string" Data="@SortingTypeDropDown" Change="async () => await OnSortChangeAsync()" />
+Sorting disabled:<RadzenSwitch @bind-Value=@IsSortingDisabled Change=@OnSortSwitchAsync/>
 <RadzenDataGrid Data="@EntityList" TItem="UserInformationViewModel">
     <EmptyTemplate>
         <p style="color: lightgrey; font-size: 24px; text-align: center; margin: 2rem;">No records to display.</p>
@@ -23,4 +23,4 @@
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
-<RadzenPager HorizontalAlign="HorizontalAlign.Right" Count="@Count" PageSize="@PageSize" PageNumbersCount="3" PageChanged="@PageChanged" />
+<RadzenPager HorizontalAlign="HorizontalAlign.Right" Count="@Count" PageSize="@Size" PageNumbersCount="3" PageChanged="@OnPageChangedAsync" />

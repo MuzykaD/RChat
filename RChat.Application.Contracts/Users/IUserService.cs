@@ -1,4 +1,5 @@
-﻿using RChat.Domain.Repsonses;
+﻿using RChat.Domain;
+using RChat.Domain.Repsonses;
 using RChat.Domain.Users;
 using RChat.Domain.Users.DTO;
 using System;
@@ -11,6 +12,6 @@ namespace RChat.Application.Contracts.Users
 {
     public interface IUserService
     {
-        Task<GridListDto<UserInformationDto>> GetUsersInformationListAsync(string? value,int skip = 0, int takeCount = 5, string? orderBy = null, string? orderByType = null);
+        Task<GridListDto<UserInformationDto>> GetUsersInformationListAsync(SearchArguments searchArguments);
     }
 }

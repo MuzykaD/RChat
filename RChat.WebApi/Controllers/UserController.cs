@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RChat.Application.Contracts.Users;
+using RChat.Domain;
 using RChat.Domain.Repsonses;
 namespace RChat.WebApi.Controllers
 {
@@ -15,8 +16,8 @@ namespace RChat.WebApi.Controllers
             _userService = userService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetUsersInformation([FromQuery] int skip, int take, string? value, string? orderBy, string? orderByType)
-                => Ok(await _userService.GetUsersInformationListAsync(value, skip, take, orderBy, orderByType));
+        public async Task<IActionResult> GetUsersInformation([FromQuery] int page, int size, string? value, string? orderBy, string? orderByType)
+                => Ok(await _userService.GetUsersInformationListAsync(new SearchArguments(value, page*size, size, orderBy, orderByType)));
 
     }
 }

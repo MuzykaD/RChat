@@ -17,13 +17,13 @@ namespace RChat.UI.Services.UserService
             _httpClientPwa = httpClientPwa;
         }
 
-        public async Task<ApiRequestResult<GridListDto<UserInformationViewModel>>> GetUsersListAsync(int take, int skip = 0, string? searchValue = null, string? orderBy = null, string? orderByType = null)
+        public async Task<ApiRequestResult<GridListDto<UserInformationViewModel>>> GetUsersListAsync(int page, int size, string? value = null, string? orderBy = null, string? orderByType = null)
         {
             return await _httpClientPwa
                 .SendGetRequestAsync<GridListDto<UserInformationViewModel>>
                 (
                 RChatApiRoutes.Users +
-                HttpQueryBuilder.BuildGridListQuery(skip, take, searchValue, orderBy, orderByType)
+                HttpQueryBuilder.BuildGridListQuery(skip, take, searchValue!, orderBy, orderByType)
                 );
         }
     }

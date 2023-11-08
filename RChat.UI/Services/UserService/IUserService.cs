@@ -7,6 +7,6 @@ namespace RChat.UI.Services.UserService
 {
     public interface IUserService
     {
-        Task<ApiRequestResult<GridListDto<UserInformationViewModel>>> GetUsersListAsync(int take, int skip = 0, string? searchValue = null, string? orderBy = null, string? orderByType = null);
+        Task<ApiRequestResult<GridListDto<UserInformationViewModel>>> GetUsersListAsync( int page, int size, string? value = null, string? orderBy = null, string? orderByType = null);
     }
 }

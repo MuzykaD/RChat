@@ -12,7 +12,7 @@ namespace RChat.Application.Common
         public Expression<Func<TEntity, bool>> SearchQuery<TEntity>(string searchValues, params string[] namesOfProperties)
         {        
             var parameter = Expression.Parameter(typeof(TEntity), "x");
-
+            
             Expression expression = null;
             foreach (var name in namesOfProperties)
             {
