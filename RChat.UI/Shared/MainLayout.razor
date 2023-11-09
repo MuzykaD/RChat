@@ -1,15 +1,15 @@
 ﻿@using RChat.UI.Pages
 @inherits LayoutComponentBase
-
+<RadzenNotification  />
 <div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
     <main>
+        
         <div class="top-row px-4">
-            <NavBar></NavBar>
+            <NavBar></NavBar>           
         </div>
-        <RadzenNotification />
         <article class="content px-4">
             @Body
         </article>

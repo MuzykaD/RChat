@@ -6,12 +6,7 @@
 
 <EditForm class="form-control" Model="@ViewModel" OnValidSubmit="async () => await SubmitFormAsync()">
     <DataAnnotationsValidator />
-    <ValidationSummary />
-    @if (ShowMessage)
-    {
-        <h5 class="text-danger">@Message</h5>
-        <hr>
-    }
+    <ValidationSummary />    
     <div>
         <label class="form-label" for="Email">Email: </label>
         <InputText class="input-group-text" type="email" id="Email" @bind-Value="ViewModel.Email" />

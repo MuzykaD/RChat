@@ -13,6 +13,8 @@ namespace RChat.UI.Pages.Authentication
         public IBlazorAuthService AuthService { get; set; }
         [Inject]
         NotificationService NotificationService { get; set; }
+        [Inject]
+        NavigationManager NavigationManager { get; set; }
         public bool ShowMessage { get; set; }
         public string Message { get; set; }
         protected bool _successfullyRegistered;
@@ -21,14 +23,16 @@ namespace RChat.UI.Pages.Authentication
         {
             var response = await AuthService.RegisterUserAsync(ViewModel);
             Message = response.Result.Message;
-            ShowMessage = true;
-            _successfullyRegistered = response.IsSuccessStatusCode;
-
+            
             NotificationService.Notify(new()
             {
-                Severity = NotificationSeverity.Info,
-                Summary = Message
+                Severity = response.IsSuccessStatusCode ? NotificationSeverity.Info : NotificationSeverity.Error,
+                Summary = Message,
+                Duration = 4000,              
             });
+            if (response.IsSuccessStatusCode)
+                NavigationManager.NavigateTo("/login");
+           
         }
     }
 }

@@ -26,7 +26,11 @@ namespace RChat.UI.Services.AccountService
 
         public async Task<ApiRequestResult<UserTokenResponse>> UpdatePersonalInformationAsync(UserInformationViewModel personalPageViewModel)
         {
-            return await _httpClientPwa.SendPutRequestAsync<UserInformationViewModel, UserTokenResponse>(RChatApiRoutes.UpdateInfo, personalPageViewModel);
+            var result = await _httpClientPwa.SendPutRequestAsync<UserInformationViewModel, UserTokenResponse>(RChatApiRoutes.UpdateInfo, personalPageViewModel);
+            if (result.IsSuccessStatusCode)
+                _httpClientPwa.TryAddJwtToken(result.Result.Token);
+            return result;
+
         }
     }
 }
