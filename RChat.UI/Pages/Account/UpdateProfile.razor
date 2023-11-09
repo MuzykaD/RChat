@@ -1,31 +1,69 @@
 ﻿@page "/update-profile"
-@using RChat.UI.Pages.Account;
-@inherits UpdateProfileComponent;
+@using RChat.UI.Pages.Account
+@inherits UpdateProfileComponent
 @attribute [Authorize]
-<h3>Update profile information</h3>
 
-<EditForm class="form-control" Model="@ViewModel" OnValidSubmit="async () => await SubmitFormAsync()">
-    <DataAnnotationsValidator />
-    <ValidationSummary />    
-    <div>
-        <label class="form-label" for="Email">Email: </label>
-        <InputText class="input-group-text" type="email" id="Email" @bind-Value="ViewModel.Email" />
-    </div>
-    <br>
-    <div>
-        <label class="form-label" for="UserName">UserName: </label>
-        <InputText  class="input-group-text" id="UserName" type="text" @bind-Value="ViewModel.UserName" />
-    </div>
-    <br>
-    <div>
-        <label class="form-label" for="Phone">Phone: </label>
-        <InputText  class="input-group-text" id="Phone" type="tel" @bind-Value="ViewModel.PhoneNumber" />
-    </div>
-    <br>
-    <div>
-        <button class="btn btn-primary" type="submit">Submit</button> |
-        <a href="change-password" class="btn btn-primary">Change password</a> |
-        <a href="profile" class="btn btn-primary">Back</a>
-    </div>
-</EditForm>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">Update Profile Information</h3>
 
+                    <EditForm Model="@ViewModel" OnValidSubmit="async () => await SubmitFormAsync()">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label class="form-label" for="Email">Email:</label>
+                            <InputText class="form-control" type="email" id="Email" @bind-Value="ViewModel.Email" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="UserName">UserName:</label>
+                            <InputText class="form-control" id="UserName" type="text" @bind-Value="ViewModel.UserName" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="Phone">Phone:</label>
+                            <InputText class="form-control" id="Phone" type="tel" @bind-Value="ViewModel.PhoneNumber" />
+                        </div>
+
+                        <div class="text-center">
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                            <span class="mx-2">|</span>
+                            <a href="change-password" class="btn btn-primary">Change Password</a>
+                            <span class="mx-2">|</span>
+                            <a href="profile" class="btn btn-primary">Back</a>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container {
+        margin-top: 50px;
+    }
+
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+        color: #007bff;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+</style>

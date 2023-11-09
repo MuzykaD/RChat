@@ -1,27 +1,48 @@
 ﻿@page "/login"
-@inherits LoginFormComponent;
-<h3>Login</h3>
+@inherits LoginFormComponent
+<h3 class="text-center mb-4">Login</h3>
 
-<EditForm class="form-control" Model="@ViewModel" OnValidSubmit="async () => await SubmitFormAsync()">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    @if(ShowMessage)
-    {
-       <h5 class="text-danger">@Message</h5>
-       <hr>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <EditForm Model="@ViewModel" OnValidSubmit="async () => await SubmitFormAsync()">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-3">
+                    <label class="form-label" for="Email">Email:</label>
+                    <InputText class="form-control" type="email" id="Email" @bind-Value="ViewModel.Email" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="Password">Password:</label>
+                    <InputText class="form-control" id="Password" type="password" @bind-Value="ViewModel.Password" />
+                </div>
+
+                <div class="text-center">
+                    <button class="btn btn-primary" type="submit">Login</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 400px;
     }
-    <div>
-        <label class="form-label" for="Email">Email: </label>
-        <InputText class="input-group-text" type="email" id="Email" @bind-Value="ViewModel.Email"/>
-    </div>
-    <br>
-    <div>
-        <label class="form-label" for="Password">Password: </label>
-        <InputText class="input-group-text" id="Password" type="password" @bind-Value="ViewModel.Password"/>
-    </div>
-    <br>
-    <div>
-        <button class="btn-primary" type="submit">Submit</button>
-    </div>
-</EditForm>
 
+    .form-label {
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+</style>

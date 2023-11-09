@@ -1,41 +1,60 @@
 ﻿@page "/register"
 @inherits RegisterComponent
-<h3>Register</h3>
+<h3 class="text-center mb-4">Register</h3>
 
-<EditForm class="form-control" Model="@ViewModel" OnValidSubmit="async() => await SubmitFormAsync()">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    @if (ShowMessage)
-    {
-        <div>
-            <p>@Message</p>
-        </div>
-    }
-    @if (!_successfullyRegistered)
-    {
-        <div>
-            <label for="Email">Email: </label>
-            <InputText class="input-group-text" type="email" id="Email" @bind-Value="ViewModel.Email" />
-        </div>
-        <br>
-        <div>
-            <label for="UserName">UserName: </label>
-            <InputText class="input-group-text" id="UserName" @bind-Value="ViewModel.Username" />
-        </div>
-        <br>
-        <div>
-            <label for="Password">Password: </label>
-            <InputText class="input-group-text" id="Password" type="password" @bind-Value="ViewModel.Password" />
-        </div>
-        <br>
-        <div>
-            <label for="ConfirmPassword">Confirm Password: </label>
-            <InputText class="input-group-text" id="ComfirmPassword" type="password" @bind-Value="ViewModel.ConfirmPassword" />
-        </div>
-        <br>
-        <div>
-            <button class="btn-primary" type="submit">Submit</button>
-        </div>
-    }
-</EditForm>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <EditForm Model="@ViewModel" OnValidSubmit="async () => await SubmitFormAsync()">
+                <DataAnnotationsValidator />
+                <div class="mb-3">
+                    <label class="form-label" for="Email">Email:</label>
+                    <InputText class="form-control" type="email" id="Email" @bind-Value="ViewModel.Email" />
+                    <ValidationMessage For="@(() =>ViewModel.Email)"></ValidationMessage>
+                </div>
 
+                <div class="mb-3">
+                    <label class="form-label" for="UserName">UserName:</label>
+                    <InputText class="form-control" id="UserName" @bind-Value="ViewModel.Username" />
+                    <ValidationMessage For="@(() =>ViewModel.Username)"></ValidationMessage>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="Password">Password:</label>
+                    <InputText class="form-control" id="Password" type="password" @bind-Value="ViewModel.Password" />
+                    <ValidationMessage For="@(() =>ViewModel.Password)"></ValidationMessage>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="ConfirmPassword">Confirm Password:</label>
+                    <InputText class="form-control" id="ConfirmPassword" type="password" @bind-Value="ViewModel.ConfirmPassword" />
+                    <ValidationMessage For="@(() =>ViewModel.ConfirmPassword)"></ValidationMessage>
+                </div>
+
+                <div class="text-center">
+                    <button class="btn btn-primary" type="submit">Register</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 400px;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+</style>
