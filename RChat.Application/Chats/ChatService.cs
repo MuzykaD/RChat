@@ -24,7 +24,7 @@ namespace RChat.Application.Chats
             _chatQueryBuilder = queryBuilder;
             _unitOfWork = unitOfWork;
         }
-
+        //TODO order by DTO fields
         public async Task<GridListDto<ChatInformationDto>> GetChatsInformationListAsync(SearchArguments searchArguments)
         {
             var chatRepository = await _unitOfWork.GetRepositoryAsync<Chat>();
@@ -43,6 +43,7 @@ namespace RChat.Application.Chats
                 .Select(c =>
                   new ChatInformationDto()
                   {
+                      Id = c.Id,
                       Name = c.Name,
                       CreatorId = c.CreatorId,
                       MessagesCount = c.Messages.Count(),
