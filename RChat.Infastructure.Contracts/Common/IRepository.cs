@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace RChat.Infrastructure.Contracts.Common
 {
-    public interface IRepository<T>
+    public interface IRepository<TEntity, TId>
     {
-        Task<T?> GetByIdAsync(int id);
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<IQueryable<T>> GetAllAsQueryableAsync();
-        Task CreateAsync(T entity);
-        Task UpdateAsync(T entity);
-        Task DeleteAsync(int id);
+        Task<TEntity?> GetByIdAsync(TId id);
+        Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<IQueryable<TEntity>> GetAllAsQueryableAsync();
+        Task CreateAsync(TEntity entity);
+        void Update(TEntity entity);
+        Task DeleteAsync(TId id);
     }
 }

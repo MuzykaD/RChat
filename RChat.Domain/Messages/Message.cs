@@ -1,10 +1,11 @@
 ﻿using RChat.Domain.Attachments;
 using RChat.Domain.Chats;
+using RChat.Domain.Common;
 using RChat.Domain.Users;
 
 namespace RChat.Domain.Messages
 {
-    public class Message
+    public class Message : IDbEntity<int>
     {
         public int Id { get; set; }
         public string Content { get; set; }

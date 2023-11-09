@@ -44,7 +44,7 @@ namespace RChat.UI.Pages.Chats
             if (Size == 0)
                 Size = 5;
             await UpdateEntityList();
-            SortingFieldDropDown = new List<string>() { "Id", "Name", "CreatorId" };
+            SortingFieldDropDown = typeof(ChatInformationViewModel).GetProperties().Select(p => p.Name);
 
             SortingTypeDropDown = new List<string>()
                 {

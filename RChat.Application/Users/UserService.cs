@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using RChat.Application.Common;
 using RChat.Application.Contracts.Common;
 using RChat.Application.Contracts.Users;
 using RChat.Domain;
@@ -13,20 +14,18 @@ namespace RChat.Application.Users
     public class UserService : IUserService
     {
         private UserManager<User> _userManager;
-        private IQueryBuilder<User> _userQueryBuilder;
-        public UserService(UserManager<User> userManager, IQueryBuilder<User> userQueryBuilder)
+        public UserService(UserManager<User> userManager)
         {
             _userManager = userManager;
-            _userQueryBuilder = userQueryBuilder;
         }
         public async Task<GridListDto<UserInformationDto>> GetUsersInformationListAsync(SearchArguments searchArguments)
         {
             var users = _userManager.Users.AsQueryable();
             if (searchArguments.SearchRequired)
-                users = _userQueryBuilder.BuildSearchQuery(users, searchArguments.Value!);
+                users = QueryBuilder<User>.BuildSearchQuery(users, searchArguments.Value!);
 
             if (searchArguments.OrderByRequired)
-                users = _userQueryBuilder.BuildOrderByQuery(users, searchArguments.OrderBy!, searchArguments.OrderByType!);
+                users = QueryBuilder<User>.BuildOrderByQuery(users, searchArguments.OrderBy!, searchArguments.OrderByType!);
 
             var totalCount = users.Count();
 

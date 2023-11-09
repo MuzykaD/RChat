@@ -1,4 +1,5 @@
-﻿using RChat.Application.Contracts.Chats;
+﻿using RChat.Application.Common;
+using RChat.Application.Contracts.Chats;
 using RChat.Application.Contracts.Common;
 using RChat.Domain;
 using RChat.Domain.Chats;
@@ -16,43 +17,35 @@ namespace RChat.Application.Chats
 {
     public class ChatService : IChatService
     {
-        private IQueryBuilder<Chat> _chatQueryBuilder;
         private IUnitOfWork _unitOfWork;
 
-        public ChatService(IQueryBuilder<Chat> queryBuilder, IUnitOfWork unitOfWork)
+        public ChatService(IUnitOfWork unitOfWork)
         {
-            _chatQueryBuilder = queryBuilder;
             _unitOfWork = unitOfWork;
         }
         //TODO order by DTO fields
         public async Task<GridListDto<ChatInformationDto>> GetChatsInformationListAsync(SearchArguments searchArguments)
         {
-            var chatRepository = await _unitOfWork.GetRepositoryAsync<Chat>();
+            var chatRepository = _unitOfWork.GetRepository<Chat, int>();
             var query = await chatRepository.GetAllAsQueryableAsync();
-            if(searchArguments.SearchRequired)           
-                query = _chatQueryBuilder.BuildSearchQuery(query ,searchArguments.Value!);
-
-            if(searchArguments.OrderByRequired)
-                query = _chatQueryBuilder.BuildOrderByQuery(query, searchArguments.OrderBy!, searchArguments.OrderByType!);
-
-            var totalCount = query.Count();
-            var chatInfo = 
-                query
-                .Skip(searchArguments.Skip)
-                .Take(searchArguments.Take)
-                .Select(c =>
-                  new ChatInformationDto()
-                  {
-                      Id = c.Id,
-                      Name = c.Name,
-                      CreatorId = c.CreatorId,
-                      MessagesCount = c.Messages.Count(),
-                      UsersCount = c.Users.Count()
-                  }
-            ).ToList();
+            var infoQuery = query.Select(c =>
+            new ChatInformationDto()
+            {
+                Id = c.Id,
+                Name = c.Name,
+                CreatorName = c.Creator == null ? null : c.Creator.UserName,
+                MessagesCount = c.Messages.Count(),
+                UsersCount = c.Users.Count()
+            });
+            if(searchArguments.SearchRequired)
+                infoQuery = QueryBuilder<ChatInformationDto>.BuildSearchQuery(infoQuery, searchArguments.Value!);
+            var totalCount = infoQuery.Count();
+            if (searchArguments.OrderByRequired)
+                infoQuery = QueryBuilder<ChatInformationDto>.BuildOrderByQuery(infoQuery, searchArguments.OrderBy!, searchArguments.OrderByType!);
+                      
             return new GridListDto<ChatInformationDto>()
             {
-                SelectedEntities = chatInfo,
+                SelectedEntities = infoQuery.Skip(searchArguments.Skip).Take(searchArguments.Take).ToList(),
                 TotalCount = totalCount
             };
         }

@@ -1,4 +1,5 @@
-﻿using RChat.Domain.Messages;
+﻿using RChat.Domain.Common;
+using RChat.Domain.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RChat.Domain.Attachments
 {
-    public class Attachment
+    public class Attachment : IDbEntity<int>
     {
         public int Id { get; set; }
         public int MessageId { get; set; }

@@ -10,7 +10,7 @@ namespace RChat.Domain.Chats.Dto
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int? CreatorId{ get; set; }
+        public string? CreatorName{ get; set; }
         public int UsersCount { get; set; }
         public int MessagesCount { get; set; }
     }

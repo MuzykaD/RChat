@@ -1,4 +1,5 @@
-﻿using RChat.Application.Contracts.Common;
+﻿using RChat.Application.Common;
+using RChat.Application.Contracts.Common;
 using RChat.Application.Contracts.Messages;
 using RChat.Domain;
 using RChat.Domain.Chats;
@@ -19,23 +20,22 @@ namespace RChat.Application.Messages
 
     public class MessageService : IMessageService
     {
-        private IQueryBuilder<Message> _messageQueryBuilder;
+        //private IQueryBuilder<Message> _messageQueryBuilder;
         private IUnitOfWork _unitOfWork;
 
-        public MessageService(IQueryBuilder<Message> queryBuilder, IUnitOfWork unitOfWork)
-        {
-            _messageQueryBuilder = queryBuilder;
+        public MessageService(IUnitOfWork unitOfWork)
+        {           
             _unitOfWork = unitOfWork;
         }
         public async Task<GridListDto<MessageInformationDto>> GetMessagesInformationListAsync(SearchArguments searchArguments)
         {
-            var messageRepository = await _unitOfWork.GetRepositoryAsync<Message>();
+            var messageRepository =  _unitOfWork.GetRepository<Message, int>();
             var query = await messageRepository.GetAllAsQueryableAsync();
             if (searchArguments.SearchRequired)
-                query = _messageQueryBuilder.BuildSearchQuery(query, searchArguments.Value!);
+                query = QueryBuilder<Message>.BuildSearchQuery(query, searchArguments.Value!);
 
             if (searchArguments.OrderByRequired)
-                query = _messageQueryBuilder.BuildOrderByQuery(query, searchArguments.OrderBy!, searchArguments.OrderByType!);
+                query = QueryBuilder<Message>.BuildOrderByQuery(query, searchArguments.OrderBy!, searchArguments.OrderByType!);
 
             var totalCount = query.Count();
             var chatInfo =

@@ -68,9 +68,7 @@ namespace RChat.WebApi
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<IMessageService, MessageService>();
-            builder.Services.AddScoped<IQueryBuilder<User>, QueryBuilder<User>>();
-            builder.Services.AddScoped<IQueryBuilder<Chat>, QueryBuilder<Chat>>();
-            builder.Services.AddScoped<IQueryBuilder<Message>, QueryBuilder<Message>>();
+           
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

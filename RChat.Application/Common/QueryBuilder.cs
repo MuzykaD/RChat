@@ -7,14 +7,14 @@ using System.Reflection;
 
 namespace RChat.Application.Common
 {
-    public class QueryBuilder<TEntity> : IQueryBuilder<TEntity>
+    public static class QueryBuilder<TEntity>
     {
-        public Type CurrentType => typeof(TEntity);
+        
        
-        public IQueryable<TEntity> BuildSearchQuery(IQueryable<TEntity> source, string searchValues)
+        public static IQueryable<TEntity> BuildSearchQuery(IQueryable<TEntity> source, string searchValues)
         {
-            var properties = GetTypeStringProperties();
-            var parameter = Expression.Parameter(CurrentType, "x");
+            var properties = GetTypeStringProperties(typeof(TEntity));
+            var parameter = Expression.Parameter(typeof(TEntity), "x");
             Expression expression = null;
             foreach (var name in properties)
             {
@@ -34,7 +34,7 @@ namespace RChat.Application.Common
             return source.Where(Expression.Lambda<Func<TEntity, bool>>(expression!, parameter));
         }
 
-        public IQueryable<TEntity> BuildOrderByQuery(IQueryable<TEntity> source, string orderByValue, string orderByType)
+        public static IQueryable<TEntity> BuildOrderByQuery(IQueryable<TEntity> source, string orderByValue, string orderByType)
         {
             string command = orderByType.Equals("Descending", StringComparison.OrdinalIgnoreCase) ? "OrderByDescending" : "OrderBy";
             var type = typeof(TEntity);
@@ -49,9 +49,9 @@ namespace RChat.Application.Common
             return source.Provider.CreateQuery<TEntity>(resultExpression);
         }
 
-        private string[] GetTypeStringProperties()
+        private static string[] GetTypeStringProperties(Type type)
         {
-            return CurrentType.GetProperties()
+            return type.GetProperties()
                 .Where(p => 
                        p.PropertyType == typeof(string) 
                        && !ForbiddenPatterns.Columns
