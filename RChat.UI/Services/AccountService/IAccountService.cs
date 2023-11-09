@@ -1,7 +1,8 @@
 ﻿using RChat.Domain.Repsonses;
 using RChat.Domain.Users.DTO;
 using RChat.UI.Common;
-using RChat.UI.ViewModels;
+using RChat.UI.ViewModels.InformationViewModels;
+using RChat.UI.ViewModels.ProfileViewModels;
 
 namespace RChat.UI.Services.AccountService
 {

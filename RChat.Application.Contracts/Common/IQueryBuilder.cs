@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace RChat.Application.Contracts.Common
 {
-    public interface IQueryBuilder<T>
+    public interface IQueryBuilder<TEntity>
     {
-        Expression<Func<T, bool>> SearchQuery<T>(string searchValues, params string[] namesOfProperties);
+        public Type CurrentType { get; }
+        IQueryable<TEntity> BuildSearchQuery(IQueryable<TEntity> source, string searchValues);
 
-        IQueryable<TEntity> OrderByQuery<TEntity>(IQueryable<TEntity> source, string orderByValue, string orderByType);
+        IQueryable<TEntity> BuildOrderByQuery(IQueryable<TEntity> source, string orderByValue, string orderByType);
     }
 }

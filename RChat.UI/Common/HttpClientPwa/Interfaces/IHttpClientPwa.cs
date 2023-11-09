@@ -7,7 +7,5 @@
         public Task<ApiRequestResult<TResult>> SendGetRequestAsync< TResult>(string url);
         void TryAddJwtToken(string token);
         void TryDeleteJwtToken();
-
-
     }
 }

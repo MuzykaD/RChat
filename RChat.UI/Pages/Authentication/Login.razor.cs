@@ -7,7 +7,7 @@ using RChat.UI.Common.ComponentHelpers;
 using RChat.UI.Common.HttpClientPwa;
 using RChat.UI.Common.HttpClientPwa.Interfaces;
 using RChat.UI.Services.BlazorAuthService;
-using RChat.UI.ViewModels;
+using RChat.UI.ViewModels.AuthenticationViewModels;
 
 namespace RChat.UI.Pages.Authentication
 {
@@ -27,7 +27,7 @@ namespace RChat.UI.Pages.Authentication
             var response = await AuthService.LoginUserAsync(ViewModel);
             if (response.IsSuccessStatusCode && response.Result.IsSucceed)
             {
-                NotificationService.Notify(new() { Style = "position: absolute; left: -1000px;", Severity = NotificationSeverity.Success, Summary = @"Welcome!", Duration = 3000 });
+                NotificationService.Notify(new() { Severity = NotificationSeverity.Success, Summary = @"Welcome back!", Duration = 3000 });
                 NavigationManager.NavigateTo("/");
             }
 
@@ -36,7 +36,7 @@ namespace RChat.UI.Pages.Authentication
                 Message = response.Message;
                 ShowMessage = true;
                 NotificationService.Notify(new() {
-                    Style = "position: absolute; left: -1000px;", Severity = NotificationSeverity.Error, Summary = $"{Message}!", Duration = 3000});
+                    Severity = NotificationSeverity.Error, Summary = $"Wrong credentials!", Duration = 3000});
             }
         }
 

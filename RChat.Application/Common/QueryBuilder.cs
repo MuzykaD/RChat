@@ -7,15 +7,18 @@ using System.Reflection;
 
 namespace RChat.Application.Common
 {
-    public class QueryBuilder<TEntity> : IQueryBuilder<TEntity>
+    public static class QueryBuilder<TEntity>
     {
-        public Expression<Func<TEntity, bool>> SearchQuery<TEntity>(string searchValues, params string[] namesOfProperties)
-        {        
+        
+       
+        public static IQueryable<TEntity> BuildSearchQuery(IQueryable<TEntity> source, string searchValues)
+        {
+            var properties = GetTypeStringProperties(typeof(TEntity));
             var parameter = Expression.Parameter(typeof(TEntity), "x");
-            
             Expression expression = null;
-            foreach (var name in namesOfProperties)
+            foreach (var name in properties)
             {
+
                 var property = Expression.Property(parameter, name);
                 var containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
                 var containsCall = Expression.Call(property, containsMethod, Expression.Constant(searchValues));
@@ -28,14 +31,16 @@ namespace RChat.Application.Common
                     expression = Expression.OrElse(expression, containsCall);
                 }
             }
-            return Expression.Lambda<Func<TEntity, bool>>(expression!, parameter);
+            return source.Where(Expression.Lambda<Func<TEntity, bool>>(expression!, parameter));
         }
 
-        public IQueryable<TEntity> OrderByQuery<TEntity>(IQueryable<TEntity> source, string orderByValue, string orderByType)
+        public static IQueryable<TEntity> BuildOrderByQuery(IQueryable<TEntity> source, string orderByValue, string orderByType)
         {
             string command = orderByType.Equals("Descending", StringComparison.OrdinalIgnoreCase) ? "OrderByDescending" : "OrderBy";
             var type = typeof(TEntity);
             var property = type.GetProperty(orderByValue);
+            if(property == null)
+                return source;
             var parameter = Expression.Parameter(type, "p");
             var propertyAccess = Expression.MakeMemberAccess(parameter, property);
             var orderByExpression = Expression.Lambda(propertyAccess, parameter);
@@ -44,6 +49,15 @@ namespace RChat.Application.Common
             return source.Provider.CreateQuery<TEntity>(resultExpression);
         }
 
-
+        private static string[] GetTypeStringProperties(Type type)
+        {
+            return type.GetProperties()
+                .Where(p => 
+                       p.PropertyType == typeof(string) 
+                       && !ForbiddenPatterns.Columns
+                       .Any(forbidden => p.Name.Contains(forbidden, StringComparison.OrdinalIgnoreCase)))
+                .Select(p => p.Name)
+                .ToArray();
+        }       
     }
 }

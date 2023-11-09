@@ -1,6 +1,5 @@
 ﻿using Blazored.LocalStorage;
 using RChat.UI.Common.HttpClientPwa.Interfaces;
-using System.Linq.Dynamic.Core.Tokenizer;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -60,9 +59,6 @@ namespace RChat.UI.Common.HttpClientPwa
 
         public async Task<ApiRequestResult<TResult>> SendGetRequestAsync<TResult>(string url)
         {
-
-            //await TryAddJwtToken(HttpClient);
-
             var apiResponse = await HttpClient.GetAsync(url);
 
             return (apiResponse.StatusCode.Equals(HttpStatusCode.Unauthorized)

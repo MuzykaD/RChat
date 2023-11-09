@@ -3,7 +3,8 @@ using RChat.Domain.Users.DTO;
 using RChat.UI.Common;
 using RChat.UI.Common.HttpClientPwa;
 using RChat.UI.Common.HttpClientPwa.Interfaces;
-using RChat.UI.ViewModels;
+using RChat.UI.ViewModels.InformationViewModels;
+using RChat.UI.ViewModels.ProfileViewModels;
 
 namespace RChat.UI.Services.AccountService
 {
@@ -26,7 +27,11 @@ namespace RChat.UI.Services.AccountService
 
         public async Task<ApiRequestResult<UserTokenResponse>> UpdatePersonalInformationAsync(UserInformationViewModel personalPageViewModel)
         {
-            return await _httpClientPwa.SendPutRequestAsync<UserInformationViewModel, UserTokenResponse>(RChatApiRoutes.UpdateInfo, personalPageViewModel);
+            var result = await _httpClientPwa.SendPutRequestAsync<UserInformationViewModel, UserTokenResponse>(RChatApiRoutes.UpdateInfo, personalPageViewModel);
+            if (result.IsSuccessStatusCode)
+                _httpClientPwa.TryAddJwtToken(result.Result.Token);
+            return result;
+
         }
     }
 }

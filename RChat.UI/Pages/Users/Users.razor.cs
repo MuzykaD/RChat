@@ -4,7 +4,7 @@ using RChat.Domain.Users;
 using RChat.UI.Common;
 using RChat.UI.Common.ComponentHelpers;
 using RChat.UI.Services.UserService;
-using RChat.UI.ViewModels;
+using RChat.UI.ViewModels.InformationViewModels;
 
 namespace RChat.UI.Pages.Users
 {
@@ -87,7 +87,7 @@ namespace RChat.UI.Pages.Users
 
         private async Task UpdateEntityList()
         {
-            var apiResponse = await UserService.GetUsersListAsync(Size, Page, Value, OrderBy, OrderByType);
+            var apiResponse = await UserService.GetInformationListAsync(Page, Size, Value, OrderBy, OrderByType);
             if (apiResponse.IsSuccessStatusCode)
             {
                 EntityList = apiResponse.Result.SelectedEntities!;

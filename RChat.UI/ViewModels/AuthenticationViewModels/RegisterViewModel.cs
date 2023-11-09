@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RChat.UI.Attributes;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace RChat.UI.ViewModels
+namespace RChat.UI.ViewModels.AuthenticationViewModels
 {
     public class RegisterViewModel
     {
@@ -11,6 +13,7 @@ namespace RChat.UI.ViewModels
         [Required]
         public string Username { get; set; }
         [Required]
+        [IdentityPassword]
         public string Password { get; set; }
         [Required]
         [Compare("Password")]

@@ -13,6 +13,8 @@ using RChat.UI.Services.BlazorAuthService;
 using RChat.UI.Services.AccountService;
 using RChat.UI.Services.UserService;
 using RChat.UI.Extensions;
+using RChat.UI.Services.ChatService;
+using RChat.UI.Services.MessageService;
 
 namespace RChat.UI
 {
@@ -33,6 +35,8 @@ namespace RChat.UI
             builder.Services.AddScoped<IBlazorAuthService, BlazorAuthService>();
             builder.Services.AddScoped<IAccountService, AccountService>(); 
             builder.Services.AddScoped<IUserService, UserService>(); 
+            builder.Services.AddScoped<IChatService, ChatService>(); 
+            builder.Services.AddScoped<IMessageService, MessageService>(); 
 
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddScoped<AuthenticationStateProvider, ChatAuthenticationProvider>();

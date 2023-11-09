@@ -1,4 +1,6 @@
 ﻿using RChat.UI.Common.JwtTokenParser.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq.Dynamic.Core.Tokenizer;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -6,6 +8,23 @@ namespace RChat.UI.Common.JwtTokenParser
 {
     public class JwtTokenParser : IJwtTokenParser
     {
+        public bool IsTokenValid(string jwtToken)
+        {
+            if(string.IsNullOrWhiteSpace(jwtToken))
+                return false;
+            JwtSecurityToken jwtSecurityToken;
+            try
+            {
+                jwtSecurityToken = new JwtSecurityToken(jwtToken);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return jwtSecurityToken.ValidTo > DateTime.UtcNow;
+        }
+
         public IEnumerable<Claim> ParseJwtToClaims(string jwtToken)
         {
             var payload = jwtToken.Split('.')[1];
