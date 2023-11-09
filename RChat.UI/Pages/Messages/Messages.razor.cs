@@ -3,7 +3,7 @@ using Radzen;
 using RChat.UI.Common;
 using RChat.UI.Common.ComponentHelpers;
 using RChat.UI.Services.MessageService;
-using RChat.UI.ViewModels;
+using RChat.UI.ViewModels.InformationViewModels;
 
 namespace RChat.UI.Pages.Messages
 {
@@ -91,7 +91,7 @@ namespace RChat.UI.Pages.Messages
 
         private async Task UpdateEntityList()
         {
-            var apiResponse = await MessageService.GetMessagesListAsync(Page, Size, Value, OrderBy, OrderByType);
+            var apiResponse = await MessageService.GetInformationListAsync(Page, Size, Value, OrderBy, OrderByType);
             if (apiResponse.IsSuccessStatusCode)
             {
                 EntityList = apiResponse.Result.SelectedEntities!;

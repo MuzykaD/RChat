@@ -1,6 +1,6 @@
 ﻿@page "/chats"
 
-@using RChat.UI.ViewModels;
+@using RChat.UI.ViewModels.InformationViewModels;
 @inherits ChatsListComponent
 @attribute [Authorize]
 <h3>RChat Chats!</h3>
@@ -18,8 +18,7 @@ Sorting disabled:
         <RadzenDataGridColumn Sortable="true" TItem="ChatInformationViewModel" Property="Id" Title="Chat Id"> </RadzenDataGridColumn>
         <RadzenDataGridColumn Sortable="true" TItem="ChatInformationViewModel" Property="Name" Title="Chat Name"> </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ChatInformationViewModel" Property="CreatorName" Title="Creator Name"> </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ChatInformationViewModel" Property="UsersCount" Title="Users Count"> </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ChatInformationViewModel" Property="MessagesCount" Title="Messages Count">
+        <RadzenDataGridColumn TItem="ChatInformationViewModel" Property="UsersCount" Title="Users Count"> 
             <FooterTemplate>
                 Found chats: <b>@Count</b>
             </FooterTemplate>

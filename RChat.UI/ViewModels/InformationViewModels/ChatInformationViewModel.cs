@@ -1,4 +1,4 @@
-﻿namespace RChat.UI.ViewModels
+﻿namespace RChat.UI.ViewModels.InformationViewModels
 {
     public class ChatInformationViewModel
     {
@@ -6,6 +6,5 @@
         public string Name { get; set; }
         public string? CreatorName { get; set; }
         public int UsersCount { get; set; }
-        public int MessagesCount { get; set; }
     }
 }

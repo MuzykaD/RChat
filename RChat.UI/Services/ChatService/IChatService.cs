@@ -1,11 +1,12 @@
 ﻿using RChat.Domain.Repsonses;
 using RChat.UI.Common;
-using RChat.UI.ViewModels;
+using RChat.UI.Services.Common;
+using RChat.UI.ViewModels.InformationViewModels;
 
 namespace RChat.UI.Services.ChatService
 {
-    public interface IChatService
+    public interface IChatService : IModelInformationList<ChatInformationViewModel>
     {
-        Task<ApiRequestResult<GridListDto<ChatInformationViewModel>>> GetChatsListAsync(int page, int size, string? value = null, string? orderBy = null, string? orderByType = null);
+        
     }
 }

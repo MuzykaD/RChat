@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace RChat.UI.ViewModels
+namespace RChat.UI.ViewModels.AuthenticationViewModels
 {
     public class RegisterViewModel
     {

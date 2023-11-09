@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace RChat.UI.ViewModels
+namespace RChat.UI.ViewModels.AuthenticationViewModels
 {
     public class LoginViewModel
     {

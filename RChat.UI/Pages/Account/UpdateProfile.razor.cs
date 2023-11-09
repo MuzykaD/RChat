@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Radzen;
 using RChat.UI.Common.ComponentHelpers;
 using RChat.UI.Services.AccountService;
-using RChat.UI.ViewModels;
+using RChat.UI.ViewModels.InformationViewModels;
 
 namespace RChat.UI.Pages.Account
 {

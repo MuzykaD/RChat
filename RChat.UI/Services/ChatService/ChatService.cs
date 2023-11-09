@@ -1,7 +1,7 @@
 ﻿using RChat.Domain.Repsonses;
 using RChat.UI.Common;
 using RChat.UI.Common.HttpClientPwa.Interfaces;
-using RChat.UI.ViewModels;
+using RChat.UI.ViewModels.InformationViewModels;
 
 namespace RChat.UI.Services.ChatService
 {
@@ -14,7 +14,7 @@ namespace RChat.UI.Services.ChatService
             _httpClientPwa = httpClientPwa;
         }
 
-        public async Task<ApiRequestResult<GridListDto<ChatInformationViewModel>>> GetChatsListAsync(int page, int size, string? value = null, string? orderBy = null, string? orderByType = null)
+        public async Task<ApiRequestResult<GridListDto<ChatInformationViewModel>>> GetInformationListAsync(int page, int size, string? value = null, string? orderBy = null, string? orderByType = null)
         {
             return await _httpClientPwa
               .SendGetRequestAsync<GridListDto<ChatInformationViewModel>>

@@ -7,7 +7,7 @@ using RChat.UI.Common.ComponentHelpers;
 using RChat.UI.Common.HttpClientPwa;
 using RChat.UI.Common.HttpClientPwa.Interfaces;
 using RChat.UI.Services.BlazorAuthService;
-using RChat.UI.ViewModels;
+using RChat.UI.ViewModels.AuthenticationViewModels;
 
 namespace RChat.UI.Pages.Authentication
 {

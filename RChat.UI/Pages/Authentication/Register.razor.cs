@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Radzen;
 using RChat.UI.Common.ComponentHelpers;
 using RChat.UI.Services.BlazorAuthService;
-using RChat.UI.ViewModels;
+using RChat.UI.ViewModels.AuthenticationViewModels;
 
 namespace RChat.UI.Pages.Authentication
 {

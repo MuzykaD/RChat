@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace RChat.UI.ViewModels
+namespace RChat.UI.ViewModels.ProfileViewModels
 {
     public class ChangePasswordViewModel
     {

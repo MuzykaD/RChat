@@ -22,21 +22,26 @@ namespace RChat.UI.Common.AuthenticationProvider
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var jwtToken = await _localStorageService.GetItemAsync<string>("auth-jwt-token");
-
-            var authState = string.IsNullOrWhiteSpace(jwtToken) ?
-                 new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())) :
-                 new AuthenticationState(new ClaimsPrincipal(
+            var isTokenValid = _jwtTokenParser.IsTokenValid(jwtToken);
+            AuthenticationState authState = null;
+            if (isTokenValid)
+            {
+                authState = new AuthenticationState(
+                    new ClaimsPrincipal(
                      new ClaimsIdentity(_jwtTokenParser.ParseJwtToClaims(jwtToken), "JwtAuth"
                      )));
-            if (string.IsNullOrWhiteSpace(jwtToken))
-                _httpClientPwa.TryDeleteJwtToken();
-            else
                 _httpClientPwa.TryAddJwtToken(jwtToken);
+            }
+            else
+            {
+                authState = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+                await _localStorageService.RemoveItemAsync("auth-jwt-token");
+                _httpClientPwa.TryDeleteJwtToken();
 
+            }
             NotifyAuthenticationStateChanged(Task.FromResult(authState));
 
             return authState;
-
         }
 
         public void NotifyUserAuthentication(string token)

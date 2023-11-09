@@ -35,7 +35,6 @@ namespace RChat.Application.Chats
                 Id = c.Id,
                 Name = c.Name,
                 CreatorName = c.Creator == null ? null : c.Creator.UserName,
-                MessagesCount = c.Messages.Count(),
                 UsersCount = c.Users.Count()
             });
             if(searchArguments.SearchRequired)

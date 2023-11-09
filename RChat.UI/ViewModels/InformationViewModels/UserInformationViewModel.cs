@@ -1,4 +1,4 @@
-﻿namespace RChat.UI.ViewModels
+﻿namespace RChat.UI.ViewModels.InformationViewModels
 {
     public class UserInformationViewModel
     {
