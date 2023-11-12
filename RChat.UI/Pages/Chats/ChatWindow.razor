@@ -1,0 +1,22 @@
+﻿@page "/chats/private"
+@inherits ChatWindowComponent;
+@attribute [Authorize]
+
+
+<h3>@(string.IsNullOrWhiteSpace(Email) ? "Loading" : Email)</h3>
+<h3>@(ChatViewModel == null ? "Loading" : ChatViewModel.Name)</h3>
+@if (InitComplete)
+{
+    @foreach (var message in ChatViewModel.Messages)
+    {
+        <p>@message.SenderId</p>
+        <p>@message.Content</p>
+        <p>@message.SentAt</p>
+        <hr>
+    }           }
+
+<div class="input-container">
+    <RadzenTextBox Placeholder="Search" @bind-Value=@MessageValue TValue="string"> </RadzenTextBox>
+    <RadzenButton Click="async () => await SendMessageAsync()"></RadzenButton>
+</div>
+

@@ -1,7 +1,9 @@
-﻿using RChat.Domain.Repsonses;
+﻿using RChat.Domain.Messages.Dto;
+using RChat.Domain.Repsonses;
 using RChat.UI.Common;
 using RChat.UI.Common.HttpClientPwa.Interfaces;
 using RChat.UI.ViewModels.InformationViewModels;
+using RChat.UI.ViewModels.Message;
 
 namespace RChat.UI.Services.MessageService
 {
@@ -21,6 +23,16 @@ namespace RChat.UI.Services.MessageService
               RChatApiRoutes.Messages +
               HttpQueryBuilder.BuildGridListQuery(page, size, value!, orderBy, orderByType)
               );
+        }
+
+        public async Task SendMessageAsync(int chatId, string messageContent)
+        {
+            var message = new CreateMessageDto()
+            {
+                ChatId = chatId,
+                MessageValue = messageContent
+            };
+            await _httpClientPwa.SendPostRequestAsync<CreateMessageDto, bool>(RChatApiRoutes.Messages, message);
         }
     }
 }

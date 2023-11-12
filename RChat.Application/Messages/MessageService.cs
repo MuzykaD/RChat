@@ -24,13 +24,37 @@ namespace RChat.Application.Messages
         private IUnitOfWork _unitOfWork;
 
         public MessageService(IUnitOfWork unitOfWork)
-        {           
+        {
             _unitOfWork = unitOfWork;
         }
+
+        public async Task<bool> CreateMessageAsync(int senderId, CreateMessageDto message)
+        {
+            var messageRepository = _unitOfWork.GetRepository<Message, int>();
+            try
+            {
+               await messageRepository.CreateAsync(new()
+                {
+                    SenderId = senderId,
+                    Content = message.MessageValue,
+                    ChatId = message.ChatId,
+                    SentAt = DateTime.Now,
+                });
+                await _unitOfWork.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+
+        }
+
         public async Task<GridListDto<MessageInformationDto>> GetMessagesInformationListAsync(SearchArguments searchArguments)
         {
-            var messageRepository =  _unitOfWork.GetRepository<Message, int>();
-            var query = await messageRepository.GetAllAsQueryableAsync();
+            var messageRepository = _unitOfWork.GetRepository<Message, int>();
+            var query = messageRepository.GetAllAsQueryable();
             if (searchArguments.SearchRequired)
                 query = QueryBuilder<Message>.BuildSearchQuery(query, searchArguments.Value!);
 

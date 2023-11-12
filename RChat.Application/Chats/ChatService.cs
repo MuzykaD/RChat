@@ -28,8 +28,9 @@ namespace RChat.Application.Chats
         public async Task<GridListDto<ChatInformationDto>> GetChatsInformationListAsync(SearchArguments searchArguments)
         {
             var chatRepository = _unitOfWork.GetRepository<Chat, int>();
-            var query = await chatRepository.GetAllAsQueryableAsync();
-            var infoQuery = query.Select(c =>
+            var infoQuery = chatRepository
+                .GetAllAsQueryable()
+                .Select(c =>
             new ChatInformationDto()
             {
                 Id = c.Id,
@@ -48,6 +49,29 @@ namespace RChat.Application.Chats
                 SelectedEntities = infoQuery.Skip(searchArguments.Skip).Take(searchArguments.Take).ToList(),
                 TotalCount = totalCount
             };
+        }
+
+        public async Task<Chat?> GetPrivateChatByEmailsAsync(string firstUserEmail, string secondUserEmail)
+        {
+            var chatRepository = _unitOfWork.GetRepository<Chat, int>();
+            var requiredChat = chatRepository.GetAllIncluding(c => c.Users, c => c.Messages).FirstOrDefault(
+                c => !c.IsGroupChat &&
+                c.Users.All(u => u.Email == firstUserEmail || u.Email == secondUserEmail));
+            if(requiredChat == null)
+            {
+                var newChat = new Chat()
+                {
+                    IsGroupChat = false,
+                    Name = $"Private {secondUserEmail}",
+                    Users = _unitOfWork.GetRepository<User, int>()
+                    .GetAllAsQueryable()
+                    .Where(u => u.Email == firstUserEmail || u.Email == secondUserEmail).ToList()
+                };
+                await chatRepository.CreateAsync(newChat);
+                await _unitOfWork.SaveChangesAsync();
+                return newChat;
+            }
+            return requiredChat;
         }
     }
 }

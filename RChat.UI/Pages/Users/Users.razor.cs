@@ -94,5 +94,10 @@ namespace RChat.UI.Pages.Users
                 Count = apiResponse.Result.TotalCount;
             }
         }
+
+        protected void StartChat(string email)
+        {
+            NavigationManager.NavigateTo($"/chats/private?email={email}");
+        }
     }
 }

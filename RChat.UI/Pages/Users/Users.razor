@@ -16,7 +16,11 @@ Sorting disabled:<RadzenSwitch @bind-Value=@IsSortingDisabled Change=@OnSortSwit
     <Columns>
         <RadzenDataGridColumn Sortable="true" TItem="UserInformationViewModel" Property="Email" Title="Email"> </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="UserInformationViewModel" Property="UserName" Title="UserName"> </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="UserInformationViewModel" Property="PhoneNumber" Title="PhoneNumber">
+        <RadzenDataGridColumn TItem="UserInformationViewModel" Property="PhoneNumber" Title="PhoneNumber"></RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="UserInformationViewModel" Property="Email" Title="Chat links">
+            <Template Context="data">
+                <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click=@(() => StartChat(data.Email)) Text="Start chat!" />
+            </Template>
             <FooterTemplate>
                 Found users: <b>@Count</b>
             </FooterTemplate>

@@ -1,6 +1,7 @@
 ﻿using RChat.Domain.Repsonses;
 using RChat.UI.Common;
 using RChat.UI.Common.HttpClientPwa.Interfaces;
+using RChat.UI.ViewModels.Chat;
 using RChat.UI.ViewModels.InformationViewModels;
 
 namespace RChat.UI.Services.ChatService
@@ -22,6 +23,15 @@ namespace RChat.UI.Services.ChatService
               RChatApiRoutes.Chats +
               HttpQueryBuilder.BuildGridListQuery(page, size, value!, orderBy, orderByType)
               );
+        }
+
+        public async Task<ApiRequestResult<ChatViewModel>> GetPrivateChatByEmail(string email)
+        {
+            return await _httpClientPwa
+             .SendGetRequestAsync<ChatViewModel>
+             (
+             RChatApiRoutes.ChatsPrivate + $"/{email}"
+             );
         }
     }
 }
