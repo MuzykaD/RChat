@@ -25,14 +25,9 @@ namespace RChat.UI.Services.MessageService
               );
         }
 
-        public async Task SendMessageAsync(int chatId, string messageContent)
-        {
-            var message = new CreateMessageDto()
-            {
-                ChatId = chatId,
-                MessageValue = messageContent
-            };
-            await _httpClientPwa.SendPostRequestAsync<CreateMessageDto, bool>(RChatApiRoutes.Messages, message);
+        public async Task SendMessageAsync(MessageInformationDto messageDto)
+        {           
+            await _httpClientPwa.SendPostRequestAsync<MessageInformationDto, bool>(RChatApiRoutes.Messages, messageDto);
         }
     }
 }

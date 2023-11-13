@@ -1,5 +1,5 @@
 ﻿@using RChat.UI.Pages
-@inherits LayoutComponentBase
+@inherits MainLayoutComponent;
 <RadzenNotification  />
 <div class="page">
     <div class="sidebar">
@@ -11,7 +11,9 @@
             <NavBar></NavBar>           
         </div>
         <article class="content px-4">
+            <CascadingValue Value="_hubConnection">
             @Body
+            </CascadingValue>
         </article>
     </main>
 </div>

@@ -22,6 +22,7 @@ using RChat.Domain.Chats;
 using RChat.Domain.Messages;
 using RChat.Application.Contracts.Messages;
 using RChat.Application.Messages;
+using RChat.WebApi.Hubs;
 
 namespace RChat.WebApi
 {
@@ -40,14 +41,19 @@ namespace RChat.WebApi
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
 
+            });
             builder.Services.AddCors(options =>
             {
                 options.AddDefaultPolicy(policy =>
                 {
                     policy.WithOrigins("https://localhost:7206")
                     .AllowAnyHeader()
-                    .AllowAnyMethod();
+                    .AllowAnyMethod()
+                    .AllowCredentials();
 
                 });
             });
@@ -69,6 +75,8 @@ namespace RChat.WebApi
             builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<IMessageService, MessageService>();
            
+           
+           
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -86,6 +94,7 @@ namespace RChat.WebApi
 
 
             app.MapControllers();
+            app.MapHub<RChatHub>("/rChatHub");
 
             app.Run();
         }

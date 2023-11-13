@@ -13,6 +13,6 @@ namespace RChat.Application.Contracts.Messages
     public interface IMessageService
     {
         Task<GridListDto<MessageInformationDto>> GetMessagesInformationListAsync(SearchArguments searchArguments);
-        Task<bool> CreateMessageAsync(int senderId, CreateMessageDto message);
+        Task<bool> CreateMessageAsync(int senderId, MessageInformationDto message);
     }
 }

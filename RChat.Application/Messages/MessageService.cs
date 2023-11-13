@@ -28,7 +28,7 @@ namespace RChat.Application.Messages
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<bool> CreateMessageAsync(int senderId, CreateMessageDto message)
+        public async Task<bool> CreateMessageAsync(int senderId, MessageInformationDto message)
         {
             var messageRepository = _unitOfWork.GetRepository<Message, int>();
             try
@@ -36,9 +36,9 @@ namespace RChat.Application.Messages
                await messageRepository.CreateAsync(new()
                 {
                     SenderId = senderId,
-                    Content = message.MessageValue,
+                    Content = message.Content,
                     ChatId = message.ChatId,
-                    SentAt = DateTime.Now,
+                    SentAt = message.SentAt,
                 });
                 await _unitOfWork.SaveChangesAsync();
                 return true;
@@ -74,6 +74,7 @@ namespace RChat.Application.Messages
                       Content = c.Content,
                       ChatId = c.ChatId,
                       SentAt = c.SentAt,
+                      SenderEmail = c.Sender.Email
                   }
             ).ToList();
             return new GridListDto<MessageInformationDto>()

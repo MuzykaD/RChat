@@ -55,8 +55,9 @@ namespace RChat.Application.Chats
         {
             var chatRepository = _unitOfWork.GetRepository<Chat, int>();
             var requiredChat = chatRepository.GetAllIncluding(c => c.Users, c => c.Messages).FirstOrDefault(
-                c => !c.IsGroupChat &&
+                c => !c.IsGroupChat && 
                 c.Users.All(u => u.Email == firstUserEmail || u.Email == secondUserEmail));
+           
             if(requiredChat == null)
             {
                 var newChat = new Chat()

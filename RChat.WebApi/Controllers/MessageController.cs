@@ -22,7 +22,7 @@ namespace RChat.WebApi.Controllers
                 => Ok(await _messageService.GetMessagesInformationListAsync(new SearchArguments(value, page * size, size, orderBy, orderByType)));
 
         [HttpPost]
-        public async Task<IActionResult> CreateMessageAsync([FromBody] CreateMessageDto messageDto)
+        public async Task<IActionResult> CreateMessageAsync([FromBody] MessageInformationDto messageDto)
         {
             var result = await _messageService.CreateMessageAsync(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)), messageDto);
             return result ? Ok(result) : BadRequest(result);

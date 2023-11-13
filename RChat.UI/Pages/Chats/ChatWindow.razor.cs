@@ -1,19 +1,30 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.SignalR.Client;
+using RChat.Domain.Messages.Dto;
 using RChat.UI.Services.ChatService;
 using RChat.UI.Services.MessageService;
+using RChat.UI.Services.SignalClientService;
 using RChat.UI.ViewModels.Chat;
+using RChat.UI.ViewModels.InformationViewModels;
+using System.Security.Claims;
 
 namespace RChat.UI.Pages.Chats
 {
     public partial class ChatWindowComponent : ComponentBase
     {
         [Inject]
-        public IChatService ChatService { get; set; }
+        protected IChatService ChatService { get; set; }
         [Inject]
-        public IMessageService MessageService { get; set; }
+        protected IMessageService MessageService { get; set; }
+        [Inject]
+        protected AuthenticationStateProvider StateProvider { get; set; }
+        [Inject]
+        protected ISignalClientService SignalClientService { get; set; }
         [Parameter]
         [SupplyParameterFromQuery]
         public string Email { get; set; }
+        private string _currentUserEmail;
         protected ChatViewModel ChatViewModel { get; set; }
         protected bool InitComplete { get; set; }
 
@@ -24,13 +35,28 @@ namespace RChat.UI.Pages.Chats
             var apiResponse = await ChatService.GetPrivateChatByEmail(Email);
             ChatViewModel = apiResponse.Result!;
             InitComplete = true;
+            var state = await StateProvider.GetAuthenticationStateAsync();
+            _currentUserEmail = state.User.FindFirstValue(ClaimTypes.Email);
+
+            SignalClientService.OnMessageReceived += OnMessageReceived;
+            await SignalClientService.StartAsync();
+        }
+
+        private void OnMessageReceived(MessageInformationDto messageViewModel)
+        {
+            ChatViewModel.Messages.Add(messageViewModel);
+            StateHasChanged();
         }
 
         protected async Task SendMessageAsync()
         {
             if(!string.IsNullOrWhiteSpace(MessageValue)) 
             {
-                await MessageService.SendMessageAsync(ChatViewModel.Id, MessageValue);
+                var message = new MessageInformationDto()
+                { ChatId = ChatViewModel.Id, Content = MessageValue, SentAt = DateTime.Now };
+                await MessageService.SendMessageAsync(message);
+                await SignalClientService.CallSendMessageAsync(_currentUserEmail, message);
+                MessageValue = string.Empty;
             }          
         }
     }
