@@ -19,7 +19,7 @@ namespace RChat.UI.Pages.Chats
         protected IMessageService MessageService { get; set; }
         [Inject]
         protected AuthenticationStateProvider StateProvider { get; set; }
-        [Inject]
+        [CascadingParameter]
         protected ISignalClientService SignalClientService { get; set; }
         [Parameter]
         [SupplyParameterFromQuery]
@@ -37,9 +37,9 @@ namespace RChat.UI.Pages.Chats
             InitComplete = true;
             var state = await StateProvider.GetAuthenticationStateAsync();
             _currentUserEmail = state.User.FindFirstValue(ClaimTypes.Email);
-
+            SignalClientService.OnMessageReceived -= OnMessageReceived;
             SignalClientService.OnMessageReceived += OnMessageReceived;
-            await SignalClientService.StartAsync();
+           await SignalClientService.JoinChatGroupAsync(ChatViewModel.Id);
         }
 
         private void OnMessageReceived(MessageInformationDto messageViewModel)
@@ -53,9 +53,9 @@ namespace RChat.UI.Pages.Chats
             if(!string.IsNullOrWhiteSpace(MessageValue)) 
             {
                 var message = new MessageInformationDto()
-                { ChatId = ChatViewModel.Id, Content = MessageValue, SentAt = DateTime.Now };
+                { SenderEmail = _currentUserEmail,ChatId = ChatViewModel.Id, Content = MessageValue, SentAt = DateTime.Now };
                 await MessageService.SendMessageAsync(message);
-                await SignalClientService.CallSendMessageAsync(_currentUserEmail, message);
+                await SignalClientService.CallSendMessageAsync(Email, message);
                 MessageValue = string.Empty;
             }          
         }

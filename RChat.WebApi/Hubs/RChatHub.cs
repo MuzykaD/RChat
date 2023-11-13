@@ -5,13 +5,23 @@ namespace RChat.WebApi.Hubs
 {
     public class RChatHub : Hub
     {
-        public async Task SendMessageAsync(MessageInformationDto message)
+        public async Task SendMessageAsync(string recipientEmail, MessageInformationDto message)
         {
-            await Clients.All.SendAsync("ReceiveMessage", message);
+            string groupName = $"chat-{message.ChatId}";
+            await Clients.Group(groupName).SendAsync("ReceiveMessage", message);
+            await ChatNotificationAsync(recipientEmail, message);
         }
-        public async Task ChatNotificationAsync(string message, string receiverEmail, string senderEmail)
+        public async Task ChatNotificationAsync(string recipientEmail, MessageInformationDto message)
         {
-            await Clients.All.SendAsync("ReceiveChatNotification", message, receiverEmail, senderEmail);
+            string groupName = $"chat-{message.ChatId}";
+            await Clients.OthersInGroup(groupName).SendAsync("ReceiveNotification", message.SenderEmail);
         }
+
+        public async Task JoinChatGroupAsync(int chatId)
+        {
+            string groupName = $"chat-{chatId}";
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+        }
+
     }
 }

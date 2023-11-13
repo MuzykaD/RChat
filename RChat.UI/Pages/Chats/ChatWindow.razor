@@ -1,22 +1,93 @@
 ﻿@page "/chats/private"
-@inherits ChatWindowComponent;
+@inherits ChatWindowComponent
 @attribute [Authorize]
 
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="custom-card">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">@(!string.IsNullOrWhiteSpace(Email) ? Email : "Loading")</h3>
+                    <h3 class="card-subtitle text-center mb-4">@(!(ChatViewModel is null) ? ChatViewModel.Name : "Loading")</h3>
 
-<h3>@(string.IsNullOrWhiteSpace(Email) ? "Loading" : Email)</h3>
-<h3>@(ChatViewModel == null ? "Loading" : ChatViewModel.Name)</h3>
-@if (InitComplete)
-{
-    @foreach (var message in ChatViewModel.Messages)
-    {
-        <p>@message.SenderId</p>
-        <p>@message.Content</p>
-        <p>@message.SentAt</p>
-        <hr>
-    }           }
+                    <div class="message-box">
+                        @if (InitComplete)
+                        {
+                            @foreach (var message in ChatViewModel.Messages)
+                            {
+                                <div class="message-container">
+                                    <p class="sender">@message.SenderId</p>
+                                    <p class="content">@message.Content</p>
+                                    <p class="sent-at">@message.SentAt.ToString("g")</p>
+                                    <hr class="message-divider">
+                                </div>
+                            }
+                        }
+                    </div>
 
-<div class="input-container">
-    <RadzenTextBox Placeholder="Search" @bind-Value=@MessageValue TValue="string"> </RadzenTextBox>
-    <RadzenButton Click="async () => await SendMessageAsync()"></RadzenButton>
+                    <div class="input-container mt-4">
+                        <RadzenTextBox Placeholder="Type your message..." @bind-Value=@MessageValue TValue="string" class="form-control"></RadzenTextBox>
+                        <RadzenButton class="btn btn-primary" Click="async () => await SendMessageAsync()">Send</RadzenButton>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+<style>
+    .container {
+        max-width: 1000px;
+    }
+
+    .custom-card {
+        border: 2px solid #007bff;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .card-title, .card-subtitle {
+        color: #007bff;
+    }
+
+    .message-box {
+        max-height: 400px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .message-container {
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+
+    .sender {
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    .content {
+        margin-top: 5px;
+    }
+
+    .sent-at {
+        color: #777;
+        font-size: 0.8em;
+    }
+
+    .message-divider {
+        border-top: 1px solid #ccc;
+        margin-top: 8px;
+        margin-bottom: 5px;
+    }
+
+    .input-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
