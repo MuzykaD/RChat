@@ -9,5 +9,7 @@ namespace RChat.UI.Services.ChatService
     public interface IChatService : IModelInformationList<ChatInformationViewModel>
     {
         public Task<ApiRequestResult<ChatViewModel>> GetPrivateChatByUserIdAsync(int userId);
+        public Task CreatePublicGroupAsync(HashSet<UserInformationViewModel> users,string groupName);
+
     }
 }

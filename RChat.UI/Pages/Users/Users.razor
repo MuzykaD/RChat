@@ -8,12 +8,24 @@
 <RadzenTextBox Placeholder="Search" @bind-Value=@Value TValue="string" Change="async () => await OnSearchChangeAsync()" />
 <RadzenDropDown Placeholder="Sort Column" Disabled="@IsSortingDisabled" @bind-Value=@OrderBy TValue="string" Data="@SortingFieldDropDown" Change="async () => await OnSortChangeAsync()" />
 <RadzenDropDown Placeholder="Sort Type" Disabled="@IsSortingDisabled" @bind-Value=@OrderByType TValue="string" Data="@SortingTypeDropDown" Change="async () => await OnSortChangeAsync()" />
-Sorting disabled:<RadzenSwitch @bind-Value=@IsSortingDisabled Change=@OnSortSwitchAsync/>
-<RadzenDataGrid Data="@EntityList" TItem="UserInformationViewModel">
+Sorting disabled:
+<RadzenSwitch @bind-Value=@IsSortingDisabled Change=@OnSortSwitchAsync />
+@if (_selectedUsers.Any())
+{
+    <RadzenTextBox Placeholder="Enter groupname" @bind-Value=@GroupName TValue="string" />
+    <RadzenButton class="btn btn-primary" Click="async () => await CreateGroupAsync()">Send</RadzenButton>
+}
+<RadzenDataGrid SelectionMode="DataGridSelectionMode.Multiple" Data="@EntityList" TItem="UserInformationViewModel">
     <EmptyTemplate>
         <p style="color: lightgrey; font-size: 24px; text-align: center; margin: 2rem;">No records to display.</p>
     </EmptyTemplate>
     <Columns>
+        <RadzenDataGridColumn TItem="UserInformationViewModel" Width="60px" Sortable="false" Filterable="false">
+            <Template Context="data">
+                <RadzenCheckBox TriState="false" Value="@(_selectedUsers != null && _selectedUsers.Contains(data))"
+                                TValue="bool" Change=@(args =>OnCheckBoxChange(args, data)) />
+            </Template>
+        </RadzenDataGridColumn>
         <RadzenDataGridColumn Sortable="true" TItem="UserInformationViewModel" Property="Email" Title="Email"> </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="UserInformationViewModel" Property="UserName" Title="UserName"> </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="UserInformationViewModel" Property="PhoneNumber" Title="PhoneNumber"></RadzenDataGridColumn>

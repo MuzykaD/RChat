@@ -24,7 +24,24 @@ namespace RChat.Application.Chats
         {
             _unitOfWork = unitOfWork;
         }
-        //TODO order by DTO fields
+
+        public async Task<bool> CreatePublicGroupAsync(string groupName, int creatorId, IEnumerable<int> membersId)
+        {
+            var userRepo = _unitOfWork.GetRepository<User, int>();
+            var chatRepos = _unitOfWork.GetRepository<Chat, int>();
+            var chatUsers = await userRepo.GetAllAsync(u => membersId.Contains(u.Id));
+            var chat = new Chat()
+            {
+                Name = groupName,
+                IsGroupChat = true,
+                Users = chatUsers.ToList(),
+                CreatorId = creatorId,
+            };
+            await chatRepos.CreateAsync(chat);
+            await _unitOfWork.SaveChangesAsync();
+            return chat.Id != 0;
+        }
+
         public async Task<GridListDto<ChatInformationDto>> GetChatsInformationListAsync(SearchArguments searchArguments)
         {
             var chatRepository = _unitOfWork.GetRepository<Chat, int>();

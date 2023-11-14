@@ -31,7 +31,6 @@ namespace RChat.UI.Pages.Chats
         [Parameter]
         public int Page { get; set; }
         public bool IsSortingDisabled { get; set; } = true;
-
         public int Count { get; set; }
         private string _navigationQuery => "/chats" + HttpQueryBuilder.BuildGridListQuery(Page, Size, Value, OrderBy, OrderByType);
 
@@ -94,5 +93,7 @@ namespace RChat.UI.Pages.Chats
                 Count = apiResponse.Result.TotalCount;
             }
         }
+
+        
     }
 }

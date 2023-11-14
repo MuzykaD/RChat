@@ -13,6 +13,7 @@ namespace RChat.Application.Contracts.Chats
 {
     public interface IChatService
     {
+        Task<bool> CreatePublicGroupAsync(string groupName, int creatorId,  IEnumerable<int> membersId);
         Task<GridListDto<ChatInformationDto>> GetChatsInformationListAsync(SearchArguments searchArguments);
 
         Task<Chat?> GetPrivateChatByUsersIdAsync(int currentUserId, int secondUserId);
