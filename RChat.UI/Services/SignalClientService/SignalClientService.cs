@@ -19,11 +19,11 @@ namespace RChat.UI.Services.SignalClientService
             _notificationService = notificationService;
         }
         private bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
-        public async Task CallSendMessageAsync(string recipientEmail, MessageInformationDto messageDto)
+        public async Task CallSendMessageAsync(int recipientId, MessageInformationDto messageDto)
         {
             if (_hubConnection == null || !IsConnected)
                 return;
-            await _hubConnection.SendAsync("SendMessageAsync",recipientEmail, messageDto);
+            await _hubConnection.SendAsync("SendMessageAsync", recipientId, messageDto);
         }
 
         public async Task StartAsync()
@@ -33,14 +33,14 @@ namespace RChat.UI.Services.SignalClientService
             _hubConnection = new HubConnectionBuilder().WithUrl("https://localhost:7089/rChatHub").Build();
 
             _hubConnection.On<MessageInformationDto>("ReceiveMessage", message => OnMessageReceived?.Invoke(message));
-            _hubConnection.On<string>("ReceiveNotification", email =>
+            _hubConnection.On<MessageInformationDto>("ReceiveNotification", (message) =>
             {
                 _notificationService.Notify(new()
                 {
-                    Summary = $"{email} is trying to reach you!",
+                    Summary = $"{message.SenderEmail} is trying to reach you!",
                     Severity = NotificationSeverity.Info,
                     Duration = 2000,
-                    Click = (message) => _navigationManager.NavigateTo($"/chats/private?email={email}")
+                    Click = (notification) => _navigationManager.NavigateTo($"/chats/private?userId={message.SenderId}")
                 });
             });
             await _hubConnection.StartAsync();
@@ -50,7 +50,14 @@ namespace RChat.UI.Services.SignalClientService
         {
             if (_hubConnection == null || !IsConnected)
                 return;
-            await _hubConnection.SendAsync("JoinChatGroupAsync", chatId);
+            await _hubConnection.SendAsync("EnterChatGroupAsync", chatId);
+        }
+
+        public async Task LeaveChatGroupAsync(int chatId)
+        {
+            if (_hubConnection == null || !IsConnected)
+                return;
+            await _hubConnection.SendAsync("LeaveChatGroupAsync", chatId);
         }
     }
 }

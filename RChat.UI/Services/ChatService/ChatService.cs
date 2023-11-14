@@ -25,12 +25,12 @@ namespace RChat.UI.Services.ChatService
               );
         }
 
-        public async Task<ApiRequestResult<ChatViewModel>> GetPrivateChatByEmail(string email)
+        public async Task<ApiRequestResult<ChatViewModel>> GetPrivateChatByUserIdAsync(int userId)
         {
             return await _httpClientPwa
              .SendGetRequestAsync<ChatViewModel>
              (
-             RChatApiRoutes.ChatsPrivate + $"/{email}"
+             RChatApiRoutes.ChatsPrivate + $"/{userId}"
              );
         }
     }

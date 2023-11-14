@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.SignalR.Client;
 using RChat.Domain.Messages.Dto;
 using RChat.UI.Services.ChatService;
@@ -19,12 +20,17 @@ namespace RChat.UI.Pages.Chats
         protected IMessageService MessageService { get; set; }
         [Inject]
         protected AuthenticationStateProvider StateProvider { get; set; }
+        [Inject]
+        protected NavigationManager NavigationManager { get; set; }
         [CascadingParameter]
         protected ISignalClientService SignalClientService { get; set; }
         [Parameter]
         [SupplyParameterFromQuery]
-        public string Email { get; set; }
+        public int? UserId { get; set; }
+        // todo
         private string _currentUserEmail;
+        private int _currentUserId;
+        //
         protected ChatViewModel ChatViewModel { get; set; }
         protected bool InitComplete { get; set; }
 
@@ -32,11 +38,15 @@ namespace RChat.UI.Pages.Chats
 
         protected async override Task OnInitializedAsync()
         {
-            var apiResponse = await ChatService.GetPrivateChatByEmail(Email);
+            var apiResponse = await ChatService.GetPrivateChatByUserIdAsync(UserId.Value);
             ChatViewModel = apiResponse.Result!;
             InitComplete = true;
+            //todo
             var state = await StateProvider.GetAuthenticationStateAsync();
             _currentUserEmail = state.User.FindFirstValue(ClaimTypes.Email);
+            _currentUserId= int.Parse(state.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            //
+            NavigationManager.LocationChanged += (sender, arg) => LocationChanged(sender,arg);
             SignalClientService.OnMessageReceived -= OnMessageReceived;
             SignalClientService.OnMessageReceived += OnMessageReceived;
            await SignalClientService.JoinChatGroupAsync(ChatViewModel.Id);
@@ -47,17 +57,27 @@ namespace RChat.UI.Pages.Chats
             ChatViewModel.Messages.Add(messageViewModel);
             StateHasChanged();
         }
+        protected string GetChatName()
+        {
+            return string.IsNullOrWhiteSpace(ChatViewModel.Name) ? "Private Chat" : ChatViewModel.Name;
+
+        }
 
         protected async Task SendMessageAsync()
         {
             if(!string.IsNullOrWhiteSpace(MessageValue)) 
             {
                 var message = new MessageInformationDto()
-                { SenderEmail = _currentUserEmail,ChatId = ChatViewModel.Id, Content = MessageValue, SentAt = DateTime.Now };
+                {  SenderId = _currentUserId,SenderEmail = _currentUserEmail,ChatId = ChatViewModel.Id, Content = MessageValue, SentAt = DateTime.Now };
                 await MessageService.SendMessageAsync(message);
-                await SignalClientService.CallSendMessageAsync(Email, message);
+                await SignalClientService.CallSendMessageAsync(UserId.Value, message);
                 MessageValue = string.Empty;
             }          
+        }
+
+        void LocationChanged(object sender, LocationChangedEventArgs e)
+        {
+            SignalClientService.LeaveChatGroupAsync(ChatViewModel.Id);
         }
     }
 }

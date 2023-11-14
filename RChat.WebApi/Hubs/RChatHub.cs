@@ -5,22 +5,30 @@ namespace RChat.WebApi.Hubs
 {
     public class RChatHub : Hub
     {
-        public async Task SendMessageAsync(string recipientEmail, MessageInformationDto message)
+        public async Task SendMessageAsync(int recipientId, MessageInformationDto message)
         {
-            string groupName = $"chat-{message.ChatId}";
+            string groupName = $"in-chat-{message.ChatId}";
             await Clients.Group(groupName).SendAsync("ReceiveMessage", message);
-            await ChatNotificationAsync(recipientEmail, message);
+            await ChatNotificationAsync(message);
         }
-        public async Task ChatNotificationAsync(string recipientEmail, MessageInformationDto message)
+        public async Task ChatNotificationAsync(MessageInformationDto message)
         {
-            string groupName = $"chat-{message.ChatId}";
-            await Clients.OthersInGroup(groupName).SendAsync("ReceiveNotification", message.SenderEmail);
+            string groupName = $"out-chat-{message.ChatId}";
+            await Clients.OthersInGroup(groupName).SendAsync("ReceiveNotification", message);
         }
 
-        public async Task JoinChatGroupAsync(int chatId)
+        public async Task EnterChatGroupAsync(int chatId)
         {
-            string groupName = $"chat-{chatId}";
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            string groupName = $"-chat-{chatId}";
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, "out"+groupName);
+            await Groups.AddToGroupAsync(Context.ConnectionId, "in"+groupName);
+        }
+
+        public async Task LeaveChatGroupAsync(int chatId)
+        {
+            string groupName = $"-chat-{chatId}";
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, "in" + groupName);
+            await Groups.AddToGroupAsync(Context.ConnectionId, "out" + groupName);
         }
 
     }

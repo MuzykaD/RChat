@@ -8,6 +8,6 @@ namespace RChat.UI.Services.ChatService
 {
     public interface IChatService : IModelInformationList<ChatInformationViewModel>
     {
-        public Task<ApiRequestResult<ChatViewModel>> GetPrivateChatByEmail(string email);
+        public Task<ApiRequestResult<ChatViewModel>> GetPrivateChatByUserIdAsync(int userId);
     }
 }

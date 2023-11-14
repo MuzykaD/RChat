@@ -95,9 +95,9 @@ namespace RChat.UI.Pages.Users
             }
         }
 
-        protected void StartChat(string email)
+        protected void StartChat(int userId)
         {
-            NavigationManager.NavigateTo($"/chats/private?email={email}");
+            NavigationManager.NavigateTo($"/chats/private?userId={userId}");
         }
     }
 }

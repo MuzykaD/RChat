@@ -15,7 +15,7 @@ namespace RChat.Application.Contracts.Chats
     {
         Task<GridListDto<ChatInformationDto>> GetChatsInformationListAsync(SearchArguments searchArguments);
 
-        Task<Chat?> GetPrivateChatByEmailsAsync(string firstUserEmail, string secondUserEmail);
+        Task<Chat?> GetPrivateChatByUsersIdAsync(int currentUserId, int secondUserId);
 
     }
 }

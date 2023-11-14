@@ -51,22 +51,22 @@ namespace RChat.Application.Chats
             };
         }
 
-        public async Task<Chat?> GetPrivateChatByEmailsAsync(string firstUserEmail, string secondUserEmail)
+        public async Task<Chat?> GetPrivateChatByUsersIdAsync(int currentUserId, int secondUserId)
         {
             var chatRepository = _unitOfWork.GetRepository<Chat, int>();
             var requiredChat = chatRepository.GetAllIncluding(c => c.Users, c => c.Messages).FirstOrDefault(
                 c => !c.IsGroupChat && 
-                c.Users.All(u => u.Email == firstUserEmail || u.Email == secondUserEmail));
+                c.Users.All(u => u.Id == currentUserId || u.Id == secondUserId));
            
             if(requiredChat == null)
             {
                 var newChat = new Chat()
                 {
                     IsGroupChat = false,
-                    Name = $"Private {secondUserEmail}",
+                    Name = $"Private chat",
                     Users = _unitOfWork.GetRepository<User, int>()
                     .GetAllAsQueryable()
-                    .Where(u => u.Email == firstUserEmail || u.Email == secondUserEmail).ToList()
+                    .Where(u => u.Id == currentUserId || u.Id == secondUserId).ToList()
                 };
                 await chatRepository.CreateAsync(newChat);
                 await _unitOfWork.SaveChangesAsync();

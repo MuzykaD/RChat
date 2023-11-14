@@ -7,7 +7,8 @@ namespace RChat.UI.Services.SignalClientService
     {
         public event Action<MessageInformationDto> OnMessageReceived;
         public Task StartAsync();
-        public Task CallSendMessageAsync(string recipientEmail, MessageInformationDto messageDto);
+        public Task CallSendMessageAsync(int recipientId, MessageInformationDto messageDto);
         public Task JoinChatGroupAsync(int chatId);
+        public Task LeaveChatGroupAsync(int chatId);
     }
 }

@@ -24,11 +24,11 @@ namespace RChat.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetChatsInformation([FromQuery] int page, int size, string? value, string? orderBy, string? orderByType)
                 => Ok(await _chatService.GetChatsInformationListAsync(new SearchArguments(value, page * size, size, orderBy, orderByType)));
-        [HttpGet("private/{email}")]
-        public async Task<IActionResult> GetPrivateChatByEmailAsync([FromRoute]string email)
+        [HttpGet("private/{userId}")]
+        public async Task<IActionResult> GetPrivateChatByEmailAsync([FromRoute]int userId)
         {
-            var currentUserEmail = User.FindFirstValue(ClaimTypes.Email)!;
-            var chat = await _chatService.GetPrivateChatByEmailsAsync(currentUserEmail, email);
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var chat = await _chatService.GetPrivateChatByUsersIdAsync(int.Parse(currentUserId), userId);
             var result = new ChatDto()
             {
                 Id = chat.Id,
