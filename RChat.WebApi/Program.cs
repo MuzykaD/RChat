@@ -44,8 +44,7 @@ namespace RChat.WebApi
             builder.Services.AddSignalR(options =>
             {
                 options.EnableDetailedErrors = true;
-
-            });
+            }).AddMessagePackProtocol();
             builder.Services.AddCors(options =>
             {
                 options.AddDefaultPolicy(policy =>

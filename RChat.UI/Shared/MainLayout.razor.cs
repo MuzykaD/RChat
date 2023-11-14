@@ -11,11 +11,9 @@ namespace RChat.UI.Shared
     {
         [Inject]
         public ISignalClientService SignalClientService { get; set; }
-
         protected override async Task OnInitializedAsync()
         {
-            await SignalClientService.StartAsync();
-            
+            await SignalClientService.StartAsync();          
         }
     }
 }

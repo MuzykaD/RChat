@@ -1,16 +1,20 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using RChat.Domain.Messages.Dto;
 
 namespace RChat.WebApi.Hubs
 {
+    
     public class RChatHub : Hub
     {
+        [Authorize]
         public async Task SendMessageAsync(int recipientId, MessageInformationDto message)
         {
             string groupName = $"in-chat-{message.ChatId}";
             await Clients.Group(groupName).SendAsync("ReceiveMessage", message);
             await ChatNotificationAsync(message);
         }
+
         public async Task ChatNotificationAsync(MessageInformationDto message)
         {
             string groupName = $"out-chat-{message.ChatId}";

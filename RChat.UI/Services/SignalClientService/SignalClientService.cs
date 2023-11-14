@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Radzen;
 using RChat.Domain.Messages.Dto;
@@ -13,10 +14,18 @@ namespace RChat.UI.Services.SignalClientService
         public event Action<MessageInformationDto> OnMessageReceived;
         private NotificationService _notificationService;
         private NavigationManager _navigationManager;
-        public SignalClientService(NavigationManager navigationManager,NotificationService notificationService)
+        private ILocalStorageService _localStorageService;
+        private readonly string _hubHostUrl;
+        public SignalClientService(
+            NavigationManager navigationManager,
+            NotificationService notificationService, 
+            IConfiguration config,
+            ILocalStorageService localStorageService)
         {
             _navigationManager = navigationManager;
             _notificationService = notificationService;
+            _localStorageService = localStorageService;
+            _hubHostUrl = config["ApiHost"]!;
         }
         private bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
         public async Task CallSendMessageAsync(int recipientId, MessageInformationDto messageDto)
@@ -26,11 +35,12 @@ namespace RChat.UI.Services.SignalClientService
             await _hubConnection.SendAsync("SendMessageAsync", recipientId, messageDto);
         }
 
-        public async Task StartAsync()
+        public async Task StartAsync(bool forceStartRequired = false)
         {
-            if (_hubConnection != null && IsConnected)
-                return;
-            _hubConnection = new HubConnectionBuilder().WithUrl("https://localhost:7089/rChatHub").Build();
+            _hubConnection = new HubConnectionBuilder().WithUrl($"{_hubHostUrl}/rChatHub",
+                o => o.AccessTokenProvider = 
+                async () => await _localStorageService.GetItemAsync<string>("auth-jwt-token"))
+                .Build();
 
             _hubConnection.On<MessageInformationDto>("ReceiveMessage", message => OnMessageReceived?.Invoke(message));
             _hubConnection.On<MessageInformationDto>("ReceiveNotification", (message) =>
@@ -47,7 +57,7 @@ namespace RChat.UI.Services.SignalClientService
         }
 
         public async Task JoinChatGroupAsync(int chatId)
-        {
+        {           
             if (_hubConnection == null || !IsConnected)
                 return;
             await _hubConnection.SendAsync("EnterChatGroupAsync", chatId);
@@ -58,6 +68,12 @@ namespace RChat.UI.Services.SignalClientService
             if (_hubConnection == null || !IsConnected)
                 return;
             await _hubConnection.SendAsync("LeaveChatGroupAsync", chatId);
+        }
+
+        public async Task StopAsync()
+        {
+            if (_hubConnection != null && IsConnected)
+               await _hubConnection.StopAsync();
         }
     }
 }

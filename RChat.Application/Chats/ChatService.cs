@@ -63,11 +63,11 @@ namespace RChat.Application.Chats
                 var newChat = new Chat()
                 {
                     IsGroupChat = false,
-                    Name = $"Private chat",
                     Users = _unitOfWork.GetRepository<User, int>()
                     .GetAllAsQueryable()
                     .Where(u => u.Id == currentUserId || u.Id == secondUserId).ToList()
                 };
+                newChat.Name = $"{string.Join("-", newChat.Users.Select(u => u.UserName))}";
                 await chatRepository.CreateAsync(newChat);
                 await _unitOfWork.SaveChangesAsync();
                 return newChat;

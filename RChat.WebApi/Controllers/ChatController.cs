@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RChat.Application.Contracts.Chats;
+using RChat.Application.Mappers;
 using RChat.Domain;
 using RChat.Domain.Chats.Dto;
 using RChat.Domain.Messages.Dto;
 using RChat.Domain.Users.DTO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 
 namespace RChat.WebApi.Controllers
@@ -29,27 +31,8 @@ namespace RChat.WebApi.Controllers
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var chat = await _chatService.GetPrivateChatByUsersIdAsync(int.Parse(currentUserId), userId);
-            var result = new ChatDto()
-            {
-                Id = chat.Id,
-                CreatorId = chat.CreatorId,
-                Name = chat.Name,
-                Messages = chat.Messages.Select(m => new Domain.Messages.Dto.MessageInformationDto()
-                {
-                    Id = m.Id,
-                    ChatId = chat.Id,
-                    SenderId = m.SenderId,
-                    Content = m.Content,
-                    SentAt = m.SentAt,
-                }).ToList(),
-                Users = chat.Users.Select(u => new Domain.Users.DTO.UserInformationDto()
-                {
-                    UserName = u.UserName,
-                    Email = u.Email,
-                    PhoneNumber = u.PhoneNumber,
-                }).ToHashSet()
-            };
-            return Ok(result);
+           
+            return Ok(chat!.ToChatDto());
         }
     }
 }

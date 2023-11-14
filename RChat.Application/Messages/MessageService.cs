@@ -1,6 +1,7 @@
 ﻿using RChat.Application.Common;
 using RChat.Application.Contracts.Common;
 using RChat.Application.Contracts.Messages;
+using RChat.Application.Mappers;
 using RChat.Domain;
 using RChat.Domain.Chats;
 using RChat.Domain.Chats.Dto;
@@ -66,17 +67,7 @@ namespace RChat.Application.Messages
                 query
                 .Skip(searchArguments.Skip)
                 .Take(searchArguments.Take)
-                .Select(c =>
-                  new MessageInformationDto()
-                  {
-                      Id = c.Id,
-                      SenderId = c.SenderId,
-                      Content = c.Content,
-                      ChatId = c.ChatId,
-                      SentAt = c.SentAt,
-                      SenderEmail = c.Sender.Email
-                  }
-            ).ToList();
+                .Select(c => c.ToMessageInformationDto()).ToList();
             return new GridListDto<MessageInformationDto>()
             {
                 SelectedEntities = chatInfo,
