@@ -30,6 +30,7 @@ namespace RChat.UI.Pages.Chats
         public ChatViewModel ChatViewModel { get; set; }
         public bool InitComplete { get; set; }
         public string? MessageValue { get; set; }
+        public bool ShowUsersList { get; set; }
 
         // todo
         private string _currentUserEmail;
