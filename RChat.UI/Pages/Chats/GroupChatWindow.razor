@@ -11,7 +11,7 @@
                     <div class="custom-card">
                         <div class="card-body">
                             <h3 class="card-title text-center mb-4">Group Chat!</h3>
-                            <RadzenSwitch @bind-Value=@ShowUsersList/>
+                            <RadzenSwitch @bind-Value=@ShowUsersList />
                             <h3 class="card-subtitle text-center mb-4">@(!(ChatViewModel is null) ? ChatViewModel.Name : "Loading")</h3>
 
                             <div class="message-box">
@@ -23,7 +23,8 @@
                                             <p class="sender">@message.SenderId</p>
                                             @if (message.SenderId == _currentUserId)
                                             {
-                                                <RadzenButton Style="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click="async () => await DeleteMessageAsync(message.Id)">Delete message</RadzenButton>
+                                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click="async () => await DeleteMessageAsync(message.Id)">Delete</RadzenButton>
+                                                <RadzenButton ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click="() => UpdateMessageButtonEvent(message.Id)">Edit</RadzenButton>
                                             }
                                             <p class="content">@message.Content</p>
                                             <p class="sent-at">@message.SentAt.ToString("g")</p>
@@ -34,8 +35,16 @@
                             </div>
 
                             <div class="input-container mt-4">
-                                <RadzenTextBox Placeholder="Type your message..." @bind-Value=@MessageValue TValue="string" class="form-control"></RadzenTextBox>
-                                <RadzenButton class="btn btn-primary" Click="async () => await SendMessageAsync()">Send</RadzenButton>
+                                @if (!UpdateModeEnabled)
+                                {
+                                    <RadzenTextBox Placeholder="Type your message..." @bind-Value=@MessageValue TValue="string" class="form-control"></RadzenTextBox>
+                                    <RadzenButton class="btn btn-primary" Click="async () => await SendMessageAsync()">Send</RadzenButton>
+                                }
+                                else
+                                {
+                                    <RadzenTextBox Placeholder="Type new message value..." @bind-Value=@MessageToUpdate.Content TValue="string" class="form-control"></RadzenTextBox>
+                                    <RadzenButton class="btn btn-primary" Click="async () => await UpdateMessageAsync()">Update</RadzenButton>
+                                }
                             </div>
                         </div>
                     </div>

@@ -81,5 +81,22 @@ namespace RChat.Application.Messages
                 TotalCount = totalCount
             };
         }
+
+        public async Task<bool> UpdateMessageAsync(int currentUserId, MessageInformationDto message)
+        {
+            var messageRepo = _unitOfWork.GetRepository<Message, int>();
+            var messageToUpdate = await messageRepo.GetByIdAsync(message.Id);
+            if(messageToUpdate == null)
+                return false;
+            if(messageToUpdate.Id == message.Id && messageToUpdate.SenderId == message.SenderId)
+            {
+                messageToUpdate.Content = message.Content;
+                messageRepo.Update(messageToUpdate);
+                await _unitOfWork.SaveChangesAsync();
+                return true;
+            }
+            return false;
+           
+        }
     }
 }

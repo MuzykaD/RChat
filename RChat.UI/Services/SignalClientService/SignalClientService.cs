@@ -15,6 +15,8 @@ namespace RChat.UI.Services.SignalClientService
     {
         public event Action<MessageInformationDto> OnMessageReceived;
         public event Action<MessageInformationDto> OnMessageDelete;
+        public event Action<MessageInformationDto> OnMessageUpdate;
+
         private HubConnection? _hubConnection;
         private NotificationService _notificationService;
         private NavigationManager _navigationManager;
@@ -51,6 +53,8 @@ namespace RChat.UI.Services.SignalClientService
 
             _hubConnection.On<MessageInformationDto>("ReceiveMessage", message => OnMessageReceived?.Invoke(message));
             _hubConnection.On<MessageInformationDto>("OnMessageDelete", message => OnMessageDelete?.Invoke(message));
+            _hubConnection.On<MessageInformationDto>("OnMessageUpdate", message => OnMessageUpdate?.Invoke(message));
+
             _hubConnection.On<NotificationArguments>("ReceiveNotification", (args) =>
             {
                 var navigationLink = args.IsGroup ? $"group?groupId={args.ReferenceId}" : $"private?userId={args.ReferenceId}";
@@ -94,6 +98,11 @@ namespace RChat.UI.Services.SignalClientService
         {
             var groupIds = await _accountService.GetUserSignalGroupsAsync();
             await _hubConnection.SendAsync("RegisterMultipleGroupsAsync", groupIds.Result.SignalIdentifiers);
+        }
+
+        public async Task CallUpdateMessageAsync(MessageInformationDto messageToUpdate)
+        {
+            await _hubConnection.SendAsync("UpdateMessageAsync", messageToUpdate);
         }
     }
 }

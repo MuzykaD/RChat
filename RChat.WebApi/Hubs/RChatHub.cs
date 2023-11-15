@@ -43,6 +43,12 @@ namespace RChat.WebApi.Hubs
             await Clients.OthersInGroup(groupName).SendAsync("OnMessageDelete", message);
         }
 
+        public async Task UpdateMessageAsync(MessageInformationDto message)
+        {
+            string groupName = $"in-chat-{message.ChatId}";
+            await Clients.OthersInGroup(groupName).SendAsync("OnMessageUpdate", message);
+        }
+
         public async Task RegisterMultipleGroupsAsync(IEnumerable<int> groupsId)
         {
             var tasks = new List<Task>();

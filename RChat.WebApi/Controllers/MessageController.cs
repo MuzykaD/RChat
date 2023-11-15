@@ -35,5 +35,14 @@ namespace RChat.WebApi.Controllers
             var result = await _messageService.DeleteMessageAsync(messageId, int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
             return result ? Ok(result) : BadRequest(result);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateMessageAsync([FromBody] MessageInformationDto messageDto)
+        {
+            var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var isUpdated = await _messageService.UpdateMessageAsync(currentUserId, messageDto);
+            var result = new ApiResponse() { IsSucceed = isUpdated };
+            return isUpdated ? Ok(result) : BadRequest(result);
+        }
     }
 }

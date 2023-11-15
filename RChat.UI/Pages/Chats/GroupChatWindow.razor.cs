@@ -33,6 +33,9 @@ namespace RChat.UI.Pages.Chats
         public string? MessageValue { get; set; }
         public bool ShowUsersList { get; set; }
 
+        protected MessageInformationDto? MessageToUpdate { get; set; }
+        protected bool UpdateModeEnabled { get; set; }
+
         // todo
         private string _currentUserEmail;
         protected int _currentUserId;
@@ -54,6 +57,9 @@ namespace RChat.UI.Pages.Chats
 
             SignalClientService.OnMessageDelete -= OnMessageDeleted;
             SignalClientService.OnMessageDelete += OnMessageDeleted;
+
+            SignalClientService.OnMessageUpdate -= OnMessageUpdate;
+            SignalClientService.OnMessageUpdate += OnMessageUpdate;
             await SignalClientService.JoinChatGroupAsync(ChatViewModel.Id);
         }
 
@@ -97,6 +103,52 @@ namespace RChat.UI.Pages.Chats
         {
             ChatViewModel.Messages = ChatViewModel.Messages.Where(c => c.Id != message.Id).ToList();
             StateHasChanged();
+        }
+
+        protected async Task UpdateMessageAsync()
+        {
+            if (MessageToUpdate != null && !string.IsNullOrWhiteSpace(MessageToUpdate.Content))
+            {
+                var isUpdated = await MessageService.UpdateMessageAsync(MessageToUpdate);
+                if (isUpdated.Result.IsSucceed)
+                {
+                    ChatViewModel!.Messages!
+                        .FirstOrDefault(m => m.Id == MessageToUpdate.Id)!.Content = MessageToUpdate.Content;
+                    await SignalClientService.CallUpdateMessageAsync(MessageToUpdate);
+                    MessageToUpdate = null;
+                    UpdateModeEnabled = false;
+                    StateHasChanged();
+
+                }
+
+            }
+        }
+
+        protected void OnMessageUpdate(MessageInformationDto message)
+        {
+            ChatViewModel!.Messages!
+                        .FirstOrDefault(m => m.Id == message.Id)!.Content = message.Content;
+            StateHasChanged();
+        }
+        protected void UpdateMessageButtonEvent(int messageId)
+        {
+            if (UpdateModeEnabled)
+            {
+                UpdateModeEnabled = false;
+                MessageToUpdate = null;
+            }
+            else
+            {
+                UpdateModeEnabled = true;
+                var currentMessage = ChatViewModel.Messages.FirstOrDefault(m => m.Id == messageId);
+                MessageToUpdate = new()
+                {
+                    Id = messageId,
+                    Content = currentMessage.Content,
+                    SenderId = currentMessage.SenderId,
+                    ChatId = currentMessage.ChatId,
+                };
+            }
         }
 
 
