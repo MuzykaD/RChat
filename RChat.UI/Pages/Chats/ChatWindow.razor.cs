@@ -34,7 +34,7 @@ namespace RChat.UI.Pages.Chats
         public int UserId { get; set; }
         // todo
         private string _currentUserEmail;
-        private int _currentUserId;
+        protected int _currentUserId;
         //
         public ChatViewModel ChatViewModel { get; set; }
         public bool InitComplete { get; set; }
@@ -54,17 +54,19 @@ namespace RChat.UI.Pages.Chats
             NavigationManager.LocationChanged += async (sender, arg) => await LocationChanged(sender, arg);
             SignalClientService.OnMessageReceived -= OnMessageReceived;
             SignalClientService.OnMessageReceived += OnMessageReceived;
+            SignalClientService.OnMessageDelete -= OnMessageDeleted;
+            SignalClientService.OnMessageDelete += OnMessageDeleted;
             await SignalClientService.JoinChatGroupAsync(ChatViewModel.Id);
-           
+
         }
-        //separate group and private chats
         public async Task SendMessageAsync()
         {
             if (!string.IsNullOrWhiteSpace(MessageValue))
             {
                 var message = new MessageInformationDto()
                 { SenderId = _currentUserId, SenderEmail = _currentUserEmail, ChatId = ChatViewModel.Id, Content = MessageValue, SentAt = DateTime.Now };
-                await MessageService.SendMessageAsync(message);
+                var messageId = await MessageService.SendMessageAsync(message);
+                message.Id = messageId;
                 var notificationArguments = new NotificationArguments()
                 {
                     ReferenceId = _currentUserId,
@@ -79,13 +81,24 @@ namespace RChat.UI.Pages.Chats
         {
             ChatViewModel!.Messages!.Add(messageViewModel);
             StateHasChanged();
-          
+
         }
-
-
         async Task LocationChanged(object sender, LocationChangedEventArgs e)
         {
             await SignalClientService.LeaveChatGroupAsync(ChatViewModel.Id);
+        }
+        protected async Task DeleteMessageAsync(int messageId)
+        {
+            var message = ChatViewModel.Messages.FirstOrDefault(x => x.Id == messageId);
+            ChatViewModel.Messages.Remove(message);
+            await MessageService.DeleteMessageByIdAsync(messageId);
+            await SignalClientService.DeleteMessageAsync(message);
+        }
+
+        protected void OnMessageDeleted(MessageInformationDto message)
+        {
+            ChatViewModel.Messages = ChatViewModel.Messages.Where(c => c.Id != message.Id).ToList();
+            StateHasChanged();
         }
     }
 }

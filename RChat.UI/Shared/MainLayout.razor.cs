@@ -11,9 +11,15 @@ namespace RChat.UI.Shared
     {
         [Inject]
         public ISignalClientService SignalClientService { get; set; }
+        [Inject]
+        public AuthenticationStateProvider StateProvider { get; set; }
         protected override async Task OnInitializedAsync()
         {
-            await SignalClientService.StartAsync();          
+            var authenticationResult = await StateProvider.GetAuthenticationStateAsync();
+            if (authenticationResult.User.Identity.IsAuthenticated)
+            {
+                await SignalClientService.StartAsync();
+            }
         }
     }
 }

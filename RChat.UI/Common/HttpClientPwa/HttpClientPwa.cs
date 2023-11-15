@@ -90,6 +90,9 @@ namespace RChat.UI.Common.HttpClientPwa
             HttpClient.DefaultRequestHeaders.Authorization = null;
         }
 
-       
+        public async Task SendDeleteRequestAsync(string url)
+        {
+            await HttpClient.DeleteAsync(url);
+        }
     }
 }

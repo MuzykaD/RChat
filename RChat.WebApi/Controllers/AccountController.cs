@@ -6,6 +6,8 @@ using RChat.Application.Contracts.Account;
 using RChat.Domain.Repsonses;
 using RChat.Domain.Users.DTO;
 using System.Security.Claims;
+using Microsoft.AspNetCore.SignalR;
+using RChat.WebApi.Hubs;
 
 namespace RChat.WebApi.Controllers
 {
@@ -16,6 +18,7 @@ namespace RChat.WebApi.Controllers
     {
         private IAccountService _userService;
         private IJwtTokenService _jwtService;
+        private IHubContext<RChatHub> hubContext;
         public AccountController(IAccountService userService, IJwtTokenService jwtService)
         {
             _userService = userService;
@@ -52,7 +55,6 @@ namespace RChat.WebApi.Controllers
         public async Task<IActionResult> UpdateProfileAsync([FromBody] UpdateUserDto updateDto)
         {
             var result = await _userService.UpdateUserAsync(User.FindFirstValue(ClaimTypes.Email)!, updateDto);
-
             return result ?
                 Ok(new UserTokenResponse()
                 {

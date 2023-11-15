@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using RChat.Domain.Common;
+using RChat.Domain.Messages;
 using RChat.Domain.Messages.Dto;
 
 namespace RChat.WebApi.Hubs
@@ -35,6 +36,15 @@ namespace RChat.WebApi.Hubs
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, "in" + groupName);
             await Groups.AddToGroupAsync(Context.ConnectionId, "out" + groupName);
         }
+
+        public async Task DeleteMessageAsync(MessageInformationDto message) 
+        {
+            string groupName = $"in-chat-{message.ChatId}";
+            await Clients.OthersInGroup(groupName).SendAsync("OnMessageDelete", message);
+        }
+        
+            
+        
 
     }
 }

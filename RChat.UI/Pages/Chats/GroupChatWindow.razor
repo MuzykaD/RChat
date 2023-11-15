@@ -21,6 +21,10 @@
                                     {
                                         <div class="message-container">
                                             <p class="sender">@message.SenderId</p>
+                                            @if (message.SenderId == _currentUserId)
+                                            {
+                                                <RadzenButton Style="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click="async () => await DeleteMessageAsync(message.Id)">Delete message</RadzenButton>
+                                            }
                                             <p class="content">@message.Content</p>
                                             <p class="sent-at">@message.SentAt.ToString("g")</p>
                                             <hr class="message-divider">

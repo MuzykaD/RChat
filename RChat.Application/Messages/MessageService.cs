@@ -29,27 +29,34 @@ namespace RChat.Application.Messages
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<bool> CreateMessageAsync(int senderId, MessageInformationDto message)
+        public async Task<int?> CreateMessageAsync(int senderId, MessageInformationDto message)
         {
             var messageRepository = _unitOfWork.GetRepository<Message, int>();
-            try
-            {
-               await messageRepository.CreateAsync(new()
+           
+            
+                Message newMessage = new()
                 {
                     SenderId = senderId,
                     Content = message.Content,
                     ChatId = message.ChatId,
                     SentAt = message.SentAt,
-                });
+                };
+                await messageRepository.CreateAsync(newMessage);
                 await _unitOfWork.SaveChangesAsync();
+                return newMessage.Id;
+        }
+
+        public async Task<bool> DeleteMessageAsync(int messageId, int currentUserId)
+        {
+            var messageRepository = _unitOfWork.GetRepository<Message, int>();
+            var message = await messageRepository.GetByIdAsync(messageId);
+            if (message.SenderId == currentUserId)
+            {
+                await messageRepository.DeleteAsync(messageId);
                 return true;
             }
-            catch
-            {
+            else
                 return false;
-            }
-
-
         }
 
         public async Task<GridListDto<MessageInformationDto>> GetMessagesInformationListAsync(SearchArguments searchArguments)

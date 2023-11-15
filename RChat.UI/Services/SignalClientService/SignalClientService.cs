@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Radzen;
 using RChat.Domain.Common;
+using RChat.Domain.Messages;
 using RChat.Domain.Messages.Dto;
 using RChat.UI.ViewModels.InformationViewModels;
 
@@ -13,6 +14,7 @@ namespace RChat.UI.Services.SignalClientService
     {
         private HubConnection? _hubConnection;
         public event Action<MessageInformationDto> OnMessageReceived;
+        public event Action<MessageInformationDto> OnMessageDelete;
         private NotificationService _notificationService;
         private NavigationManager _navigationManager;
         private ILocalStorageService _localStorageService;
@@ -44,6 +46,7 @@ namespace RChat.UI.Services.SignalClientService
                 .Build();
 
             _hubConnection.On<MessageInformationDto>("ReceiveMessage", message => OnMessageReceived?.Invoke(message));
+            _hubConnection.On<MessageInformationDto>("OnMessageDelete", message => OnMessageDelete?.Invoke(message));
             _hubConnection.On<NotificationArguments>("ReceiveNotification", (args) =>
             {
                 var navigationLink = args.IsGroup ? $"group?groupId={args.ReferenceId}" : $"private?userId={args.ReferenceId}";
@@ -76,6 +79,11 @@ namespace RChat.UI.Services.SignalClientService
         {
             if (_hubConnection != null && IsConnected)
                await _hubConnection.StopAsync();
+        }
+
+        public async Task DeleteMessageAsync(MessageInformationDto message)
+        {
+            await _hubConnection.SendAsync("DeleteMessageAsync", message);
         }
     }
 }

@@ -15,6 +15,12 @@ namespace RChat.UI.Services.MessageService
         {
             _httpClientPwa = httpClientPwa;
         }
+
+        public async Task DeleteMessageByIdAsync(int messageId)
+        {
+            await _httpClientPwa.SendDeleteRequestAsync(RChatApiRoutes.Messages + $"?messageId={messageId}");
+        }
+
         public async Task<ApiRequestResult<GridListDto<MessageInformationViewModel>>> GetInformationListAsync(int page, int size, string? value = null, string? orderBy = null, string? orderByType = null)
         {
             return await _httpClientPwa
@@ -24,10 +30,11 @@ namespace RChat.UI.Services.MessageService
               HttpQueryBuilder.BuildGridListQuery(page, size, value!, orderBy, orderByType)
               );
         }
-
-        public async Task SendMessageAsync(MessageInformationDto messageDto)
+        //change id returning logic
+        public async Task<int> SendMessageAsync(MessageInformationDto messageDto)
         {           
-            await _httpClientPwa.SendPostRequestAsync<MessageInformationDto, bool>(RChatApiRoutes.Messages, messageDto);
+          var result =  await _httpClientPwa.SendPostRequestAsync<MessageInformationDto, ApiResponse>(RChatApiRoutes.Messages, messageDto);
+          return int.Parse(result.Result.Message);
         }
     }
 }

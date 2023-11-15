@@ -8,6 +8,7 @@ namespace RChat.UI.Services.MessageService
 {
     public interface IMessageService : IModelInformationList<MessageInformationViewModel>
     {
-        Task SendMessageAsync(MessageInformationDto messageDto);
+        Task DeleteMessageByIdAsync(int messageId);
+        Task<int> SendMessageAsync(MessageInformationDto messageDto);
     }
 }
