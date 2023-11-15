@@ -47,7 +47,7 @@ namespace RChat.UI.Pages.Chats
         {
             var apiResponse = await ChatService.GetPrivateChatByUserIdAsync(UserId);
             ChatViewModel = apiResponse.Result!;
-            InitComplete = true;
+            
             //todo
             var state = await StateProvider.GetAuthenticationStateAsync();
             _currentUserEmail = state.User.FindFirstValue(ClaimTypes.Email);
@@ -61,6 +61,7 @@ namespace RChat.UI.Pages.Chats
             SignalClientService.OnMessageUpdate -= OnMessageUpdate;
             SignalClientService.OnMessageUpdate += OnMessageUpdate;
             await SignalClientService.JoinChatGroupAsync(ChatViewModel.Id);
+            InitComplete = true;
 
         }
         public async Task SendMessageAsync()
