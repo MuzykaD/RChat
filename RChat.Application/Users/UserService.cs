@@ -35,6 +35,7 @@ namespace RChat.Application.Users
                 .Take(searchArguments.Take)
                 .Select(u => new UserInformationDto()
                 {
+                    Id = u.Id,
                     Email = u.Email!,
                     UserName = u.UserName!,
                     PhoneNumber = u.PhoneNumber

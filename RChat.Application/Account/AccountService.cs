@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using RChat.Application.Contracts.Account;
+using RChat.Application.Mappers;
 using RChat.Domain.Repsonses;
 using RChat.Domain.Users;
 using RChat.Domain.Users.DTO;
@@ -34,12 +35,7 @@ namespace RChat.Application.Account
         public async Task<UserInformationDto> GetPersonalInformationAsync(string userEmail)
         {
             var user = await _userManager.FindByEmailAsync(userEmail);
-            return new()
-            {
-                Email = user.Email,
-                UserName = user.UserName,
-                PhoneNumber = user.PhoneNumber,
-            };
+            return user.ToUserInformationDto();
         }
 
         public async Task<bool> UpdateUserAsync(string userEmail, UpdateUserDto updateDto)

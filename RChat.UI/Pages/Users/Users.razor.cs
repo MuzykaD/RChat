@@ -3,8 +3,10 @@ using Radzen;
 using RChat.Domain.Users;
 using RChat.UI.Common;
 using RChat.UI.Common.ComponentHelpers;
+using RChat.UI.Services.ChatService;
 using RChat.UI.Services.UserService;
 using RChat.UI.ViewModels.InformationViewModels;
+using System.Runtime.CompilerServices;
 
 namespace RChat.UI.Pages.Users
 {
@@ -12,6 +14,8 @@ namespace RChat.UI.Pages.Users
     {
         [Inject]
         private IUserService UserService { get; set; }
+        [Inject]
+        private IChatService ChatService { get; set; }
         [Inject]
         private NavigationManager NavigationManager { get; set; }
         [SupplyParameterFromQuery]
@@ -32,13 +36,15 @@ namespace RChat.UI.Pages.Users
         [Parameter]
         public int Page { get; set; }
         public bool IsSortingDisabled { get; set; } = true;
-
         public int Count { get; set; }
+        protected string GroupName { get; set; }
         private string _navigationQuery => "/users" + HttpQueryBuilder.BuildGridListQuery(Page, Size, Value, OrderBy, OrderByType);
 
         public IEnumerable<UserInformationViewModel> EntityList { get; set; } = new List<UserInformationViewModel>();
         public IEnumerable<string> SortingFieldDropDown { get; set; }
         public IEnumerable<string> SortingTypeDropDown { get; set; }
+        protected bool CanCreateGroup => _selectedUsers.Any();
+        protected HashSet<UserInformationViewModel> _selectedUsers = new();
 
         protected override async Task OnInitializedAsync()
         {
@@ -94,5 +100,29 @@ namespace RChat.UI.Pages.Users
                 Count = apiResponse.Result.TotalCount;
             }
         }
+
+        protected void StartChat(int userId)
+        {
+            NavigationManager.NavigateTo($"/chats/private?userId={userId}");
+        }
+
+        protected async Task CreateGroupAsync()
+        {
+            if (!string.IsNullOrWhiteSpace(GroupName))
+            {
+                await ChatService.CreatePublicGroupAsync(_selectedUsers, GroupName);
+                _selectedUsers = new();
+            }
+        }
+
+        protected void OnCheckBoxChange(bool value, UserInformationViewModel model)
+        {
+            if (value)
+                _selectedUsers.Add(model);
+            else
+                _selectedUsers.Remove(model);
+        }
+
+
     }
 }

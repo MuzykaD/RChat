@@ -14,9 +14,10 @@ namespace RChat.Domain.Chats
         public int Id { get; set; }
         public string Name { get; set; }
         public int? CreatorId { get; set; }
-        public User? Creator { get; set; }
-        public ICollection<User> Users { get; set; }
-        public ICollection<Message> Messages { get; set; }
+        public virtual User? Creator { get; set; }
+        public bool IsGroupChat { get; set; }
+        public virtual ICollection<User> Users { get; set; } = new HashSet<User>();
+        public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 
     }
 }

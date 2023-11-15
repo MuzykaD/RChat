@@ -7,6 +7,7 @@ using RChat.UI.Common.ComponentHelpers;
 using RChat.UI.Common.HttpClientPwa;
 using RChat.UI.Common.HttpClientPwa.Interfaces;
 using RChat.UI.Services.BlazorAuthService;
+using RChat.UI.Services.SignalClientService;
 using RChat.UI.ViewModels.AuthenticationViewModels;
 
 namespace RChat.UI.Pages.Authentication
@@ -19,6 +20,8 @@ namespace RChat.UI.Pages.Authentication
         private IBlazorAuthService AuthService { get; set; }
         [Inject]
         public NotificationService NotificationService { get; set; }
+        [CascadingParameter]
+        protected ISignalClientService SignalClientService { get; set; }
         public LoginViewModel ViewModel { get; set; } = new();
         protected bool ShowMessage { get; set; }
         protected string Message { get; set; }
@@ -27,6 +30,7 @@ namespace RChat.UI.Pages.Authentication
             var response = await AuthService.LoginUserAsync(ViewModel);
             if (response.IsSuccessStatusCode && response.Result.IsSucceed)
             {
+                await SignalClientService.StartAsync();
                 NotificationService.Notify(new() { Severity = NotificationSeverity.Success, Summary = @"Welcome back!", Duration = 3000 });
                 NavigationManager.NavigateTo("/");
             }

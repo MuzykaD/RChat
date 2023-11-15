@@ -15,6 +15,7 @@ using RChat.UI.Services.UserService;
 using RChat.UI.Extensions;
 using RChat.UI.Services.ChatService;
 using RChat.UI.Services.MessageService;
+using RChat.UI.Services.SignalClientService;
 
 namespace RChat.UI
 {
@@ -36,7 +37,9 @@ namespace RChat.UI
             builder.Services.AddScoped<IAccountService, AccountService>(); 
             builder.Services.AddScoped<IUserService, UserService>(); 
             builder.Services.AddScoped<IChatService, ChatService>(); 
-            builder.Services.AddScoped<IMessageService, MessageService>(); 
+            builder.Services.AddScoped<IMessageService, MessageService>();
+            builder.Services.AddScoped<ISignalClientService, SignalClientService>();
+
 
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddScoped<AuthenticationStateProvider, ChatAuthenticationProvider>();

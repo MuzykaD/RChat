@@ -13,5 +13,7 @@ namespace RChat.Application.Contracts.Messages
     public interface IMessageService
     {
         Task<GridListDto<MessageInformationDto>> GetMessagesInformationListAsync(SearchArguments searchArguments);
+        Task<int?> CreateMessageAsync(int senderId, MessageInformationDto message);
+        Task<bool> DeleteMessageAsync(int messageId, int currentUserId);
     }
 }

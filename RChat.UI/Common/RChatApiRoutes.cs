@@ -9,7 +9,8 @@
         public const string UpdateInfo = "/api/v1/account/update-profile";
         public const string Users = "/api/v1/users";
         public const string Chats = "/api/v1/chats";
+        public const string ChatsPrivate = "/api/v1/chats/private";
+        public const string ChatsGroup = "/api/v1/chats/group";
         public const string Messages = "/api/v1/messages";
-
     }
 }

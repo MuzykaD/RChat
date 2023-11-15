@@ -1,0 +1,127 @@
+﻿@page "/chats/group"
+@inherits GroupChatWindowComponent
+@attribute [Authorize]
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+            <div class="row">
+                <!-- Chat Window Column -->
+                <div class="col-md-8">
+                    <div class="custom-card">
+                        <div class="card-body">
+                            <h3 class="card-title text-center mb-4">Group Chat!</h3>
+                            <RadzenSwitch @bind-Value=@ShowUsersList/>
+                            <h3 class="card-subtitle text-center mb-4">@(!(ChatViewModel is null) ? ChatViewModel.Name : "Loading")</h3>
+
+                            <div class="message-box">
+                                @if (InitComplete)
+                                {
+                                    @foreach (var message in ChatViewModel.Messages)
+                                    {
+                                        <div class="message-container">
+                                            <p class="sender">@message.SenderId</p>
+                                            @if (message.SenderId == _currentUserId)
+                                            {
+                                                <RadzenButton Style="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click="async () => await DeleteMessageAsync(message.Id)">Delete message</RadzenButton>
+                                            }
+                                            <p class="content">@message.Content</p>
+                                            <p class="sent-at">@message.SentAt.ToString("g")</p>
+                                            <hr class="message-divider">
+                                        </div>
+                                    }
+                                }
+                            </div>
+
+                            <div class="input-container mt-4">
+                                <RadzenTextBox Placeholder="Type your message..." @bind-Value=@MessageValue TValue="string" class="form-control"></RadzenTextBox>
+                                <RadzenButton class="btn btn-primary" Click="async () => await SendMessageAsync()">Send</RadzenButton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (!ShowUsersList)
+                {
+                    <!-- User List Column -->
+                    <div class="col-md-4">
+                        <div class="custom-card">
+                            <div class="card-body">
+                                <h3 class="card-title text-center mb-4">User List</h3>
+
+                                @if (InitComplete)
+                                {
+                                    @foreach (var user in ChatViewModel.Users)
+                                    {
+                                        <p class="user-item">@user.UserName</p>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Add or modify styles as needed */
+    .container {
+        max-width: 1400px;
+    }
+
+    .custom-card {
+        border: 2px solid #007bff;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .card-title, .card-subtitle {
+        color: #007bff;
+    }
+
+    .message-box {
+        max-height: 400px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .message-container {
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+
+    .sender {
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    .content {
+        margin-top: 5px;
+    }
+
+    .sent-at {
+        color: #777;
+        font-size: 0.8em;
+    }
+
+    .message-divider {
+        border-top: 1px solid #ccc;
+        margin-top: 8px;
+        margin-bottom: 5px;
+    }
+
+    .input-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .user-item {
+        margin-bottom: 8px;
+    }
+</style>

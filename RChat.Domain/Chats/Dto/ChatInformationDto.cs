@@ -12,5 +12,6 @@ namespace RChat.Domain.Chats.Dto
         public string Name { get; set; }
         public string? CreatorName{ get; set; }
         public int UsersCount { get; set; }
+        public bool IsGroup { get; set; }
     }
 }
