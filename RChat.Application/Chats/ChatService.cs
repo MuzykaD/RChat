@@ -53,14 +53,15 @@ namespace RChat.Application.Chats
                 Id = c.Id,
                 Name = c.Name,
                 CreatorName = c.Creator == null ? null : c.Creator.UserName,
-                UsersCount = c.Users.Count()
+                UsersCount = c.Users.Count(),
+                IsGroup = c.IsGroupChat,
             });
-            if(searchArguments.SearchRequired)
+            if (searchArguments.SearchRequired)
                 infoQuery = QueryBuilder<ChatInformationDto>.BuildSearchQuery(infoQuery, searchArguments.Value!);
             var totalCount = infoQuery.Count();
             if (searchArguments.OrderByRequired)
                 infoQuery = QueryBuilder<ChatInformationDto>.BuildOrderByQuery(infoQuery, searchArguments.OrderBy!, searchArguments.OrderByType!);
-                      
+
             return new GridListDto<ChatInformationDto>()
             {
                 SelectedEntities = infoQuery.Skip(searchArguments.Skip).Take(searchArguments.Take).ToList(),
@@ -68,14 +69,45 @@ namespace RChat.Application.Chats
             };
         }
 
+        public async Task<Chat> GetGroupChatByIdAsync(int currentUserId,int chatId)
+        {
+            var chatRepository = _unitOfWork.GetRepository<Chat, int>();
+            var chat =  chatRepository
+                .GetAllIncluding(c => c.Users, c => c.Messages)
+                .FirstOrDefault(c => c.Id == chatId);
+            if (!chat.Users.Any(c => c.Id == currentUserId))
+                await AddUserToGroupChat(currentUserId, chatId);
+            return await Task.FromResult(chat);
+        }
+
+        private async Task AddUserToGroupChat(int currentUserId, int chatId)
+        {
+            var userRepo = _unitOfWork.GetRepository<User, int>();
+            var chatRepos = _unitOfWork.GetRepository<Chat, int>();
+            var user = await userRepo.GetByIdAsync(currentUserId);
+            var chat =  chatRepos
+                .GetAllIncluding(c => c.Users)
+                .FirstOrDefault(c => c.Id == chatId);
+            chat.Users.Add(user);
+            chatRepos.Update(chat);
+            await _unitOfWork.SaveChangesAsync();   
+        }
+
+        /// <summary>
+        /// Get`s private chat with users by their id
+        /// Creates a new private chat between users if does not exist
+        /// </summary>
+        /// <param name="currentUserId">Logged in user id</param>
+        /// <param name="secondUserId">Second user for private chat</param>
+        /// <returns> required private chat </returns>
         public async Task<Chat?> GetPrivateChatByUsersIdAsync(int currentUserId, int secondUserId)
         {
             var chatRepository = _unitOfWork.GetRepository<Chat, int>();
             var requiredChat = chatRepository.GetAllIncluding(c => c.Users, c => c.Messages).FirstOrDefault(
-                c => !c.IsGroupChat && 
+                c => !c.IsGroupChat &&
                 c.Users.All(u => u.Id == currentUserId || u.Id == secondUserId));
-           
-            if(requiredChat == null)
+
+            if (requiredChat == null)
             {
                 var newChat = new Chat()
                 {

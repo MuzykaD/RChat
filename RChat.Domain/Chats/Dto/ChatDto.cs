@@ -15,5 +15,6 @@ namespace RChat.Domain.Chats.Dto
         public int? CreatorId { get; set; }
         public HashSet<UserInformationDto> Users { get; set; }
         public List<MessageInformationDto> Messages { get; set; }
+        public bool IsGroupChat { get; set; }
     }
 }

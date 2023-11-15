@@ -10,6 +10,6 @@ namespace RChat.UI.Services.ChatService
     {
         public Task<ApiRequestResult<ChatViewModel>> GetPrivateChatByUserIdAsync(int userId);
         public Task CreatePublicGroupAsync(HashSet<UserInformationViewModel> users,string groupName);
-
+        Task<ApiRequestResult<ChatViewModel>> GetGroupChatByIdAsync(int value);
     }
 }

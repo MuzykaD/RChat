@@ -11,5 +11,6 @@ namespace RChat.UI.ViewModels.Chat
         public int? CreatorId { get; set; }
         public HashSet<UserInformationViewModel> Users { get; set; } = new();
         public List<MessageInformationDto>? Messages { get; set; } = new();
+        public bool IsGroupChat { get; set; }
     }
 }

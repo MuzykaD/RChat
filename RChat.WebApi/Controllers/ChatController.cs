@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RChat.Application.Contracts.Chats;
 using RChat.Application.Mappers;
 using RChat.Domain;
+using RChat.Domain.Chats;
 using RChat.Domain.Chats.Dto;
 using RChat.Domain.Messages.Dto;
 using RChat.Domain.Repsonses;
@@ -26,12 +27,24 @@ namespace RChat.WebApi.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetChatsInformation([FromQuery] int page, int size, string? value, string? orderBy, string? orderByType)
-                => Ok(await _chatService.GetChatsInformationListAsync(new SearchArguments(value, page * size, size, orderBy, orderByType)));
+        {
+            var result = await _chatService.GetChatsInformationListAsync(new SearchArguments(value, page * size, size, orderBy, orderByType));
+            return Ok(result);
+         }
         [HttpGet("private/{userId}")]
         public async Task<IActionResult> GetPrivateChatByEmailAsync([FromRoute] int userId)
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var chat = await _chatService.GetPrivateChatByUsersIdAsync(int.Parse(currentUserId), userId);
+
+            return Ok(chat!.ToChatDto());
+        }
+
+        [HttpGet("group/{chatId}")]
+        public async Task<IActionResult> GetGroupChatByIdAsync([FromRoute] int chatId)
+        {
+            var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            Chat chat = await _chatService.GetGroupChatByIdAsync(currentUserId, chatId);
 
             return Ok(chat!.ToChatDto());
         }

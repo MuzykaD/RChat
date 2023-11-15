@@ -94,6 +94,11 @@ namespace RChat.UI.Pages.Chats
             }
         }
 
-        
+        protected void StartChat(int chatId)
+        {
+            NavigationManager.NavigateTo($"/chats/group?groupId={chatId}");
+        }
+
+
     }
 }

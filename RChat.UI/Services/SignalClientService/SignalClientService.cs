@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Radzen;
+using RChat.Domain.Common;
 using RChat.Domain.Messages.Dto;
 using RChat.UI.ViewModels.InformationViewModels;
 
@@ -28,14 +29,14 @@ namespace RChat.UI.Services.SignalClientService
             _hubHostUrl = config["ApiHost"]!;
         }
         private bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
-        public async Task CallSendMessageAsync(int recipientId, MessageInformationDto messageDto)
+        public async Task CallSendMessageAsync(MessageInformationDto messageDto, NotificationArguments notificationArguments)
         {
             if (_hubConnection == null || !IsConnected)
                 return;
-            await _hubConnection.SendAsync("SendMessageAsync", recipientId, messageDto);
+            await _hubConnection.SendAsync("SendMessageAsync", messageDto, notificationArguments);
         }
 
-        public async Task StartAsync(bool forceStartRequired = false)
+        public async Task StartAsync()
         {
             _hubConnection = new HubConnectionBuilder().WithUrl($"{_hubHostUrl}/rChatHub",
                 o => o.AccessTokenProvider = 
@@ -43,14 +44,15 @@ namespace RChat.UI.Services.SignalClientService
                 .Build();
 
             _hubConnection.On<MessageInformationDto>("ReceiveMessage", message => OnMessageReceived?.Invoke(message));
-            _hubConnection.On<MessageInformationDto>("ReceiveNotification", (message) =>
+            _hubConnection.On<NotificationArguments>("ReceiveNotification", (args) =>
             {
+                var navigationLink = args.IsGroup ? $"group?groupId={args.ReferenceId}" : $"private?userId={args.ReferenceId}";
                 _notificationService.Notify(new()
                 {
-                    Summary = $"{message.SenderEmail} is trying to reach you!",
+                    Summary = $"New message in {args.ChatName}",
                     Severity = NotificationSeverity.Info,
                     Duration = 2000,
-                    Click = (notification) => _navigationManager.NavigateTo($"/chats/private?userId={message.SenderId}")
+                    Click = (notification) => _navigationManager.NavigateTo($"/chats/{navigationLink}")
                 });
             });
             await _hubConnection.StartAsync();

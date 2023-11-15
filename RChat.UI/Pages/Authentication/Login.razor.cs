@@ -30,7 +30,7 @@ namespace RChat.UI.Pages.Authentication
             var response = await AuthService.LoginUserAsync(ViewModel);
             if (response.IsSuccessStatusCode && response.Result.IsSucceed)
             {
-                await SignalClientService.StartAsync(true);
+                await SignalClientService.StartAsync();
                 NotificationService.Notify(new() { Severity = NotificationSeverity.Success, Summary = @"Welcome back!", Duration = 3000 });
                 NavigationManager.NavigateTo("/");
             }

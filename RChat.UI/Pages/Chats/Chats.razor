@@ -18,7 +18,14 @@ Sorting disabled:
         <RadzenDataGridColumn Sortable="true" TItem="ChatInformationViewModel" Property="Id" Title="Chat Id"> </RadzenDataGridColumn>
         <RadzenDataGridColumn Sortable="true" TItem="ChatInformationViewModel" Property="Name" Title="Chat Name"> </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ChatInformationViewModel" Property="CreatorName" Title="Creator Name"> </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ChatInformationViewModel" Property="UsersCount" Title="Users Count"> 
+        <RadzenDataGridColumn TItem="ChatInformationViewModel" Property="UsersCount" Title="Users Count"> </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ChatInformationViewModel" Property="UsersCount" Title="Chat links"> 
+            <Template Context="data">
+                @if(data.IsGroup)
+                {
+                <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click=@(() => StartChat(data.Id)) Text="Start chat!" />
+                }
+            </Template>
             <FooterTemplate>
                 Found chats: <b>@Count</b>
             </FooterTemplate>

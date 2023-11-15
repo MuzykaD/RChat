@@ -15,7 +15,7 @@ namespace RChat.Application.Contracts.Chats
     {
         Task<bool> CreatePublicGroupAsync(string groupName, int creatorId,  IEnumerable<int> membersId);
         Task<GridListDto<ChatInformationDto>> GetChatsInformationListAsync(SearchArguments searchArguments);
-
+        Task<Chat> GetGroupChatByIdAsync(int currentUserId,int chatId);
         Task<Chat?> GetPrivateChatByUsersIdAsync(int currentUserId, int secondUserId);
 
     }

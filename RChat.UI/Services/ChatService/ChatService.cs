@@ -24,6 +24,15 @@ namespace RChat.UI.Services.ChatService
             await _httpClientPwa.SendPostRequestAsync<CreateGroupChatDto, ApiResponse>(RChatApiRoutes.ChatsGroup, grid);
         }
 
+        public async Task<ApiRequestResult<ChatViewModel>> GetGroupChatByIdAsync(int value)
+        {
+            return await _httpClientPwa
+            .SendGetRequestAsync<ChatViewModel>
+            (
+            RChatApiRoutes.ChatsGroup + $"/{value}"
+            );
+        }
+
         public async Task<ApiRequestResult<GridListDto<ChatInformationViewModel>>> GetInformationListAsync(int page, int size, string? value = null, string? orderBy = null, string? orderByType = null)
         {
             return await _httpClientPwa

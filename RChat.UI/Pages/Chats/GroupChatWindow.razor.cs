@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.JSInterop;
 using RChat.Domain.Common;
 using RChat.Domain.Messages.Dto;
 using RChat.UI.Common.ComponentHelpers.ChatWindowBase;
@@ -10,13 +8,15 @@ using RChat.UI.Services.ChatService;
 using RChat.UI.Services.MessageService;
 using RChat.UI.Services.SignalClientService;
 using RChat.UI.ViewModels.Chat;
-using RChat.UI.ViewModels.InformationViewModels;
 using System.Security.Claims;
 
 namespace RChat.UI.Pages.Chats
 {
-    public partial class ChatWindowComponent : ComponentBase, IChatWindowBase
+    public partial class GroupChatWindowComponent : ComponentBase, IChatWindowBase
     {
+        [Parameter]
+        [SupplyParameterFromQuery]
+        public int GroupId { get; set; }
         [Inject]
         public IChatService ChatService { get; set; }
         [Inject]
@@ -26,24 +26,19 @@ namespace RChat.UI.Pages.Chats
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         [Inject]
-        public IJSRuntime Js { get; set; }
-        [CascadingParameter]
         public ISignalClientService SignalClientService { get; set; }
-        [Parameter]
-        [SupplyParameterFromQuery]
-        public int UserId { get; set; }
+        public ChatViewModel ChatViewModel { get; set; }
+        public bool InitComplete { get; set; }
+        public string? MessageValue { get; set; }
+
         // todo
         private string _currentUserEmail;
         private int _currentUserId;
-        //
-        public ChatViewModel ChatViewModel { get; set; }
-        public bool InitComplete { get; set; }
 
-        public string? MessageValue { get; set; }
 
         protected async override Task OnInitializedAsync()
         {
-            var apiResponse = await ChatService.GetPrivateChatByUserIdAsync(UserId);
+            var apiResponse = await ChatService.GetGroupChatByIdAsync(GroupId);
             ChatViewModel = apiResponse.Result!;
             InitComplete = true;
             //todo
@@ -55,9 +50,8 @@ namespace RChat.UI.Pages.Chats
             SignalClientService.OnMessageReceived -= OnMessageReceived;
             SignalClientService.OnMessageReceived += OnMessageReceived;
             await SignalClientService.JoinChatGroupAsync(ChatViewModel.Id);
-           
         }
-        //separate group and private chats
+
         public async Task SendMessageAsync()
         {
             if (!string.IsNullOrWhiteSpace(MessageValue))
@@ -67,7 +61,7 @@ namespace RChat.UI.Pages.Chats
                 await MessageService.SendMessageAsync(message);
                 var notificationArguments = new NotificationArguments()
                 {
-                    ReferenceId = _currentUserId,
+                    ReferenceId = ChatViewModel.Id,
                     ChatName = ChatViewModel.Name,
                     IsGroup = ChatViewModel.IsGroupChat
                 };
@@ -75,17 +69,17 @@ namespace RChat.UI.Pages.Chats
                 MessageValue = string.Empty;
             }
         }
-        public async void OnMessageReceived(MessageInformationDto messageViewModel)
+
+        public void OnMessageReceived(MessageInformationDto messageViewModel)
         {
             ChatViewModel!.Messages!.Add(messageViewModel);
             StateHasChanged();
-          
         }
-
-
-        async Task LocationChanged(object sender, LocationChangedEventArgs e)
+        protected async Task LocationChanged(object sender, LocationChangedEventArgs e)
         {
             await SignalClientService.LeaveChatGroupAsync(ChatViewModel.Id);
         }
+
+       
     }
 }

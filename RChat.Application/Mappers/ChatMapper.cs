@@ -19,6 +19,7 @@ namespace RChat.Application.Mappers
                 CreatorId = chat.CreatorId,
                 Users = chat.Users.Select(u => u.ToUserInformationDto()).ToHashSet(),
                 Messages = chat.Messages.Select(m => m.ToMessageInformationDto()).ToList(),
+                IsGroupChat = chat.IsGroupChat,
             };
         }
     }
