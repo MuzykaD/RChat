@@ -12,6 +12,8 @@ namespace RChat.UI.Services.AccountService
         public Task<ApiRequestResult<UserInformationViewModel>> GetPersonalInformationAsync();
         public Task<ApiRequestResult<UserTokenResponse>> UpdatePersonalInformationAsync(UserInformationViewModel personalPageViewModel);
 
+        public Task<ApiRequestResult<GroupsIdentifies>> GetUserSignalGroupsAsync();
+
 
     }
 }

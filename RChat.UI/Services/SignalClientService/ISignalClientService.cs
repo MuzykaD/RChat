@@ -15,5 +15,6 @@ namespace RChat.UI.Services.SignalClientService
         public Task LeaveChatGroupAsync(int chatId);
         
         public Task DeleteMessageAsync(MessageInformationDto message);
+        public  Task RegisterUserSignalGroupsAsync();
     }
 }

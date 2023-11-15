@@ -6,7 +6,7 @@ using RChat.Domain.Messages.Dto;
 
 namespace RChat.WebApi.Hubs
 {
-    
+
     public class RChatHub : Hub
     {
         [Authorize]
@@ -26,8 +26,8 @@ namespace RChat.WebApi.Hubs
         public async Task EnterChatGroupAsync(int chatId)
         {
             string groupName = $"-chat-{chatId}";
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, "out"+groupName);
-            await Groups.AddToGroupAsync(Context.ConnectionId, "in"+groupName);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, "out" + groupName);
+            await Groups.AddToGroupAsync(Context.ConnectionId, "in" + groupName);
         }
 
         public async Task LeaveChatGroupAsync(int chatId)
@@ -37,14 +37,25 @@ namespace RChat.WebApi.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, "out" + groupName);
         }
 
-        public async Task DeleteMessageAsync(MessageInformationDto message) 
+        public async Task DeleteMessageAsync(MessageInformationDto message)
         {
             string groupName = $"in-chat-{message.ChatId}";
             await Clients.OthersInGroup(groupName).SendAsync("OnMessageDelete", message);
         }
-        
-            
-        
+
+        public async Task RegisterMultipleGroupsAsync(IEnumerable<int> groupsId)
+        {
+            var tasks = new List<Task>();
+            string groupName;
+            foreach (int id in groupsId)
+            {
+                groupName = $"out-chat-{id}";
+                tasks.Add(Groups.AddToGroupAsync(Context.ConnectionId, groupName));
+            }
+            await Task.WhenAll(tasks);
+        }
+
+
 
     }
 }

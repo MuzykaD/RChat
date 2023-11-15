@@ -95,7 +95,7 @@ namespace RChat.UI.Pages.Chats
 
         protected void OnMessageDeleted(MessageInformationDto message) 
         {
-            ChatViewModel.Messages.Remove(message);
+            ChatViewModel.Messages = ChatViewModel.Messages.Where(c => c.Id != message.Id).ToList();
             StateHasChanged();
         }
 

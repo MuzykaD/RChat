@@ -25,6 +25,11 @@ namespace RChat.UI.Services.AccountService
             return await _httpClientPwa.SendGetRequestAsync<UserInformationViewModel>(RChatApiRoutes.Info);
         }
 
+        public async Task<ApiRequestResult<GroupsIdentifies>> GetUserSignalGroupsAsync()
+        {
+            return await _httpClientPwa.SendGetRequestAsync<GroupsIdentifies>(RChatApiRoutes.SignalGroupsInfo);
+        }
+
         public async Task<ApiRequestResult<UserTokenResponse>> UpdatePersonalInformationAsync(UserInformationViewModel personalPageViewModel)
         {
             var result = await _httpClientPwa.SendPutRequestAsync<UserInformationViewModel, UserTokenResponse>(RChatApiRoutes.UpdateInfo, personalPageViewModel);

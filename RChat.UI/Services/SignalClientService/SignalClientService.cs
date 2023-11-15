@@ -5,6 +5,7 @@ using Radzen;
 using RChat.Domain.Common;
 using RChat.Domain.Messages;
 using RChat.Domain.Messages.Dto;
+using RChat.UI.Services.AccountService;
 using RChat.UI.ViewModels.InformationViewModels;
 
 namespace RChat.UI.Services.SignalClientService
@@ -12,22 +13,25 @@ namespace RChat.UI.Services.SignalClientService
     //Dispose
     public class SignalClientService : ISignalClientService
     {
-        private HubConnection? _hubConnection;
         public event Action<MessageInformationDto> OnMessageReceived;
         public event Action<MessageInformationDto> OnMessageDelete;
+        private HubConnection? _hubConnection;
         private NotificationService _notificationService;
         private NavigationManager _navigationManager;
         private ILocalStorageService _localStorageService;
+        private IAccountService _accountService;
         private readonly string _hubHostUrl;
         public SignalClientService(
             NavigationManager navigationManager,
             NotificationService notificationService, 
             IConfiguration config,
-            ILocalStorageService localStorageService)
+            ILocalStorageService localStorageService,
+            IAccountService accountService)
         {
             _navigationManager = navigationManager;
             _notificationService = notificationService;
             _localStorageService = localStorageService;
+            _accountService = accountService;
             _hubHostUrl = config["ApiHost"]!;
         }
         private bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
@@ -84,6 +88,12 @@ namespace RChat.UI.Services.SignalClientService
         public async Task DeleteMessageAsync(MessageInformationDto message)
         {
             await _hubConnection.SendAsync("DeleteMessageAsync", message);
+        }
+
+        public async Task RegisterUserSignalGroupsAsync()
+        {
+            var groupIds = await _accountService.GetUserSignalGroupsAsync();
+            await _hubConnection.SendAsync("RegisterMultipleGroupsAsync", groupIds.Result.SignalIdentifiers);
         }
     }
 }
