@@ -6,7 +6,6 @@
     <div class="row justify-content-center">
         <div class="col-md-9">
             <div class="row">
-                <!-- Chat Window Column -->
                 <div class="col-md-8">
                     <div class="custom-card">
                         <div class="card-body">
@@ -44,6 +43,7 @@
                                 {
                                     <RadzenTextBox Placeholder="Type new message value..." @bind-Value=@MessageToUpdate.Content TValue="string" class="form-control"></RadzenTextBox>
                                     <RadzenButton class="btn btn-primary" Click="async () => await UpdateMessageAsync()">Update</RadzenButton>
+
                                 }
                             </div>
                         </div>
@@ -51,7 +51,6 @@
                 </div>
                 @if (!ShowUsersList)
                 {
-                    <!-- User List Column -->
                     <div class="col-md-4">
                         <div class="custom-card">
                             <div class="card-body">
@@ -61,7 +60,7 @@
                                 {
                                     @foreach (var user in ChatViewModel.Users)
                                     {
-                                        <p class="user-item">@user.UserName</p>
+                                        <RadzenButton ButtonStyle="ButtonStyle.Primary" Variant="Variant.Text" class="m-1" Click="() => GoToPrivateChatAsync(user.Id)">@user.UserName</RadzenButton>
                                     }
                                 }
                             </div>

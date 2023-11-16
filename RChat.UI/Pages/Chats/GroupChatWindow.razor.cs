@@ -31,7 +31,7 @@ namespace RChat.UI.Pages.Chats
         public ChatViewModel ChatViewModel { get; set; }
         public bool InitComplete { get; set; }
         public string? MessageValue { get; set; }
-        public bool ShowUsersList { get; set; }
+        public bool ShowUsersList { get; set; } = true;
 
         protected MessageInformationDto? MessageToUpdate { get; set; }
         protected bool UpdateModeEnabled { get; set; }
@@ -119,7 +119,6 @@ namespace RChat.UI.Pages.Chats
                     MessageToUpdate = null;
                     UpdateModeEnabled = false;
                     StateHasChanged();
-
                 }
 
             }
@@ -150,6 +149,11 @@ namespace RChat.UI.Pages.Chats
                     ChatId = currentMessage.ChatId,
                 };
             }
+        }
+
+        protected void GoToPrivateChatAsync(int userId)
+        {
+            NavigationManager.NavigateTo($"/chats/private?userId={userId}");
         }
 
 
