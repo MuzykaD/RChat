@@ -31,10 +31,10 @@ namespace RChat.UI.Pages.Authentication
             if (response.IsSuccessStatusCode && response.Result.IsSucceed)
             {
                 await SignalClientService.StartAsync();
+                await SignalClientService.RegisterUserSignalGroupsAsync();
                 NotificationService.Notify(new() { Severity = NotificationSeverity.Success, Summary = @"Welcome back!", Duration = 3000 });
                 NavigationManager.NavigateTo("/");
             }
-
             else
             {
                 Message = response.Message;

@@ -123,5 +123,12 @@ namespace RChat.Application.Chats
             }
             return requiredChat;
         }
+
+        public async Task<IEnumerable<int>> GetGroupsIdentifiersAsync(int currentUserId)
+        {
+            var chatRepo =  _unitOfWork.GetRepository<Chat, int>();
+            var result = chatRepo.GetAllIncluding(c => c.Users).Where(c => c.Users.Any(u => u.Id.Equals(currentUserId))).Select(c => c.Id).ToList();
+            return await Task.FromResult(result);
+        }
     }
 }

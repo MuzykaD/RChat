@@ -19,7 +19,8 @@
                                     <p class="sender">@message.SenderId</p>
                                     @if (message.SenderId == _currentUserId)
                                     {
-                                        <RadzenButton Style="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click="async () => await DeleteMessageAsync(message.Id)">Delete message</RadzenButton>
+                                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click="async () => await DeleteMessageAsync(message.Id)">Delete</RadzenButton>
+                                        <RadzenButton ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click="() => UpdateMessageButtonEvent(message.Id)">Edit</RadzenButton>
                                     }
                                     <p class="content">@message.Content</p>
                                     <p class="sent-at">@message.SentAt.ToString("g")</p>
@@ -30,8 +31,16 @@
                     </div>
 
                     <div class="input-container mt-4">
+                        @if(!UpdateModeEnabled)
+                        {
                         <RadzenTextBox Placeholder="Type your message..." @bind-Value=@MessageValue TValue="string" class="form-control"></RadzenTextBox>
-                        <RadzenButton class="btn btn-primary" Click="async () => await SendMessageAsync()">Send</RadzenButton>
+                            <RadzenButton class="btn btn-primary" Click="async () => await SendMessageAsync()">Send</RadzenButton>
+                        }
+                        else
+                        {
+                            <RadzenTextBox Placeholder="Type new message value..." @bind-Value=@MessageToUpdate.Content TValue="string" class="form-control"></RadzenTextBox>
+                            <RadzenButton class="btn btn-primary" Click="async () => await UpdateMessageAsync()">Update</RadzenButton>
+                        }
                     </div>
                 </div>
             </div>

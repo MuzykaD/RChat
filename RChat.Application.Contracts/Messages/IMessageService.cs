@@ -15,5 +15,7 @@ namespace RChat.Application.Contracts.Messages
         Task<GridListDto<MessageInformationDto>> GetMessagesInformationListAsync(SearchArguments searchArguments);
         Task<int?> CreateMessageAsync(int senderId, MessageInformationDto message);
         Task<bool> DeleteMessageAsync(int messageId, int currentUserId);
+
+        Task<bool> UpdateMessageAsync(int currentUserId, MessageInformationDto message);
     }
 }

@@ -10,5 +10,6 @@ namespace RChat.UI.Services.MessageService
     {
         Task DeleteMessageByIdAsync(int messageId);
         Task<int> SendMessageAsync(MessageInformationDto messageDto);
+        Task<ApiRequestResult<ApiResponse>> UpdateMessageAsync(MessageInformationDto messageToUpdate);
     }
 }

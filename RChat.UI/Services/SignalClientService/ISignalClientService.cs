@@ -6,6 +6,7 @@ namespace RChat.UI.Services.SignalClientService
 {
     public interface ISignalClientService
     {
+        public event Action<MessageInformationDto> OnMessageUpdate;
         public event Action<MessageInformationDto> OnMessageReceived;
         public event Action<MessageInformationDto> OnMessageDelete;
         public Task StartAsync();
@@ -15,5 +16,7 @@ namespace RChat.UI.Services.SignalClientService
         public Task LeaveChatGroupAsync(int chatId);
         
         public Task DeleteMessageAsync(MessageInformationDto message);
+        public  Task RegisterUserSignalGroupsAsync();
+        Task CallUpdateMessageAsync(MessageInformationDto messageToUpdate);
     }
 }

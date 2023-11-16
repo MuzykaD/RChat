@@ -30,7 +30,7 @@ namespace RChat.WebApi.Controllers
         {
             var result = await _chatService.GetChatsInformationListAsync(new SearchArguments(value, page * size, size, orderBy, orderByType));
             return Ok(result);
-         }
+        }
         [HttpGet("private/{userId}")]
         public async Task<IActionResult> GetPrivateChatByEmailAsync([FromRoute] int userId)
         {
@@ -58,6 +58,18 @@ namespace RChat.WebApi.Controllers
             var result = await _chatService.CreatePublicGroupAsync(createGroupDto.GroupName, currentUserId, list);
             var response = new ApiResponse() { IsSucceed = result };
             return result ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpGet("group-info")]
+        public async Task<IActionResult> GetUserGroupsInfo()
+        {
+            var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            IEnumerable<int> groupIds = await _chatService.GetGroupsIdentifiersAsync(currentUserId);
+            return Ok(new GroupsIdentifies()
+            {
+                SignalIdentifiers = groupIds.ToList(),
+                IsSucceed = groupIds.Any()
+            });
         }
     }
 }

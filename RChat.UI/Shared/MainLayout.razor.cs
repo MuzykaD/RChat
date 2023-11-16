@@ -19,6 +19,7 @@ namespace RChat.UI.Shared
             if (authenticationResult.User.Identity.IsAuthenticated)
             {
                 await SignalClientService.StartAsync();
+                await SignalClientService.RegisterUserSignalGroupsAsync();
             }
         }
     }

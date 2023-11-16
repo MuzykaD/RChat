@@ -36,5 +36,11 @@ namespace RChat.UI.Services.MessageService
           var result =  await _httpClientPwa.SendPostRequestAsync<MessageInformationDto, ApiResponse>(RChatApiRoutes.Messages, messageDto);
           return int.Parse(result.Result.Message);
         }
+
+        public async Task<ApiRequestResult<ApiResponse>> UpdateMessageAsync(MessageInformationDto messageToUpdate)
+        {
+            var result = await _httpClientPwa.SendPutRequestAsync<MessageInformationDto, ApiResponse>(RChatApiRoutes.Messages, messageToUpdate);
+            return result;
+        }
     }
 }

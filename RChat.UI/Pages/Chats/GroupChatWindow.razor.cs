@@ -31,7 +31,10 @@ namespace RChat.UI.Pages.Chats
         public ChatViewModel ChatViewModel { get; set; }
         public bool InitComplete { get; set; }
         public string? MessageValue { get; set; }
-        public bool ShowUsersList { get; set; }
+        public bool ShowUsersList { get; set; } = true;
+
+        protected MessageInformationDto? MessageToUpdate { get; set; }
+        protected bool UpdateModeEnabled { get; set; }
 
         // todo
         private string _currentUserEmail;
@@ -42,7 +45,7 @@ namespace RChat.UI.Pages.Chats
         {
             var apiResponse = await ChatService.GetGroupChatByIdAsync(GroupId);
             ChatViewModel = apiResponse.Result!;
-            InitComplete = true;
+            
             //todo
             var state = await StateProvider.GetAuthenticationStateAsync();
             _currentUserEmail = state.User.FindFirstValue(ClaimTypes.Email);
@@ -54,7 +57,11 @@ namespace RChat.UI.Pages.Chats
 
             SignalClientService.OnMessageDelete -= OnMessageDeleted;
             SignalClientService.OnMessageDelete += OnMessageDeleted;
+
+            SignalClientService.OnMessageUpdate -= OnMessageUpdate;
+            SignalClientService.OnMessageUpdate += OnMessageUpdate;
             await SignalClientService.JoinChatGroupAsync(ChatViewModel.Id);
+            InitComplete = true;
         }
 
         public async Task SendMessageAsync()
@@ -82,7 +89,7 @@ namespace RChat.UI.Pages.Chats
             StateHasChanged();
         }
         protected async Task LocationChanged(object sender, LocationChangedEventArgs e)
-        {
+        {           
             await SignalClientService.LeaveChatGroupAsync(ChatViewModel.Id);
         }
         protected async Task DeleteMessageAsync(int messageId)
@@ -95,8 +102,58 @@ namespace RChat.UI.Pages.Chats
 
         protected void OnMessageDeleted(MessageInformationDto message) 
         {
-            ChatViewModel.Messages.Remove(message);
+            ChatViewModel.Messages = ChatViewModel.Messages.Where(c => c.Id != message.Id).ToList();
             StateHasChanged();
+        }
+
+        protected async Task UpdateMessageAsync()
+        {
+            if (MessageToUpdate != null && !string.IsNullOrWhiteSpace(MessageToUpdate.Content))
+            {
+                var isUpdated = await MessageService.UpdateMessageAsync(MessageToUpdate);
+                if (isUpdated.Result.IsSucceed)
+                {
+                    ChatViewModel!.Messages!
+                        .FirstOrDefault(m => m.Id == MessageToUpdate.Id)!.Content = MessageToUpdate.Content;
+                    await SignalClientService.CallUpdateMessageAsync(MessageToUpdate);
+                    MessageToUpdate = null;
+                    UpdateModeEnabled = false;
+                    StateHasChanged();
+                }
+
+            }
+        }
+
+        protected void OnMessageUpdate(MessageInformationDto message)
+        {
+            ChatViewModel!.Messages!
+                        .FirstOrDefault(m => m.Id == message.Id)!.Content = message.Content;
+            StateHasChanged();
+        }
+        protected void UpdateMessageButtonEvent(int messageId)
+        {
+            if (UpdateModeEnabled)
+            {
+                UpdateModeEnabled = false;
+                MessageToUpdate = null;
+            }
+            else
+            {
+                UpdateModeEnabled = true;
+                var currentMessage = ChatViewModel.Messages.FirstOrDefault(m => m.Id == messageId);
+                MessageToUpdate = new()
+                {
+                    Id = messageId,
+                    Content = currentMessage.Content,
+                    SenderId = currentMessage.SenderId,
+                    ChatId = currentMessage.ChatId,
+                };
+            }
+        }
+
+        protected void GoToPrivateChatAsync(int userId)
+        {
+            NavigationManager.NavigateTo($"/chats/private?userId={userId}");
         }
 
 
