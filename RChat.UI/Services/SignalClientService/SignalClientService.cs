@@ -24,8 +24,6 @@ namespace RChat.UI.Services.SignalClientService
         private NavigationManager _navigationManager;
         private ILocalStorageService _localStorageService;
         private IAccountService _accountService;
-        private IJSObjectReference _jsModule;
-        private IJSRuntime _jsRuntime;
         private readonly string _hubHostUrl;
         public SignalClientService(
             NavigationManager navigationManager,
@@ -39,9 +37,7 @@ namespace RChat.UI.Services.SignalClientService
             _notificationService = notificationService;
             _localStorageService = localStorageService;
             _accountService = accountService;
-            _hubHostUrl = config["ApiHost"]!;
-            _jsRuntime = jsRuntime;
-            
+            _hubHostUrl = config["ApiHost"]!;         
         }
         private bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
         public async Task CallSendMessageAsync(MessageInformationDto messageDto, NotificationArguments notificationArguments)
@@ -56,8 +52,7 @@ namespace RChat.UI.Services.SignalClientService
             _hubConnection = new HubConnectionBuilder().WithUrl($"{_hubHostUrl}/rChatHub",
                 o => o.AccessTokenProvider = 
                 async () => await _localStorageService.GetItemAsync<string>("auth-jwt-token"))
-                .Build();
-            _jsModule = await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "/web-rtc-chat.js");
+                .Build();           
             _hubConnection.On<MessageInformationDto>("ReceiveMessage", message => OnMessageReceived?.Invoke(message));
             _hubConnection.On<MessageInformationDto>("OnMessageDelete", message => OnMessageDelete?.Invoke(message));
             _hubConnection.On<MessageInformationDto>("OnMessageUpdate", message => OnMessageUpdate?.Invoke(message));
@@ -72,25 +67,6 @@ namespace RChat.UI.Services.SignalClientService
                     Duration = 2000,
                     Click = (notification) => _navigationManager.NavigateTo($"/chats/{navigationLink}")
                 });
-            });
-
-            _hubConnection.On<string, string, string>("SignalWebRtc", async (signalingChannel, type, payload) =>
-            {
-                if (_jsModule == null) throw new InvalidOperationException();
-
-               // if (_channel != signalingChannel) return;
-                switch (type)
-                {
-                    case "offer":
-                        await _jsModule.InvokeVoidAsync("processOffer", payload);
-                        break;
-                    case "answer":
-                        await _jsModule.InvokeVoidAsync("processAnswer", payload);
-                        break;
-                    case "candidate":
-                        await _jsModule.InvokeVoidAsync("processCandidate", payload);
-                        break;
-                }
             });
             await _hubConnection.StartAsync();
         }
@@ -129,30 +105,6 @@ namespace RChat.UI.Services.SignalClientService
         public async Task CallUpdateMessageAsync(MessageInformationDto messageToUpdate)
         {
             await _hubConnection.SendAsync("UpdateMessageAsync", messageToUpdate);
-        }
-
-        public async Task Join(string channel)
-        {
-            await _hubConnection.SendAsync("join", channel);
-        }
-        public async Task SendOffer(string channel,string offer)
-        {
-            await _hubConnection.SendAsync("SignalWebRtc", channel, "offer", offer);
-        }
-
-        public async Task Leave(string? channel)
-        {
-            await _hubConnection.SendAsync("leave", channel);
-        }
-
-        public async Task SendAnswer(string? channel, string answer)
-        {
-            await _hubConnection.SendAsync("SignalWebRtc", channel, "answer", answer);
-        }
-
-        public async Task SendCandidate(string? channel, string candidate)
-        {
-            await _hubConnection.SendAsync("SignalWebRtc", channel, "candidate", candidate);
         }
     }
 }

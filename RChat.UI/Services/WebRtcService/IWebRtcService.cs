@@ -10,5 +10,7 @@ namespace RChat.UI.Services.WebRtcService
         Task Call();
         Task Hangup();
         Task SendOffer(string offer);
+        Task StartAsync();
+        Task RegisterUserSignalGroupsAsync();
     }
 }

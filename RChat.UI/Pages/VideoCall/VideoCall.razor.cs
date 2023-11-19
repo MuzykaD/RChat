@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
-using RChat.UI.Services.SignalVideoService;
 using RChat.UI.Services.WebRtcService;
 using System.Reflection;
 using System.Security.Claims;
@@ -11,7 +10,8 @@ namespace RChat.UI.Pages.VideoCall
 {
     public class VideoCallComponent : ComponentBase
     {
-        [Inject] IWebRtcService RtcService { get; set; }
+        [CascadingParameter] 
+        IWebRtcService RtcService { get; set; }
         [Inject] IJSRuntime Js { get; set; }
         protected IJSObjectReference? _module;
         protected bool _startDisabled;

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
+using RChat.UI.Services.AccountService;
 using RChat.UI.Services.SignalClientService;
 
 namespace RChat.UI.Services.WebRtcService
@@ -15,16 +16,50 @@ namespace RChat.UI.Services.WebRtcService
         private DotNetObjectReference<WebRtcService>? _jsThis;
         private ILocalStorageService _localStorageService;
         private HubConnection? _hub;
+        private IAccountService _accountService;
         private string? _signalingChannel;
         public event EventHandler<IJSObjectReference>? OnRemoteStreamAcquired;
         private readonly string _hubHostUrl;
 
-        public WebRtcService(IJSRuntime js, NavigationManager nav, ILocalStorageService localStorageService, IConfiguration configuration)
+        public WebRtcService(IJSRuntime js,
+            NavigationManager nav, 
+            ILocalStorageService localStorageService,
+            IAccountService accountService,
+            IConfiguration configuration)
         {
             _js = js;
             _nav = nav;
             _localStorageService = localStorageService;
+            _accountService = accountService;
             _hubHostUrl = configuration["ApiHost"]!;
+        }
+
+        public async Task StartAsync()
+        {
+            _hub = new HubConnectionBuilder()
+                .WithUrl(_nav.ToAbsoluteUri($"{_hubHostUrl}/rVideoHub"), o => o.AccessTokenProvider =
+                async () => await _localStorageService.GetItemAsync<string>("auth-jwt-token"))
+                .Build();
+
+            _hub.On<string, string, string>("SignalWebRtc", async (signalingChannel, type, payload) =>
+            {
+                if (_jsModule == null) throw new InvalidOperationException();
+
+                if (_signalingChannel != signalingChannel) return;
+                switch (type)
+                {
+                    case "offer":
+                        await _jsModule.InvokeVoidAsync("processOffer", payload);
+                        break;
+                    case "answer":
+                        await _jsModule.InvokeVoidAsync("processAnswer", payload);
+                        break;
+                    case "candidate":
+                        await _jsModule.InvokeVoidAsync("processCandidate", payload);
+                        break;
+                }
+            });
+            await _hub.StartAsync();
         }
 
         public async Task Join(string signalingChannel)
@@ -64,36 +99,13 @@ namespace RChat.UI.Services.WebRtcService
 
         private async Task<HubConnection> GetHub()
         {
-
-            if (_hub != null) return _hub;
-
-            var hub = new HubConnectionBuilder()
-                .WithUrl(_nav.ToAbsoluteUri($"{_hubHostUrl}/rVideoHub"), o => o.AccessTokenProvider =
-                async () => await _localStorageService.GetItemAsync<string>("auth-jwt-token"))
-                .Build();
-
-            hub.On<string, string, string>("SignalWebRtc", async (signalingChannel, type, payload) =>
-            {
-                if (_jsModule == null) throw new InvalidOperationException();
-
-                if (_signalingChannel != signalingChannel) return;
-                switch (type)
-                {
-                    case "offer":
-                        await _jsModule.InvokeVoidAsync("processOffer", payload);
-                        break;
-                    case "answer":
-                        await _jsModule.InvokeVoidAsync("processAnswer", payload);
-                        break;
-                    case "candidate":
-                        await _jsModule.InvokeVoidAsync("processCandidate", payload);
-                        break;
-                }
-            });
-
-            await hub.StartAsync();
-            _hub = hub;
-            return _hub;
+            if (_hub != null)
+                return _hub;
+            else
+            { 
+               await StartAsync();
+                return _hub!;
+            }          
         }
 
         [JSInvokable]
@@ -125,5 +137,10 @@ namespace RChat.UI.Services.WebRtcService
             OnRemoteStreamAcquired?.Invoke(this, stream);
         }
 
+        public async Task RegisterUserSignalGroupsAsync()
+        {
+            var groupIds = await _accountService.GetUserSignalGroupsAsync();
+            await _hub.SendAsync("RegisterMultipleGroupsAsync", groupIds.Result.SignalIdentifiers);
+        }
     }
 }

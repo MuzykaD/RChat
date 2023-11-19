@@ -17,10 +17,21 @@ namespace RChat.WebApi.Hubs
             await Clients.OthersInGroup(channel).SendAsync("Leave", Context.ConnectionId);
         }
 
-        // Used in rtc.razor/webrtcservice.cs
         public async Task SignalWebRtc(string channel, string type, string payload)
         {
             await Clients.OthersInGroup(channel).SendAsync("SignalWebRtc", channel, type, payload);
+        }
+
+        public async Task RegisterMultipleGroupsAsync(IEnumerable<int> groupsId)
+        {
+            var tasks = new List<Task>();
+            string groupName;
+            foreach (int id in groupsId)
+            {
+                groupName = $"chat-{id}";
+                tasks.Add(Groups.AddToGroupAsync(Context.ConnectionId, groupName));
+            }
+            await Task.WhenAll(tasks);
         }
     }
 }
