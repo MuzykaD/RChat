@@ -1,0 +1,19 @@
+﻿@inherits VideoCallComponent
+@page "/video-chat"
+
+<PageTitle>WebRtc</PageTitle>
+
+<div class="py-4">
+    <label for="channelInput">Channel</label>
+    <RadzenTextBox id="channelInput" @bind-Value="_channel" />
+    <RadzenButton id="startButton" Click="StartAction" Disabled="@_startDisabled">Start</RadzenButton>
+    <RadzenButton id="callButton" Click="CallAction" Disabled="@_callDisabled">Call</RadzenButton>
+    <RadzenButton id="hangupButton" Click="HangupAction" Disabled="@_hangupDisabled">Hang Up</RadzenButton>
+</div>
+
+<div class="container">
+    <div class="row">
+        <video class="col col-lg-6 p-0" id="localVideo" autoplay playsinline></video>
+        <video class="col col-lg-6 p-0" id="remoteVideo" autoplay playsinline></video>
+    </div>
+</div>
