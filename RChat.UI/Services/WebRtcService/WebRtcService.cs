@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
+using Radzen;
 using RChat.UI.Services.AccountService;
 using RChat.UI.Services.SignalClientService;
+using System.Threading.Channels;
 
 namespace RChat.UI.Services.WebRtcService
 {
@@ -19,19 +21,22 @@ namespace RChat.UI.Services.WebRtcService
         private IAccountService _accountService;
         private string? _signalingChannel;
         public event EventHandler<IJSObjectReference>? OnRemoteStreamAcquired;
+        private DialogService _dialogService;
         private readonly string _hubHostUrl;
 
         public WebRtcService(IJSRuntime js,
-            NavigationManager nav, 
+            NavigationManager nav,
             ILocalStorageService localStorageService,
             IAccountService accountService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            DialogService dialogService)
         {
             _js = js;
             _nav = nav;
             _localStorageService = localStorageService;
             _accountService = accountService;
             _hubHostUrl = configuration["ApiHost"]!;
+            _dialogService = dialogService;
         }
 
         public async Task StartAsync()
@@ -40,7 +45,10 @@ namespace RChat.UI.Services.WebRtcService
                 .WithUrl(_nav.ToAbsoluteUri($"{_hubHostUrl}/rVideoHub"), o => o.AccessTokenProvider =
                 async () => await _localStorageService.GetItemAsync<string>("auth-jwt-token"))
                 .Build();
-
+            _jsModule = await _js.InvokeAsync<IJSObjectReference>(
+                "import", "/web-rtc-chat.js");
+            _jsThis = DotNetObjectReference.Create(this);
+            await _jsModule.InvokeVoidAsync("initialize", _jsThis);
             _hub.On<string, string, string>("SignalWebRtc", async (signalingChannel, type, payload) =>
             {
                 if (_jsModule == null) throw new InvalidOperationException();
@@ -59,19 +67,32 @@ namespace RChat.UI.Services.WebRtcService
                         break;
                 }
             });
+
+            _hub.On<string, int>("AskForConfirmation", async (channel, chatId) =>
+            {
+                var result = await _dialogService.Confirm("Incoming call!", $"Call in {channel}", new()
+                {
+                    OkButtonText = "Answer",
+                    CancelButtonText = "Decline",
+                });
+                if (result.Value)
+                    _nav.NavigateTo($"/chats/video?chatId={chatId}&requestCall=true");
+               
+            });
+
+            _hub.On<bool>("ConfirmationResult", async (isConfirmed) =>
+            {
+                if (isConfirmed)
+                    await Call();
+            });
             await _hub.StartAsync();
         }
 
         public async Task Join(string signalingChannel)
         {
-            if (_signalingChannel != null) throw new InvalidOperationException();
             _signalingChannel = signalingChannel;
             var hub = await GetHub();
             await hub.SendAsync("join", signalingChannel);
-            _jsModule = await _js.InvokeAsync<IJSObjectReference>(
-                "import", "/web-rtc-chat.js");
-            _jsThis = DotNetObjectReference.Create(this);
-            await _jsModule.InvokeVoidAsync("initialize", _jsThis);
         }
         public async Task<IJSObjectReference> StartLocalStream()
         {
@@ -102,10 +123,15 @@ namespace RChat.UI.Services.WebRtcService
             if (_hub != null)
                 return _hub;
             else
-            { 
-               await StartAsync();
+            {
+                await StartAsync();
                 return _hub!;
-            }          
+            }
+        }
+
+        public async Task ConfirmationResponse(string channel, bool result)
+        {
+            await _hub.SendAsync("ConfirmationResponse", channel, result);
         }
 
         [JSInvokable]
@@ -141,6 +167,11 @@ namespace RChat.UI.Services.WebRtcService
         {
             var groupIds = await _accountService.GetUserSignalGroupsAsync();
             await _hub.SendAsync("RegisterMultipleGroupsAsync", groupIds.Result.SignalIdentifiers);
+        }
+
+        public async Task AskForConfirmation(string channel, int chatId)
+        {
+            await _hub.SendAsync("AskForConfirmation", channel, chatId);
         }
     }
 }

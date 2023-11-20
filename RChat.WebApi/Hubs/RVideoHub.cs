@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using System.Threading.Channels;
 
 namespace RChat.WebApi.Hubs
 {
@@ -28,10 +29,20 @@ namespace RChat.WebApi.Hubs
             string groupName;
             foreach (int id in groupsId)
             {
-                groupName = $"chat-{id}";
+                groupName = $"video-{id}";
                 tasks.Add(Groups.AddToGroupAsync(Context.ConnectionId, groupName));
             }
             await Task.WhenAll(tasks);
+        }
+
+        public async Task AskForConfirmation(string channel, int chatId)
+        {
+            await Clients.OthersInGroup(channel).SendAsync("AskForConfirmation", channel, chatId);
+        }
+
+        public async Task ConfirmationResponse(string channel, bool isConfirmed)
+        {
+            await Clients.OthersInGroup(channel).SendAsync("ConfirmationResult", isConfirmed);
         }
     }
 }

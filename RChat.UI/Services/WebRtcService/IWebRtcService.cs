@@ -12,5 +12,7 @@ namespace RChat.UI.Services.WebRtcService
         Task SendOffer(string offer);
         Task StartAsync();
         Task RegisterUserSignalGroupsAsync();
+        Task AskForConfirmation(string channel, int chatId);
+        Task ConfirmationResponse(string channel, bool result);
     }
 }

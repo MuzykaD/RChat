@@ -10,39 +10,63 @@ namespace RChat.UI.Pages.VideoCall
 {
     public class VideoCallComponent : ComponentBase
     {
-        [CascadingParameter] 
+        [CascadingParameter]
         IWebRtcService RtcService { get; set; }
         [Inject] IJSRuntime Js { get; set; }
         protected IJSObjectReference? _module;
-        protected bool _startDisabled;
-        protected bool _callDisabled = true;
+        protected bool _callDisabled = false;
         protected bool _hangupDisabled = true;
+        [Parameter]
+        [SupplyParameterFromQuery]
+        public int ChatId { get; set; }
 
+        [Parameter]
+        [SupplyParameterFromQuery(Name = "requestCall")]
+        public string? RequestCallValue { get; set; }
+        protected bool CallRequested => !string.IsNullOrWhiteSpace(RequestCallValue) && RequestCallValue.Equals("true", StringComparison.OrdinalIgnoreCase);
+        protected string _channel => $"video-{ChatId}";
         protected override async Task OnInitializedAsync()
         {
+            _module = await Js.InvokeAsync<IJSObjectReference>(
+                   "import", "./Pages/VideoCall/VideoCall.razor.js");
+            await RtcService.Join(_channel);
+            await StartAction();
             await base.OnInitializedAsync();
+            if(CallRequested)
+            {
+                await RtcService.ConfirmationResponse(_channel, CallRequested);
+            }
         }
+        /*
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            
             if (firstRender)
             {
                 _module = await Js.InvokeAsync<IJSObjectReference>(
                     "import", "./Pages/VideoCall/VideoCall.razor.js");
             }
             await base.OnAfterRenderAsync(firstRender);
+            await RtcService.Join(_channel);
+            await StartAction();
+            
         }
+        */
+
+        protected async Task AskForConfirmation()
+        {
+            await RtcService.AskForConfirmation(_channel, ChatId);
+        }
+
 
         protected async Task StartAction()
         {
             if (string.IsNullOrWhiteSpace(_channel)) return;
             if (_module == null) throw new InvalidOperationException();
-            if (_startDisabled) return;
-            _startDisabled = true;
-            await RtcService.Join(_channel);
             var stream = await RtcService.StartLocalStream();
             await _module.InvokeVoidAsync("setLocalStream", stream);
             RtcService.OnRemoteStreamAcquired += RtcOnOnRemoteStreamAcquired;
-            _callDisabled = false;
+            await Console.Out.WriteLineAsync("Video added");
         }
 
         protected async void RtcOnOnRemoteStreamAcquired(object? _, IJSObjectReference e)
@@ -51,7 +75,6 @@ namespace RChat.UI.Pages.VideoCall
             await _module.InvokeVoidAsync("setRemoteStream", e);
             _callDisabled = true;
             _hangupDisabled = false;
-            _startDisabled = true;
             StateHasChanged();
         }
 
@@ -67,9 +90,8 @@ namespace RChat.UI.Pages.VideoCall
             await RtcService.Hangup();
             _callDisabled = true;
             _hangupDisabled = true;
-            _startDisabled = false;
         }
 
-        protected string _channel = "foo";
+
     }
 }
