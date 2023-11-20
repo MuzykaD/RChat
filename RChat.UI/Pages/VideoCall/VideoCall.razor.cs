@@ -62,15 +62,7 @@ namespace RChat.UI.Pages.VideoCall
             _callDisabled = true;
             _hangupDisabled = false;
             StateHasChanged();
-        }
-
-        protected async Task CallAction()
-        {
-            if (_callDisabled) return;
-            _callDisabled = true;
-            await RtcService.Call();
-            _hangupDisabled = false;
-        }
+        }       
         protected async Task HangupAction()
         {
             await RtcService.Hangup();
@@ -78,7 +70,5 @@ namespace RChat.UI.Pages.VideoCall
             _hangupDisabled = true;
             await _module.InvokeVoidAsync("setRemoteStreamToNull");
         }
-
-
     }
 }

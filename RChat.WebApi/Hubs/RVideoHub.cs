@@ -4,7 +4,7 @@ using System.Threading.Channels;
 
 namespace RChat.WebApi.Hubs
 {
-    //[Authorize]
+    [Authorize]
     public class RVideoHub : Hub
     {
         public async Task Join(string channel)
