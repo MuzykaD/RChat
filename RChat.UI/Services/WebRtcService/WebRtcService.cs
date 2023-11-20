@@ -77,13 +77,17 @@ namespace RChat.UI.Services.WebRtcService
                 });
                 if (result.Value)
                     _nav.NavigateTo($"/chats/video?chatId={chatId}&requestCall=true");
-               
+                else
+                    await ConfirmationResponse(channel, result.Value);
+
             });
 
             _hub.On<bool>("ConfirmationResult", async (isConfirmed) =>
             {
                 if (isConfirmed)
                     await Call();
+                else
+                    await _dialogService.Alert("It seems that user is busy", "Call decline!");
             });
             await _hub.StartAsync();
         }
@@ -112,10 +116,10 @@ namespace RChat.UI.Services.WebRtcService
             if (_jsModule == null) throw new InvalidOperationException();
             await _jsModule.InvokeVoidAsync("hangupAction");
 
-            var hub = await GetHub();
-            await hub.SendAsync("leave", _signalingChannel);
+            //var hub = await GetHub();
+            //await hub.SendAsync("leave", _signalingChannel);
 
-            _signalingChannel = null;
+            //_signalingChannel = null;
         }
 
         private async Task<HubConnection> GetHub()

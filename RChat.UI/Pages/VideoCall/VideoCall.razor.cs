@@ -36,26 +36,12 @@ namespace RChat.UI.Pages.VideoCall
             {
                 await RtcService.ConfirmationResponse(_channel, CallRequested);
             }
-        }
-        /*
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            
-            if (firstRender)
-            {
-                _module = await Js.InvokeAsync<IJSObjectReference>(
-                    "import", "./Pages/VideoCall/VideoCall.razor.js");
-            }
-            await base.OnAfterRenderAsync(firstRender);
-            await RtcService.Join(_channel);
-            await StartAction();
-            
-        }
-        */
-
+        }     
         protected async Task AskForConfirmation()
         {
             await RtcService.AskForConfirmation(_channel, ChatId);
+            _callDisabled = true;
+            _hangupDisabled = false;
         }
 
 
@@ -88,8 +74,9 @@ namespace RChat.UI.Pages.VideoCall
         protected async Task HangupAction()
         {
             await RtcService.Hangup();
-            _callDisabled = true;
+            _callDisabled = false;
             _hangupDisabled = true;
+            await _module.InvokeVoidAsync("setRemoteStreamToNull");
         }
 
 
