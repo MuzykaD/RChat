@@ -21,6 +21,8 @@ namespace RChat.UI.Services.WebRtcService
         private IAccountService _accountService;
         private string? _signalingChannel;
         public event EventHandler<IJSObjectReference>? OnRemoteStreamAcquired;
+        public event Action OnCallAccepted;
+
         private DialogService _dialogService;
         private readonly string _hubHostUrl;
 
@@ -85,9 +87,21 @@ namespace RChat.UI.Services.WebRtcService
             _hub.On<bool>("ConfirmationResult", async (isConfirmed) =>
             {
                 if (isConfirmed)
+                {
+                    OnCallAccepted.Invoke();
                     await Call();
+                }
                 else
+                { 
                     await _dialogService.Alert("It seems that user is busy", "Call decline!");
+                    
+                }
+            });
+
+            _hub.On("HangUp", async () =>
+            {
+                if (_jsModule == null) throw new InvalidOperationException();
+                await _jsModule.InvokeVoidAsync("hangupAction");
             });
             await _hub.StartAsync();
         }
@@ -116,10 +130,8 @@ namespace RChat.UI.Services.WebRtcService
             if (_jsModule == null) throw new InvalidOperationException();
             await _jsModule.InvokeVoidAsync("hangupAction");
 
-            //var hub = await GetHub();
-            //await hub.SendAsync("leave", _signalingChannel);
-
-            //_signalingChannel = null;
+            var hub = await GetHub();
+           await hub.SendAsync("HangUp", _signalingChannel);
         }
 
         private async Task<HubConnection> GetHub()

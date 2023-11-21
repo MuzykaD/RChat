@@ -10,11 +10,17 @@ export function setRemoteStream(stream) {
 export function setRemoteStreamToNull() {
     const remoteVideo = document.getElementById('remoteVideo');
     if (remoteVideo.srcObject) {
-        // Get all tracks and stop them to release resources
         const tracks = remoteVideo.srcObject.getTracks();
         tracks.forEach(track => track.stop());
 
-        // Set srcObject to null to clear the video
         remoteVideo.srcObject = null;
     }
+}
+
+export function stopCameraAndMic(stream) {
+    stream.getTracks().forEach((track) => {
+        if (track.readyState == 'live') {
+            track.stop();
+        }
+    });
 }

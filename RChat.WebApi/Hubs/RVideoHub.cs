@@ -12,10 +12,9 @@ namespace RChat.WebApi.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, channel);
             await Clients.OthersInGroup(channel).SendAsync("Join", Context.ConnectionId);
         }
-        public async Task Leave(string channel)
+        public async Task HangUp(string channel)
         {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, channel);
-            await Clients.OthersInGroup(channel).SendAsync("Leave", Context.ConnectionId);
+            await Clients.OthersInGroup(channel).SendAsync("HangUp", Context.ConnectionId);
         }
 
         public async Task SignalWebRtc(string channel, string type, string payload)
