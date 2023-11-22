@@ -6,6 +6,7 @@ namespace RChat.UI.Services.WebRtcService
     {
         event EventHandler<IJSObjectReference>? OnRemoteStreamAcquired;
         event Action OnCallAccepted;
+        event Action OnHangUp;
         Task Join(string signalingChannel);
         Task<IJSObjectReference> StartLocalStream();
         Task Call();

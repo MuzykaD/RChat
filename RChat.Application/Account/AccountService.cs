@@ -32,11 +32,13 @@ namespace RChat.Application.Account
 
         }
 
-       
+
 
         public async Task<UserInformationDto> GetPersonalInformationAsync(string userEmail)
         {
             var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+                return null!;
             return user.ToUserInformationDto();
         }
 

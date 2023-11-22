@@ -38,7 +38,7 @@ namespace RChat.WebApi.Extensions
                            // If the request is for our hub...
                            var path = context.HttpContext.Request.Path;
                            if (!string.IsNullOrEmpty(accessToken) &&
-                               (path.StartsWithSegments("/rChatHub")))
+                               (path.StartsWithSegments("/rChatHub") || path.StartsWithSegments("/rVideoHub")))
                            {
                                // Read the token out of the query string
                                context.Token = accessToken;

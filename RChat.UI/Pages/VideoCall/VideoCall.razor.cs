@@ -45,7 +45,6 @@ namespace RChat.UI.Pages.VideoCall
         protected async Task AskForConfirmation()
         {
             await RtcService.AskForConfirmation(_channel, ChatId);
-
         }
 
 
@@ -58,6 +57,7 @@ namespace RChat.UI.Pages.VideoCall
             await _module.InvokeVoidAsync("setLocalStream", stream);
             RtcService.OnRemoteStreamAcquired += RtcOnOnRemoteStreamAcquired;
             RtcService.OnCallAccepted += OnCallAccepted;
+            RtcService.OnHangUp += OnHangUp;
             await Console.Out.WriteLineAsync("Video added");
         }
 
@@ -77,6 +77,13 @@ namespace RChat.UI.Pages.VideoCall
             await _module.InvokeVoidAsync("setRemoteStreamToNull");
         }
 
+        protected async void OnHangUp()
+        {
+            _callDisabled = false;
+            _hangupDisabled = true;
+            await _module.InvokeVoidAsync("setRemoteStreamToNull");
+            NavigationManager.NavigateTo("/");
+        }
         protected void OnCallAccepted()
         {
             _callDisabled = true;

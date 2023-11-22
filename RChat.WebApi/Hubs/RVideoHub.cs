@@ -14,7 +14,7 @@ namespace RChat.WebApi.Hubs
         }
         public async Task HangUp(string channel)
         {
-            await Clients.OthersInGroup(channel).SendAsync("HangUp", Context.ConnectionId);
+            await Clients.OthersInGroup(channel).SendAsync("HangUp");
         }
 
         public async Task SignalWebRtc(string channel, string type, string payload)
