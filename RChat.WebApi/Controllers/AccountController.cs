@@ -18,7 +18,6 @@ namespace RChat.WebApi.Controllers
     {
         private IAccountService _userService;
         private IJwtTokenService _jwtService;
-        private IHubContext<RChatHub> hubContext;
         public AccountController(IAccountService userService, IJwtTokenService jwtService)
         {
             _userService = userService;

@@ -19,7 +19,7 @@ namespace RChat.Tests.Unit.Application.Chats
     public class ChatServiceTests
     {
         [Fact]
-        public async Task CreatePublicGroupAsync_Should_Create_Group_And_Return_True()
+        public async Task CreatePublicGroupAsync_CreatesGroup_ReturnsTrue()
         {
             // Arrange
             var unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -44,7 +44,7 @@ namespace RChat.Tests.Unit.Application.Chats
         }
 
         [Fact]
-        public async Task GetChatsInformationListAsync_Should_Return_Correct_GridListDto()
+        public async Task GetChatsInformationListAsync_ReturnsCorrectGridListDto()
         {
             // Arrange
             var unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -82,7 +82,7 @@ namespace RChat.Tests.Unit.Application.Chats
         }
 
         [Fact]
-        public async Task GetGroupChatByIdAsync_Should_Return_Chat_With_User()
+        public async Task GetGroupChatByIdAsync_GroupExists_ReturnsChat()
         {
             // Arrange
             var unitOfWorkMock = new Mock<IUnitOfWork>();

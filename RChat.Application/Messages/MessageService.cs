@@ -85,7 +85,7 @@ namespace RChat.Application.Messages
             var messageToUpdate = await messageRepo.GetByIdAsync(message.Id);
             if(messageToUpdate == null)
                 return false;
-            if(messageToUpdate.Id == message.Id && messageToUpdate.SenderId == message.SenderId)
+            if(messageToUpdate.Id == message.Id && messageToUpdate.SenderId == message.SenderId && message.SenderId == currentUserId)
             {
                 messageToUpdate.Content = message.Content;
                 messageRepo.Update(messageToUpdate);
