@@ -24,6 +24,7 @@
     <ProjectReference Include="..\RChat.Application.Contracts\RChat.Application.Contracts.csproj" />
     <ProjectReference Include="..\RChat.Application\RChat.Application.csproj" />
     <ProjectReference Include="..\RChat.Domain\RChat.Domain.csproj" />
+    <ProjectReference Include="..\RChat.UI\RChat.UI.csproj" />
     <ProjectReference Include="..\RChat.WebApi\RChat.WebApi.csproj" />
   </ItemGroup>
 
