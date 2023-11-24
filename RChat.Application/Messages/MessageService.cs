@@ -21,7 +21,6 @@ namespace RChat.Application.Messages
 
     public class MessageService : IMessageService
     {
-        //private IQueryBuilder<Message> _messageQueryBuilder;
         private IUnitOfWork _unitOfWork;
 
         public MessageService(IUnitOfWork unitOfWork)
@@ -31,9 +30,7 @@ namespace RChat.Application.Messages
 
         public async Task<int?> CreateMessageAsync(int senderId, MessageInformationDto message)
         {
-            var messageRepository = _unitOfWork.GetRepository<Message, int>();
-           
-            
+            var messageRepository = _unitOfWork.GetRepository<Message, int>();            
                 Message newMessage = new()
                 {
                     SenderId = senderId,
@@ -88,15 +85,14 @@ namespace RChat.Application.Messages
             var messageToUpdate = await messageRepo.GetByIdAsync(message.Id);
             if(messageToUpdate == null)
                 return false;
-            if(messageToUpdate.Id == message.Id && messageToUpdate.SenderId == message.SenderId)
+            if(messageToUpdate.Id == message.Id && messageToUpdate.SenderId == message.SenderId && message.SenderId == currentUserId)
             {
                 messageToUpdate.Content = message.Content;
                 messageRepo.Update(messageToUpdate);
                 await _unitOfWork.SaveChangesAsync();
                 return true;
             }
-            return false;
-           
+            return false;  
         }
     }
 }

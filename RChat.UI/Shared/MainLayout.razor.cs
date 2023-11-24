@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.SignalR.Client;
 using Radzen;
 using RChat.UI.Services.SignalClientService;
+
+using RChat.UI.Services.WebRtcService;
 using System.Security.Claims;
 
 namespace RChat.UI.Shared
@@ -11,6 +13,10 @@ namespace RChat.UI.Shared
     {
         [Inject]
         public ISignalClientService SignalClientService { get; set; }
+
+        [Inject] 
+       public IWebRtcService RtcService { get; set; }
+
         [Inject]
         public AuthenticationStateProvider StateProvider { get; set; }
         protected override async Task OnInitializedAsync()
@@ -20,6 +26,10 @@ namespace RChat.UI.Shared
             {
                 await SignalClientService.StartAsync();
                 await SignalClientService.RegisterUserSignalGroupsAsync();
+
+                await RtcService.StartAsync();
+                await RtcService.RegisterUserSignalGroupsAsync();
+               
             }
         }
     }

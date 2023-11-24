@@ -1,12 +1,14 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.JSInterop;
 using Radzen;
 using RChat.Domain.Common;
 using RChat.Domain.Messages;
 using RChat.Domain.Messages.Dto;
 using RChat.UI.Services.AccountService;
 using RChat.UI.ViewModels.InformationViewModels;
+using System.Threading.Channels;
 
 namespace RChat.UI.Services.SignalClientService
 {
@@ -28,13 +30,14 @@ namespace RChat.UI.Services.SignalClientService
             NotificationService notificationService, 
             IConfiguration config,
             ILocalStorageService localStorageService,
-            IAccountService accountService)
+            IAccountService accountService,
+             IJSRuntime jsRuntime)
         {
             _navigationManager = navigationManager;
             _notificationService = notificationService;
             _localStorageService = localStorageService;
             _accountService = accountService;
-            _hubHostUrl = config["ApiHost"]!;
+            _hubHostUrl = config["ApiHost"]!;         
         }
         private bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
         public async Task CallSendMessageAsync(MessageInformationDto messageDto, NotificationArguments notificationArguments)
@@ -49,8 +52,7 @@ namespace RChat.UI.Services.SignalClientService
             _hubConnection = new HubConnectionBuilder().WithUrl($"{_hubHostUrl}/rChatHub",
                 o => o.AccessTokenProvider = 
                 async () => await _localStorageService.GetItemAsync<string>("auth-jwt-token"))
-                .Build();
-
+                .Build();           
             _hubConnection.On<MessageInformationDto>("ReceiveMessage", message => OnMessageReceived?.Invoke(message));
             _hubConnection.On<MessageInformationDto>("OnMessageDelete", message => OnMessageDelete?.Invoke(message));
             _hubConnection.On<MessageInformationDto>("OnMessageUpdate", message => OnMessageUpdate?.Invoke(message));

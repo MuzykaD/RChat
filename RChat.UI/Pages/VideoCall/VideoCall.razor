@@ -1,0 +1,53 @@
+﻿@inherits VideoCallComponent
+@page "/chats/video"
+
+<PageTitle>WebRtc</PageTitle>
+
+<div class="py-4">
+    <div class="button-container">
+        <RadzenButton id="callButton" Click="AskForConfirmation" Disabled="@_callDisabled">Call</RadzenButton>
+        <RadzenButton id="hangupButton" Click="HangupAction" Disabled="@_hangupDisabled">Hang Up</RadzenButton>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <video class="col col-lg-6 p-0" id="localVideo" autoplay playsinline></video>
+        <video class="col col-lg-6 p-0" id="remoteVideo" autoplay playsinline></video>
+    </div>
+</div>
+
+<style>
+    /* Add or modify styles as needed */
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        margin: 0 10px;
+        padding: 10px 20px;
+        font-size: 18px;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: auto;
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    video {
+        width: 100%;
+        max-width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+</style>

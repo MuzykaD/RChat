@@ -9,7 +9,7 @@
                 <div class="card-body">
                     <h3 class="card-title text-center mb-4">Chat!</h3>
                     <h3 class="card-subtitle text-center mb-4">@(!(ChatViewModel is null) ? ChatViewModel.Name : "Loading")</h3>
-
+                    <RadzenButton Click="() => GoToCall()">Call</RadzenButton>
                     <div class="message-box">
                         @if (InitComplete)
                         {

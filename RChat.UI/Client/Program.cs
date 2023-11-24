@@ -16,6 +16,7 @@ using RChat.UI.Extensions;
 using RChat.UI.Services.ChatService;
 using RChat.UI.Services.MessageService;
 using RChat.UI.Services.SignalClientService;
+using RChat.UI.Services.WebRtcService;
 
 namespace RChat.UI
 {
@@ -31,6 +32,7 @@ namespace RChat.UI
             builder.Services.ConfigureHttpClient(builder.Configuration);
             builder.Services.AddRadzenComponents();
             builder.Services.AddScoped<NotificationService>();
+            builder.Services.AddScoped<DialogService>();
             builder.Services.AddScoped<IJwtTokenParser, JwtTokenParser>();
             builder.Services.AddScoped<IHttpClientPwa, HttpClientPwa>();
             builder.Services.AddScoped<IBlazorAuthService, BlazorAuthService>();
@@ -39,6 +41,7 @@ namespace RChat.UI
             builder.Services.AddScoped<IChatService, ChatService>(); 
             builder.Services.AddScoped<IMessageService, MessageService>();
             builder.Services.AddScoped<ISignalClientService, SignalClientService>();
+            builder.Services.AddScoped<IWebRtcService, WebRtcService>();
 
 
             builder.Services.AddBlazoredLocalStorage();

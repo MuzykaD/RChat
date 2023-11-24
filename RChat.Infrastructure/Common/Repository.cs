@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace RChat.Infrastructure.Common
 {
-    internal class Repository<TEntity, TId> : IRepository<TEntity, TId> where TEntity : class, IDbEntity<TId>
+    public class Repository<TEntity, TId> : IRepository<TEntity, TId> where TEntity : class, IDbEntity<TId>
     {
         private RChatDbContext _context;
         private DbSet<TEntity> Table => _context.Set<TEntity>();

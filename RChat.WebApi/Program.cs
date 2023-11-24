@@ -94,6 +94,7 @@ namespace RChat.WebApi
 
             app.MapControllers();
             app.MapHub<RChatHub>("/rChatHub");
+            app.MapHub<RVideoHub>("/rVideoHub");
 
             app.Run();
         }

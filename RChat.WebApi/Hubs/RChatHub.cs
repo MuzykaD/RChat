@@ -6,10 +6,9 @@ using RChat.Domain.Messages.Dto;
 
 namespace RChat.WebApi.Hubs
 {
-
+    [Authorize]
     public class RChatHub : Hub
-    {
-        [Authorize]
+    {        
         public async Task SendMessageAsync(MessageInformationDto message, NotificationArguments notificationArguments)
         {
             string groupName = $"in-chat-{message.ChatId}";
@@ -59,9 +58,7 @@ namespace RChat.WebApi.Hubs
                 tasks.Add(Groups.AddToGroupAsync(Context.ConnectionId, groupName));
             }
             await Task.WhenAll(tasks);
-        }
-
-
+        }      
 
     }
 }

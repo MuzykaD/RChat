@@ -17,6 +17,6 @@ namespace RChat.UI.Services.SignalClientService
         
         public Task DeleteMessageAsync(MessageInformationDto message);
         public  Task RegisterUserSignalGroupsAsync();
-        Task CallUpdateMessageAsync(MessageInformationDto messageToUpdate);
+        Task CallUpdateMessageAsync(MessageInformationDto messageToUpdate);      
     }
 }

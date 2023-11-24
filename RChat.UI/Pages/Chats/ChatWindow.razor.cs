@@ -151,5 +151,10 @@ namespace RChat.UI.Pages.Chats
                 };
             }
         }
+
+        protected void GoToCall()
+        {
+            NavigationManager.NavigateTo($"/chats/video?chatId={ChatViewModel.Id}");
+        }
     }
 }
