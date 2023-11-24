@@ -1,19 +1,10 @@
 ﻿using FluentAssertions;
 using MockQueryable.Moq;
-using Moq;
 using RChat.Application.Contracts.Users;
 using RChat.Application.Users;
 using RChat.Domain;
 using RChat.Domain.Users;
-using RChat.Infrastructure.Contracts.Common;
-using RChat.Infrastructure.Contracts.UnitOfWork;
 using RChat.Tests.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace RChat.Tests.Unit.Application.Users

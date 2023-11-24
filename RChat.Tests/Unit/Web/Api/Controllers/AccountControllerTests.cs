@@ -5,12 +5,7 @@ using RChat.Application.Contracts.Account;
 using RChat.Application.Contracts.Authentication.JWT;
 using RChat.Domain.Users.DTO;
 using RChat.WebApi.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace RChat.Tests.Unit.Web.Api.Controllers

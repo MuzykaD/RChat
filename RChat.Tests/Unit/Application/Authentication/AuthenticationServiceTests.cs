@@ -5,11 +5,6 @@ using RChat.Application.Contracts.Authentication.JWT;
 using RChat.Domain.Users;
 using RChat.Domain.Users.DTO;
 using RChat.Tests.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace RChat.Tests.Unit.Application.Authentication

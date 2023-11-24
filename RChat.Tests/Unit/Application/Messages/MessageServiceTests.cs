@@ -3,18 +3,11 @@ using Moq;
 using RChat.Application.Contracts.Messages;
 using RChat.Application.Messages;
 using RChat.Domain;
-using RChat.Domain.Chats;
 using RChat.Domain.Messages;
 using RChat.Domain.Messages.Dto;
-using RChat.Domain.Users;
 using RChat.Infrastructure.Contracts.Common;
 using RChat.Infrastructure.Contracts.UnitOfWork;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace RChat.Tests.Unit.Application.Messages

@@ -2,14 +2,8 @@
 using RChat.Application.Contracts.Account;
 using RChat.Domain.Users;
 using RChat.Tests.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using RChat.Domain.Users.DTO;
-using Microsoft.AspNet.Identity;
 using Moq;
 
 namespace RChat.Tests.Unit.Application.Account

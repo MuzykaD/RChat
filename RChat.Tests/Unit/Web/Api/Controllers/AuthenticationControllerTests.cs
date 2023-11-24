@@ -3,18 +3,12 @@ using Moq;
 using RChat.Application.Contracts.Authentication;
 using RChat.Domain.Users.DTO;
 using RChat.WebApi.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace RChat.Tests.Unit.Web.Api.Controllers
 {
     public class AuthenticationControllerTests
     {
-        #region LoginAsync
         [Fact]
         public async Task LoginAsync_ValidData_ReturnsOk()
         {
@@ -46,8 +40,6 @@ namespace RChat.Tests.Unit.Web.Api.Controllers
             //Assert
             Assert.IsType<UnauthorizedObjectResult>(result);
         }
-        #endregion
-        #region RegisteAsync
         [Fact]
         public async Task RegisterAsync_ValidData_ReturnsOk()
         {
@@ -89,6 +81,5 @@ namespace RChat.Tests.Unit.Web.Api.Controllers
             //Assert
             Assert.IsType<BadRequestObjectResult>(result);
         }
-        #endregion
     }
 }
