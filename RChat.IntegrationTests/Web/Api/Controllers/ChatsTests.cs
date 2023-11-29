@@ -1,6 +1,5 @@
 ﻿using Azure;
-using FluentAssertions;
-using FluentAssertions.Execution;
+
 using RChat.Domain.Chats.Dto;
 using RChat.Domain.Repsonses;
 using System.Net.Http.Json;

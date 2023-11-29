@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using FluentAssertions.Execution;
+﻿
 using RChat.Domain.Users.DTO;
 using System.Net.Http.Json;
 

@@ -15,10 +15,9 @@ namespace RChat.IntegrationTests
 {
     public class TestBase
     {
-        protected HttpClient client;
         protected TestApplicationFactory factory;
-        protected SqlDbService _sqlService;
-        protected const string _connectionString = "Server=localhost\\MSSQLSERVER01;Database=RChatDb_Test;Trusted_Connection=True; TrustServerCertificate=True";
+        private SqlDbService _sqlService;
+        private const string _connectionString = "Server=localhost\\MSSQLSERVER01;Database=RChatDb_Test;Trusted_Connection=True; TrustServerCertificate=True";
         public TestBase()
         {
             factory = new();
