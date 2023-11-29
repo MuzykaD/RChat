@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace RChat.IntegrationTests.Web.Api.Controllers
 {
+    [Collection("RChat_Sequence")]
     public class AccountTests : TestBase
     {
         private UserDbSqlHelper _userSqlHelper;
@@ -112,6 +113,12 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             //Clear data
             await _userSqlHelper.RemoveTestAuthenticationUsersAsync(user.Username);
             await _userSqlHelper.RemoveTestAuthenticationUsersAsync(existingUser.Username);
+        }
+
+        [Fact]
+        public async Task Test()
+        {
+            await SeedUsersDataAsync();
         }
     }
 }

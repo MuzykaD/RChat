@@ -27,7 +27,6 @@ namespace RChat.IntegrationTests.Configuration
     {
         //move somewhere else
         private string _connectionString = "Server=localhost\\MSSQLSERVER01;Database=RChatDb_Test;Trusted_Connection=True; TrustServerCertificate=True";
-        private TestJwtTokenGenerator _jwtTokenGenerator = new TestJwtTokenGenerator();
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureTestServices(services =>

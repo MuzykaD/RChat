@@ -12,7 +12,8 @@ using System.Threading.Tasks;
 
 namespace RChat.IntegrationTests.Web.Api.Controllers
 {
-    public class MessagesTests : TestBase
+    [Collection("RChat_Sequence")]
+    public class MessagesTests : TestBase, IAsyncLifetime
     {
         private MessageDbSqlHelper _messageSqlHelper;
         public MessagesTests()
@@ -24,11 +25,10 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
         public async Task DeleteMessageAsync_ValidMessageData_ShouldDeleteMessage()
         {
             //Arrange
-            var messageToDelete = new MessageInformationDto() { Content = "MessageToDelete", SenderId = 7, ChatId = 3, SentAt = DateTime.Now };
-            var id = await _messageSqlHelper.InsertMessageAndGetIdAsync(messageToDelete);
+            int testMessageId = 1;
             var client = await factory.GetClientWithTokenAsync();
             //Act
-            var response = await client.DeleteAsync($"/api/v1/messages?messageId={id}");
+            var response = await client.DeleteAsync($"/api/v1/messages?messageId={testMessageId}");
             //Assert
             response.EnsureSuccessStatusCode();
 
@@ -38,20 +38,17 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
         public async Task DeleteMessageAsync_WrongSenderId_ReturnsBadRequest()
         {
             //Arrange
-            var messageToDelete = new MessageInformationDto() { Content = "MessageToDelete", SenderId = 9, ChatId = 3, SentAt = DateTime.Now };
-            var id = await _messageSqlHelper.InsertMessageAndGetIdAsync(messageToDelete);
+            int testMessageId = 2;
             var client = await factory.GetClientWithTokenAsync();
             //Act
-            var response = await client.DeleteAsync($"/api/v1/messages?messageId={id}");
+            var response = await client.DeleteAsync($"/api/v1/messages?messageId={testMessageId}");
             //Assert
             Assert.False(response.IsSuccessStatusCode);
-
-            await _messageSqlHelper.RemoveTestMessageByIdAsync(id);
         }
         [Fact]
         public async Task CreateMessageAsync_ValidSenderId_MessageCreated()
         {
-            var messageToCreate = new MessageInformationDto() { Content = "MessageToCreateInTest", SenderId = 7, ChatId = 3, SentAt = DateTime.Now };
+            var messageToCreate = new MessageInformationDto() { Content = "MessageToCreateInTest", ChatId = 2, SentAt = DateTime.Now };
             var client = await factory.GetClientWithTokenAsync();
             //Act
             var response = await client.PostAsJsonAsync($"/api/v1/messages", messageToCreate);
@@ -70,11 +67,7 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
         [Fact]
         public async Task UpdateMessageAsync_ValidData_MessageUpdated_OkResult()
         {
-            var messageToUpdate = new MessageInformationDto() { Content = "MessageToUpdateInTest", SenderId = 7, ChatId = 3, SentAt = DateTime.Now };
-            var messageId = await _messageSqlHelper.InsertMessageAndGetIdAsync(messageToUpdate);
-            messageToUpdate.Id = messageId;
-            messageToUpdate.Content = "Message was updated!";
-
+            var messageToUpdate = new MessageInformationDto() { Id = 3, Content = "UPDATED!", SenderId = 999, ChatId = 2};
             var client = await factory.GetClientWithTokenAsync();
             //Act
             var response = await client.PutAsJsonAsync($"/api/v1/messages", messageToUpdate);
@@ -86,9 +79,20 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
                 result.Should().NotBeNull();
                 result.IsSucceed.Should().BeTrue();
             }
+        }
 
+        public async Task InitializeAsync()
+        {
+            await ClearTables();
+            await SeedUsersDataAsync();
+            await SeedChatsDataAsync();
+            await SeedChatUsersDataAsync();
+            await SeedMessagesDataAsync();
+        }
 
-            await _messageSqlHelper.RemoveTestMessageByIdAsync(messageId);
+        public async Task DisposeAsync()
+        {
+            await ClearTables();
         }
     }
 }

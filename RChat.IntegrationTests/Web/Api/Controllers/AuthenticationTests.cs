@@ -1,30 +1,17 @@
 ﻿using Azure;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.Extensions.DependencyInjection;
 using RChat.Domain.Repsonses;
 using RChat.Domain.Users.DTO;
-using RChat.Infrastructure.Contracts.UnitOfWork;
-using RChat.IntegrationTests.Configuration;
 using RChat.IntegrationTests.DbSqlHelpers.UserDbSqlHelper;
-using RChat.IntegrationTests.Fixtures;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace RChat.IntegrationTests.Web.Api.Controllers
 {
-    public class AuthenticationTests : TestBase, IClassFixture<AuthenticationFixture>
-    {
-        private UserDbSqlHelper _userDbSqlHelper;
-        public AuthenticationTests()
-        {
-            _userDbSqlHelper = new UserDbSqlHelper();
-        }
+    [Collection("RChat_Sequence")]
+    public class AuthenticationTests : TestBase, IAsyncLifetime
+    {      
         [Fact]
         public async Task Register_ValidData_UserRegistered_OkResult()
         {
@@ -32,9 +19,9 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             var client = factory.CreateClient();
             var registerDto = new RegisterUserDto()
             {
-                Username = "RegisterUserTest",
-                Email = "registerUserTest@mail.com",
-                Password = "RegisterUser1!"
+                Username = "Test4",
+                Email = "test4@mail.com",
+                Password = "Test4!"
             };
             //Act
             var response = await client.PostAsJsonAsync("/api/v1/authentication/register", registerDto);
@@ -48,7 +35,6 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
                 result.IsSucceed.Should().BeTrue();
                 result.Message.Should().Be("Account created! You can use credentials to log in!");
             }
-            await _userDbSqlHelper.RemoveTestAuthenticationUsersAsync(registerDto.Username);
         }
 
         [Fact]
@@ -58,11 +44,10 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             var client = factory.CreateClient();
             var registerDto = new RegisterUserDto()
             {
-                Username = "ExistingTestUser",
-                Email = "existingUserTest@mail.com",
-                Password = "ExistingUser1!"
+                Username = "anotherAdmin",
+                Email = "admin@mail.com",
+                Password = "Admin1!"
             };
-            await _userDbSqlHelper.InsertTestUserAsync(registerDto);
             //Act
             var response = await client.PostAsJsonAsync("/api/v1/authentication/register", registerDto);
             //Assert
@@ -74,10 +59,8 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
                 result.IsSucceed.Should().BeFalse();
                 result.Message.Should().Be("Account with such email already exists, try another one!");
             }
-            await _userDbSqlHelper.RemoveTestAuthenticationUsersAsync(registerDto.Username);
         }
 
-        // this user is always present in test-db
         [Fact]
         public async Task Login_ValidData_ReturnsToken()
         {
@@ -123,6 +106,17 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
                 result.Should().BeOfType<UserTokenResponse>();
                 result.Token.Should().BeNullOrEmpty();
             }
+        }
+
+        public async Task InitializeAsync()
+        {
+            await ClearTables();
+            await SeedUsersDataAsync();
+        }
+
+        public async Task DisposeAsync()
+        {
+            await ClearTables();
         }
     }
 }

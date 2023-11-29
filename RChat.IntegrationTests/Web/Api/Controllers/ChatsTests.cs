@@ -25,7 +25,8 @@ using System.Threading.Tasks;
 
 namespace RChat.IntegrationTests.Web.Api.Controllers
 {
-    public class ChatsTests : TestBase
+    [Collection("RChat_Sequence")]
+    public class ChatsTests : TestBase, IAsyncLifetime
     {
         private ChatDbSqlHelper _chatDbSqlHelper = new ChatDbSqlHelper();
 
@@ -49,7 +50,7 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
         public async Task GetPrivateChatByEmailAsync_ReturnsPrivateChat()
         {
             //todo
-            int testUserId = 9;
+            int testUserId = 1;
             //Arrange
             var client = await factory.GetClientWithTokenAsync();
             //Act
@@ -68,7 +69,7 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
         [Fact]
         public async Task GetGroupChatByIdAsync_ReturnsValidChat()
         {
-            int testChatId = 1;
+            int testChatId = 2;
             var client = await factory.GetClientWithTokenAsync();
             //Act
             var response = await client.GetAsync($"/api/v1/chats/group/{testChatId}");
@@ -91,7 +92,7 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             var createGroupDto = new CreateGroupChatDto()
             {
                 GroupName = "CreatedGroupChatTest",
-                MembersId = new int[] { 1 }
+                MembersId = new int[] { 1,2 }
             };
             var client = await factory.GetClientWithTokenAsync();
 
@@ -99,7 +100,7 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             var response = await client.PostAsJsonAsync($"/api/v1/chats/group", createGroupDto);
             //Assert
             response.EnsureSuccessStatusCode();
-            await _chatDbSqlHelper.DeleteTestChatDataAsync();
+            await _chatDbSqlHelper.DeleteTestChatDataAsync(createGroupDto.GroupName);
 
         }
 
@@ -119,6 +120,19 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
                 result.Should().BeOfType<GroupsIdentifies>();
                 result.IsSucceed.Should().BeTrue();
             }          
+        }
+
+        public async Task InitializeAsync()
+        {
+            await ClearTables();
+            await SeedUsersDataAsync();
+            await SeedChatsDataAsync();
+            await SeedChatUsersDataAsync();
+        }
+
+        public async Task DisposeAsync()
+        {
+            await ClearTables();
         }
     }
 }

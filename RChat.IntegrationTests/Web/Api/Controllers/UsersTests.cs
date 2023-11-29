@@ -12,8 +12,9 @@ using System.Threading.Tasks;
 
 namespace RChat.IntegrationTests.Web.Api.Controllers
 {
-    public  class UsersTests : TestBase
-    {
+    [Collection("RChat_Sequence")]
+    public  class UsersTests : TestBase, IAsyncLifetime
+    {      
         [Fact]
         public async Task GetUsersInformation_Should_Return_OkResult_With_UsersList()
         {
@@ -29,6 +30,16 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
                 resultData.Should().NotBeNull();
                 resultData.Should().BeOfType<GridListDto<UserInformationDto>>();
             }
+        }
+
+        public async Task InitializeAsync()
+        {
+            await ClearTables();
+            await SeedUsersDataAsync();
+        }
+        public async Task DisposeAsync()
+        {
+            await ClearTables();
         }
     }
 }

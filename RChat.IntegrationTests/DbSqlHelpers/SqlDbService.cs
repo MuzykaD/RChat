@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RChat.IntegrationTests.DbSqlHelpers
 {
-    internal class SqlDbService
+    public class SqlDbService
     {
         private readonly string _connectionString;
         private SqlConnection GetSqlConnection => new(_connectionString);
