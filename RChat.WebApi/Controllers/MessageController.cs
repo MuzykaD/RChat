@@ -19,7 +19,7 @@ namespace RChat.WebApi.Controllers
             _messageService = messageService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetUsersInformation([FromQuery] int page, int size, string? value, string? orderBy, string? orderByType)
+        public async Task<IActionResult> GetMessagesInformationAsync([FromQuery] int page, int size, string? value, string? orderBy, string? orderByType)
                 => Ok(await _messageService.GetMessagesInformationListAsync(new SearchArguments(value, page * size, size, orderBy, orderByType)));
 
         [HttpPost]

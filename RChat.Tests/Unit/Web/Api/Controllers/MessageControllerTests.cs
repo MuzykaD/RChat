@@ -34,7 +34,7 @@ namespace RChat.Tests.Unit.Web.Api.Controllers
             messageServiceMock.Setup(service => service.GetMessagesInformationListAsync(It.IsAny<SearchArguments>()))
                 .ReturnsAsync(expectedResult);
             // Act
-            var result = await controller.GetUsersInformation(page, size, value, orderBy, orderByType);
+            var result = await controller.GetMessagesInformationAsync(page, size, value, orderBy, orderByType);
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.NotNull(okResult.Value);
