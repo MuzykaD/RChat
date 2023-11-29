@@ -14,12 +14,7 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
 {
     [Collection("RChat_Sequence")]
     public class MessagesTests : TestBase, IAsyncLifetime
-    {
-        private MessageDbSqlHelper _messageSqlHelper;
-        public MessagesTests()
-        {
-            _messageSqlHelper = new MessageDbSqlHelper();
-        }
+    {     
 
         [Fact]
         public async Task DeleteMessageAsync_ValidMessageData_ShouldDeleteMessage()
@@ -60,8 +55,6 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
                 result.Should().NotBeNull();
                 result!.Message.Should().NotBeNullOrWhiteSpace();
             }
-
-            await _messageSqlHelper.RemoveTestMessageByIdAsync(int.Parse(result.Message));
         }
 
         [Fact]

@@ -28,7 +28,6 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
     [Collection("RChat_Sequence")]
     public class ChatsTests : TestBase, IAsyncLifetime
     {
-        private ChatDbSqlHelper _chatDbSqlHelper = new ChatDbSqlHelper();
 
         [Fact]
         public async Task GetChatsInformation_Should_Return_OkResult_With_ChatList()
@@ -100,7 +99,6 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             var response = await client.PostAsJsonAsync($"/api/v1/chats/group", createGroupDto);
             //Assert
             response.EnsureSuccessStatusCode();
-            await _chatDbSqlHelper.DeleteTestChatDataAsync(createGroupDto.GroupName);
 
         }
 

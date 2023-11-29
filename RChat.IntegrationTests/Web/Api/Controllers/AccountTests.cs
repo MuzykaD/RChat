@@ -13,26 +13,13 @@ using System.Threading.Tasks;
 namespace RChat.IntegrationTests.Web.Api.Controllers
 {
     [Collection("RChat_Sequence")]
-    public class AccountTests : TestBase
-    {
-        private UserDbSqlHelper _userSqlHelper;
-        private static RegisterUserDto TestAccountUser => new()
-        {
-            Username = "TestAccountUser",
-            Email = "testAccountUser@mail.com",
-            Password = "TestAccountUser1!"
-        };
-        public AccountTests()
-        {
-            _userSqlHelper = new UserDbSqlHelper();
-        }
+    public class AccountTests : TestBase, IAsyncLifetime
+    {              
         [Fact]
         public async Task GetPersonalInformationAsync_ReturnsValidProfileData()
         {
-            //Arrange
-            var client =  factory.CreateClient();
-            await client.PostAsJsonAsync("/api/v1/authentication/register", TestAccountUser);
-            client = await factory.GetClientWithTokenAsync(new() { Email = TestAccountUser.Email, Password = TestAccountUser.Password });
+            //Arrange            
+            var client = await factory.GetClientWithTokenAsync(new() { Email = "test2@mail.com", Password = "Test2!" });
             //Act
             var response = await client.GetAsync("/api/v1/account/profile");
             //Assert
@@ -41,26 +28,21 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             {
                 response.EnsureSuccessStatusCode();
                 result.Should().NotBeNull();
-                result.UserName.Should().Be(TestAccountUser.Username);
-                result.Email.Should().Be(TestAccountUser.Email);
+                result.Id.Should().Be(2);
+                result.UserName.Should().Be("Test2");
+                result.Email.Should().Be("test2@mail.com");
             }
-
-            //Clear data
-            await _userSqlHelper.RemoveTestAuthenticationUsersAsync(TestAccountUser.Username);
         }
 
         [Fact]
         public async Task UpdateProfileAsync_ValidData_ReturnsTrue_ReturnsOkResult()
         {
             //Arrange
-            var user = TestAccountUser;
-            var client = factory.CreateClient();
-            await client.PostAsJsonAsync("/api/v1/authentication/register", user);
-            client = await factory.GetClientWithTokenAsync(new() { Email = user.Email, Password = user.Password });
+            var client = await factory.GetClientWithTokenAsync(new() { Email = "test2@mail.com", Password = "Test2!" });
             var updateUserDto = new UpdateUserDto()
             {
-                UserName = user.Username + "Updated",
-                Email = user.Email,
+                UserName = "Test2Updated",
+                Email = "test2Updated@mail.com",
                 PhoneNumber = "123321123"
             };
             //Act
@@ -74,29 +56,16 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
                 result.IsSucceed.Should().BeTrue();
                 result.Token.Should().NotBeNullOrWhiteSpace();
             }
-
-            //Clear data
-            await _userSqlHelper.RemoveTestAuthenticationUsersAsync(updateUserDto.UserName);
         }
         [Fact]
         public async Task UpdateProfileAsync_TakenEmail_BadRequest()
         {
             //Arrange
-            var user = TestAccountUser;
-
-            var existingUser = TestAccountUser;
-            existingUser.Username = user.Username + "Existing";
-            existingUser.Email = user.Email + "Existing";
-            existingUser.Password = user.Password + "Existing";
-
-            var client = factory.CreateClient();
-            await client.PostAsJsonAsync("/api/v1/authentication/register", user);
-            await client.PostAsJsonAsync("/api/v1/authentication/register", existingUser);
-            client = await factory.GetClientWithTokenAsync(new() { Email = user.Email, Password = user.Password });
+            var client = await factory.GetClientWithTokenAsync(new() { Email = "test2@mail.com", Password = "Test2!" });
             var updateUserDto = new UpdateUserDto()
             {
-                UserName = user.Username + "Updated",
-                Email = user.Email + "Existing",
+                UserName = "Test2Updated",
+                Email = "test1@mail.com", //existing email
                 PhoneNumber = "123321123"
             };
             //Act
@@ -109,16 +78,17 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
                 result.IsSucceed.Should().BeFalse();
                 result.Token.Should().BeNullOrWhiteSpace();
             }
-
-            //Clear data
-            await _userSqlHelper.RemoveTestAuthenticationUsersAsync(user.Username);
-            await _userSqlHelper.RemoveTestAuthenticationUsersAsync(existingUser.Username);
         }
 
-        [Fact]
-        public async Task Test()
+        public async Task InitializeAsync()
         {
+            await ClearTables();
             await SeedUsersDataAsync();
+        }
+
+        public async Task DisposeAsync()
+        {
+            await ClearTables();
         }
     }
 }
