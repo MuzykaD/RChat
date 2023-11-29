@@ -3,7 +3,6 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using RChat.Domain.Repsonses;
 using RChat.Domain.Users.DTO;
-using RChat.IntegrationTests.DbSqlHelpers.UserDbSqlHelper;
 using System.Net.Http.Json;
 
 

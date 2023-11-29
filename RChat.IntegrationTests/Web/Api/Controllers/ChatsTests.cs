@@ -1,27 +1,10 @@
 ﻿using Azure;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-using RChat.Domain.Chats;
 using RChat.Domain.Chats.Dto;
 using RChat.Domain.Repsonses;
-using RChat.Domain.Users.DTO;
-using RChat.Infrastructure.Context;
-using RChat.Infrastructure.Contracts.UnitOfWork;
-using RChat.Infrastructure.UnitOfWork;
-using RChat.IntegrationTests.Configuration;
-using RChat.IntegrationTests.DbSqlHelpers.UserDbSqlHelper;
-using RChat.WebApi.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace RChat.IntegrationTests.Web.Api.Controllers
 {

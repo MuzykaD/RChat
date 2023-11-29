@@ -2,13 +2,7 @@
 using FluentAssertions.Execution;
 using RChat.Domain.Messages.Dto;
 using RChat.Domain.Repsonses;
-using RChat.IntegrationTests.DbSqlHelpers.MessageDbSqlHelper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RChat.IntegrationTests.Web.Api.Controllers
 {
