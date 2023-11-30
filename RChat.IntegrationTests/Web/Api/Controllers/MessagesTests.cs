@@ -2,12 +2,13 @@
 using RChat.Domain.Messages.Dto;
 using RChat.Domain.Repsonses;
 using System.Net.Http.Json;
+using Xunit.Sdk;
 
 namespace RChat.IntegrationTests.Web.Api.Controllers
 {
     [Collection("RChat_Sequence")]
     public class MessagesTests : TestBase, IAsyncLifetime
-    {     
+    {
 
         [Fact]
         public async Task DeleteMessageAsync_ValidMessageData_ShouldDeleteMessage()
@@ -18,7 +19,12 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             //Act
             var response = await client.DeleteAsync($"/api/v1/messages?messageId={testMessageId}");
             //Assert
-            response.EnsureSuccessStatusCode();
+            var messageExists = await CheckIfRecordExists("Messages", "Id", testMessageId);
+            using (new AssertionScope())
+            {
+                response.EnsureSuccessStatusCode();
+                messageExists.Should().BeFalse();
+            }
 
         }
 
@@ -31,7 +37,12 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             //Act
             var response = await client.DeleteAsync($"/api/v1/messages?messageId={testMessageId}");
             //Assert
-            Assert.False(response.IsSuccessStatusCode);
+            var messageExists = await CheckIfRecordExists("Messages", "Id", testMessageId);
+            using (new AssertionScope())
+            {
+                response.IsSuccessStatusCode.Should().BeFalse();
+                messageExists.Should().BeTrue();
+            }
         }
         [Fact]
         public async Task CreateMessageAsync_ValidSenderId_MessageCreated()
@@ -53,17 +64,21 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
         [Fact]
         public async Task UpdateMessageAsync_ValidData_MessageUpdated_OkResult()
         {
-            var messageToUpdate = new MessageInformationDto() { Id = 3, Content = "UPDATED!", SenderId = 999, ChatId = 2};
+            var messageToUpdate = new MessageInformationDto() { Id = 3, Content = "UPDATED!", SenderId = 999, ChatId = 2 };
             var client = await factory.GetClientWithTokenAsync();
             //Act
             var response = await client.PutAsJsonAsync($"/api/v1/messages", messageToUpdate);
             //Assert           
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
+            var messageWithOldContentExists = await CheckIfRecordExists("Messages", "Content", "MessageToUpdateByUser");
+            var messageWithNewContentExists = await CheckIfRecordExists("Messages", "Content", "UPDATED!");
             using (new AssertionScope())
             {
                 result.Should().NotBeNull();
                 result.IsSucceed.Should().BeTrue();
+                messageWithNewContentExists.Should().BeTrue();
+                messageWithOldContentExists.Should().BeFalse();
             }
         }
 

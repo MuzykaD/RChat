@@ -11,6 +11,7 @@ using RChat.Domain.Users.DTO;
 using RChat.Infrastructure.Context;
 using RChat.Infrastructure.Contracts.UnitOfWork;
 using RChat.Infrastructure.UnitOfWork;
+using RChat.IntegrationTests.TestData;
 using RChat.WebApi;
 using System;
 using System.Collections.Generic;
@@ -24,9 +25,7 @@ using Testcontainers.MsSql;
 namespace RChat.IntegrationTests.Configuration
 {
     public class TestApplicationFactory : WebApplicationFactory<Program>
-    {
-        //move somewhere else
-        private string _connectionString = "Server=localhost\\MSSQLSERVER01;Database=RChatDb_Test;Trusted_Connection=True; TrustServerCertificate=True";
+    {      
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureTestServices(services =>
@@ -36,7 +35,7 @@ namespace RChat.IntegrationTests.Configuration
                     services.Remove(descriptor);
                 services.AddDbContext<RChatDbContext>(options =>
                 {
-                    options.UseSqlServer(_connectionString);
+                    options.UseSqlServer(TestDataProvider.TestDataConnectionString);
                 }
                 );
             });

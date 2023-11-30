@@ -25,12 +25,14 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             //Assert
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
+            var userExists = await _sqlService.ExecuteScalarAsync<bool>(SqlScripts.SqlScripts.ExistsScript("AspNetUsers", "Email"), new() { { "@value", registerDto.Email } });
             using (new AssertionScope())
             {
                 result.Should().NotBeNull();
                 result.Should().BeOfType<ApiResponse>();
                 result.IsSucceed.Should().BeTrue();
                 result.Message.Should().Be("Account created! You can use credentials to log in!");
+                userExists.Should().BeTrue();   
             }
         }
 
@@ -49,12 +51,14 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             var response = await client.PostAsJsonAsync("/api/v1/authentication/register", registerDto);
             //Assert
             var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
-            using(new AssertionScope())
+            var userExists = await CheckIfRecordExists("AspNetUsers", "UserName", registerDto.Username);
+            using (new AssertionScope())
             {
                 response.IsSuccessStatusCode.Should().BeFalse();
                 response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
                 result.IsSucceed.Should().BeFalse();
                 result.Message.Should().Be("Account with such email already exists, try another one!");
+                userExists.Should().BeFalse();
             }
         }
 

@@ -42,12 +42,16 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             var response = await client.PutAsJsonAsync("/api/v1/account/update-profile", updateUserDto);
             //Assert
             var result = await response.Content.ReadFromJsonAsync<UserTokenResponse>();
+                      
+            var oldNameUserExists = await CheckIfRecordExists("AspNetUsers", "UserName", "Test2");
+            var newNameUserExists = await CheckIfRecordExists("AspNetUsers", "UserName", updateUserDto.UserName);
             using (new AssertionScope())
             {
                 response.EnsureSuccessStatusCode();
                 result.Should().NotBeNull();
                 result.IsSucceed.Should().BeTrue();
                 result.Token.Should().NotBeNullOrWhiteSpace();
+                (oldNameUserExists, newNameUserExists).Should().Be((false, true));
             }
         }
         [Fact]
@@ -65,11 +69,14 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             var response = await client.PutAsJsonAsync("/api/v1/account/update-profile", updateUserDto);
             //Assert
             var result = await response.Content.ReadFromJsonAsync<UserTokenResponse>();
+            var oldNameUserExists = await CheckIfRecordExists("AspNetUsers", "UserName", "Test2");
+            var newNameUserExists = await CheckIfRecordExists("AspNetUsers", "UserName", updateUserDto.UserName);
             using (new AssertionScope())
             {
                 result.Should().NotBeNull();
                 result.IsSucceed.Should().BeFalse();
                 result.Token.Should().BeNullOrWhiteSpace();
+                (oldNameUserExists, newNameUserExists).Should().Be((true, false));
             }
         }
 

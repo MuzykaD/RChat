@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,14 +17,17 @@ namespace RChat.IntegrationTests
     public class TestBase
     {
         protected TestApplicationFactory factory;
-        private SqlDbService _sqlService;
-        private const string _connectionString = "Server=localhost\\MSSQLSERVER01;Database=RChatDb_Test;Trusted_Connection=True; TrustServerCertificate=True";
+        protected SqlDbService _sqlService;        
         public TestBase()
         {
             factory = new();
-            _sqlService = new(_connectionString);
+            _sqlService = new(TestDataProvider.TestDataConnectionString);
         }
 
+        protected async Task<bool> CheckIfRecordExists(string table, string column, object value)
+        {
+            return await _sqlService.ExecuteScalarAsync<bool>(SqlScripts.SqlScripts.ExistsScript(table, column), new() { { "@value", value } });
+        }
         protected async Task SeedUsersDataAsync()
         {
             var users = TestDataProvider.GetTestUsersList();
@@ -93,7 +97,6 @@ namespace RChat.IntegrationTests
             var query = SqlScripts.SqlScripts.SeedMessagesScripte(messages.Count());
             await _sqlService.ExecuteQueryAsync(query,parameters);
         }
-
         protected async Task ClearTables()
         {
             await _sqlService.ExecuteQueryAsync(SqlScripts.SqlScripts.ClearAllTablesScript());

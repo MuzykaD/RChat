@@ -15,13 +15,13 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
         public async Task GetChatsInformation_Should_Return_OkResult_With_ChatList()
         {
             //Arrange
-            var client = await factory.GetClientWithTokenAsync();           
+            var client = await factory.GetClientWithTokenAsync();
             //Act
             var response = await client.GetAsync("/api/v1/chats?page=0&size=1");
             //Assert
             response.EnsureSuccessStatusCode();
             var resultData = await response.Content.ReadFromJsonAsync<GridListDto<ChatInformationDto>>();
-            using(new AssertionScope())
+            using (new AssertionScope())
             {
                 resultData.Should().NotBeNull();
                 resultData.Should().BeOfType<GridListDto<ChatInformationDto>>();
@@ -39,7 +39,7 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             //Assert
             resposne.EnsureSuccessStatusCode();
             var resultData = await resposne.Content.ReadFromJsonAsync<ChatDto>();
-            using(new AssertionScope())
+            using (new AssertionScope())
             {
                 resultData.Should().NotBeNull();
                 resultData.Should().BeOfType<ChatDto>();
@@ -73,15 +73,18 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             var createGroupDto = new CreateGroupChatDto()
             {
                 GroupName = "CreatedGroupChatTest",
-                MembersId = new int[] { 1,2 }
+                MembersId = new int[] { 1, 2 }
             };
             var client = await factory.GetClientWithTokenAsync();
-
             //Act
             var response = await client.PostAsJsonAsync($"/api/v1/chats/group", createGroupDto);
             //Assert
-            response.EnsureSuccessStatusCode();
-
+            var chatExists = await CheckIfRecordExists("Chats", "Name", createGroupDto.GroupName);
+            using (new AssertionScope())
+            {
+                response.EnsureSuccessStatusCode();
+                chatExists.Should().BeTrue();
+            }
         }
 
         [Fact]
@@ -94,12 +97,12 @@ namespace RChat.IntegrationTests.Web.Api.Controllers
             //Assert
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<GroupsIdentifies>();
-            using( new AssertionScope())
+            using (new AssertionScope())
             {
                 result.Should().NotBeNull();
                 result.Should().BeOfType<GroupsIdentifies>();
                 result.IsSucceed.Should().BeTrue();
-            }          
+            }
         }
 
         public async Task InitializeAsync()

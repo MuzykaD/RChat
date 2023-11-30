@@ -11,6 +11,7 @@ namespace RChat.IntegrationTests.TestData
 {
     internal static class TestDataProvider
     {
+        internal const string TestDataConnectionString = "Server=localhost\\MSSQLSERVER01;Database=RChatDb_Test;Trusted_Connection=True; TrustServerCertificate=True";
         internal static List<User> GetTestUsersList()
         {
             return new List<User>()
