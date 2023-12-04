@@ -71,7 +71,7 @@ namespace RChat.UI.Services.WebRtcService
                 }
             });
 
-            _hub.On<string, int>("AskForConfirmation", async (channel, chatId) =>
+            _hub.On<string, int>("AskClientForConfirmation", async (channel, chatId) =>
             {
                 var result = await _dialogService.Confirm("Incoming call!", $"Call in {channel}", new()
                 {
@@ -100,12 +100,12 @@ namespace RChat.UI.Services.WebRtcService
 
             _hub.On("HangUp", async () =>
             {
-                if (_jsModule == null) throw new InvalidOperationException();
-                _signalingChannel = null;
+                if (_jsModule == null) throw new InvalidOperationException();                
                 await _jsModule.InvokeVoidAsync("hangupAction");
                 OnHangUp.Invoke();
             });
             await _hub.StartAsync();
+            await RegisterUserSignalGroupsAsync();
         }
 
         public async Task Join(string signalingChannel)
@@ -133,7 +133,7 @@ namespace RChat.UI.Services.WebRtcService
             await _jsModule.InvokeVoidAsync("hangupAction");            
             var hub = await GetHub();
             await hub.SendAsync("HangUp", _signalingChannel);
-            _signalingChannel = null;
+           // _signalingChannel = null;
         }
 
         private async Task<HubConnection> GetHub()
@@ -149,7 +149,8 @@ namespace RChat.UI.Services.WebRtcService
 
         public async Task ConfirmationResponse(string channel, bool result)
         {
-            await _hub.SendAsync("ConfirmationResponse", channel, result);
+            var hub = await GetHub();
+            await hub.SendAsync("ConfirmationResponse", channel, result);
         }
 
         [JSInvokable]
@@ -183,14 +184,22 @@ namespace RChat.UI.Services.WebRtcService
 
         public async Task RegisterUserSignalGroupsAsync()
         {
+            var hub = await GetHub();
             var groupIds = await _accountService.GetUserSignalGroupsAsync();
-            await _hub.SendAsync("RegisterMultipleGroupsAsync", groupIds.Result.SignalIdentifiers);
+            await hub.SendAsync("RegisterMultipleGroupsAsync", groupIds.Result.SignalIdentifiers);
         }
 
         public async Task AskForConfirmation(string channel, int chatId)
         {
+            var hub = await GetHub();
             _signalingChannel = channel;
-            await _hub.SendAsync("AskForConfirmation", channel, chatId);
+            await hub.SendAsync("AskForConfirmation", channel, chatId);
+        }
+
+        public async Task StopAsync()
+        {
+            var hub = await GetHub();
+            await hub.StopAsync();
         }
     }
 }

@@ -35,7 +35,7 @@ namespace RChat.WebApi.Hubs
 
         public async Task AskForConfirmation(string channel, int chatId)
         {
-            await Clients.OthersInGroup(channel).SendAsync("AskForConfirmation", channel, chatId);
+            await Clients.OthersInGroup(channel).SendAsync("AskClientForConfirmation", channel, chatId);
         }
 
         public async Task ConfirmationResponse(string channel, bool isConfirmed)

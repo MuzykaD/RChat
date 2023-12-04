@@ -37,7 +37,7 @@ namespace RChat.UI.Pages.Authentication
                 await SignalClientService.RegisterUserSignalGroupsAsync();
 
                 await RtcService.StartAsync();
-                await RtcService.RegisterUserSignalGroupsAsync();
+               // await RtcService.RegisterUserSignalGroupsAsync();
 
                 NotificationService.Notify(new() { Severity = NotificationSeverity.Success, Summary = @"Welcome back!", Duration = 3000 });
                 NavigationManager.NavigateTo("/");

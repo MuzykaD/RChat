@@ -28,7 +28,7 @@ namespace RChat.UI.Shared
                 await SignalClientService.RegisterUserSignalGroupsAsync();
 
                 await RtcService.StartAsync();
-                await RtcService.RegisterUserSignalGroupsAsync();
+               // await RtcService.RegisterUserSignalGroupsAsync();
                
             }
         }
