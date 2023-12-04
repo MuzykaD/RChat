@@ -14,10 +14,10 @@ const offerOptions = {
 const servers = {
     iceServers: [
         {
-           // urls: "TURN:freestun.net:3479",
-            urls: "turn:coturn.myserver.com:3478",
-            username: "username",
-            credential: "password"
+            //urls: "turn:coturn.myserver.com:3478",
+            urls: 'TURN:freestun.net:3479',
+            username: 'free',
+            credential: 'free'
         }
     ]
 }
