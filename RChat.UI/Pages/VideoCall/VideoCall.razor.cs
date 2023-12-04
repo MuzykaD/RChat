@@ -75,6 +75,7 @@ namespace RChat.UI.Pages.VideoCall
             _callDisabled = false;
             _hangupDisabled = true;
             await _module.InvokeVoidAsync("setRemoteStreamToNull");
+            NavigationManager.NavigateTo("/");
         }
 
         protected async void OnHangUp()
@@ -95,6 +96,9 @@ namespace RChat.UI.Pages.VideoCall
             if (_callDisabled)
                 await RtcService.Hangup();
             NavigationManager.LocationChanged -= LocationChanged;
+            RtcService.OnRemoteStreamAcquired -= RtcOnOnRemoteStreamAcquired;
+            RtcService.OnCallAccepted -= OnCallAccepted;
+            RtcService.OnHangUp -= OnHangUp;
             await _module.InvokeVoidAsync("stopCameraAndMic", _stream);
         }       
     }

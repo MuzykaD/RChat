@@ -1,19 +1,20 @@
 ﻿"use strict";
 // Set up media stream constant and parameters.
 const mediaStreamConstraints = {
-    video: true
-   // audio: true
+    video: true,
+    audio: true
 };
 
 // Set up to exchange only video.
 const offerOptions = {
-    offerToReceiveVideo: 1
-   // offerToReceiveAudio: 1
+    offerToReceiveVideo: 1,
+    offerToReceiveAudio: 1
 };
 
 const servers = {
     iceServers: [
         {
+           // urls: "TURN:freestun.net:3479",
             urls: "turn:coturn.myserver.com:3478",
             username: "username",
             credential: "password"
@@ -116,6 +117,8 @@ export async function processCandidate(candidateText) {
 export function hangupAction() {
     peerConnection.close();
     peerConnection = null;
+    isOffering = false;
+    isOffered = false;
     console.log("Ending call.");
 }
 

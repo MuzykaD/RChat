@@ -101,6 +101,7 @@ namespace RChat.UI.Services.WebRtcService
             _hub.On("HangUp", async () =>
             {
                 if (_jsModule == null) throw new InvalidOperationException();
+                _signalingChannel = null;
                 await _jsModule.InvokeVoidAsync("hangupAction");
                 OnHangUp.Invoke();
             });
@@ -110,8 +111,8 @@ namespace RChat.UI.Services.WebRtcService
         public async Task Join(string signalingChannel)
         {
             _signalingChannel = signalingChannel;
-            var hub = await GetHub();
-            await hub.SendAsync("join", signalingChannel);
+            //var hub = await GetHub();
+           // await hub.SendAsync("join", signalingChannel);
         }
         public async Task<IJSObjectReference> StartLocalStream()
         {
@@ -129,10 +130,10 @@ namespace RChat.UI.Services.WebRtcService
         public async Task Hangup()
         {
             if (_jsModule == null) throw new InvalidOperationException();
-            await _jsModule.InvokeVoidAsync("hangupAction");
-
+            await _jsModule.InvokeVoidAsync("hangupAction");            
             var hub = await GetHub();
             await hub.SendAsync("HangUp", _signalingChannel);
+            _signalingChannel = null;
         }
 
         private async Task<HubConnection> GetHub()
@@ -188,6 +189,7 @@ namespace RChat.UI.Services.WebRtcService
 
         public async Task AskForConfirmation(string channel, int chatId)
         {
+            _signalingChannel = channel;
             await _hub.SendAsync("AskForConfirmation", channel, chatId);
         }
     }
