@@ -71,7 +71,7 @@ namespace RChat.UI.Services.WebRtcService
                 }
             });
 
-            _hub.On<string, int>("AskClientForConfirmation", async (channel, chatId) =>
+            _hub.On<string, int>("AskForConfirmation", async (channel, chatId) =>
             {
                 var result = await _dialogService.Confirm("Incoming call!", $"Call in {channel}", new()
                 {
@@ -91,16 +91,14 @@ namespace RChat.UI.Services.WebRtcService
                 {
                     OnCallAccepted.Invoke();
                     await Call();
+                    return;
                 }
-                else
-                {
-                    await _dialogService.Alert("It seems that user is busy", "Call declined!");
-                }
+                await _dialogService.Alert("It seems that user is busy", "Call declined!");
             });
 
             _hub.On("HangUp", async () =>
             {
-                if (_jsModule == null) throw new InvalidOperationException();                
+                if (_jsModule == null) throw new InvalidOperationException();
                 await _jsModule.InvokeVoidAsync("hangupAction");
                 OnHangUp.Invoke();
             });
@@ -111,8 +109,8 @@ namespace RChat.UI.Services.WebRtcService
         public async Task Join(string signalingChannel)
         {
             _signalingChannel = signalingChannel;
-            //var hub = await GetHub();
-           // await hub.SendAsync("join", signalingChannel);
+            var hub = await GetHub();
+            await hub.SendAsync("Join", signalingChannel);
         }
         public async Task<IJSObjectReference> StartLocalStream()
         {
@@ -130,10 +128,10 @@ namespace RChat.UI.Services.WebRtcService
         public async Task Hangup()
         {
             if (_jsModule == null) throw new InvalidOperationException();
-            await _jsModule.InvokeVoidAsync("hangupAction");            
+            await _jsModule.InvokeVoidAsync("hangupAction");
+
             var hub = await GetHub();
             await hub.SendAsync("HangUp", _signalingChannel);
-           // _signalingChannel = null;
         }
 
         private async Task<HubConnection> GetHub()

@@ -49,7 +49,7 @@ namespace RChat.WebApi
             {
                 options.AddDefaultPolicy(policy =>
                 {
-                    policy.WithOrigins("https://localhost:7206")
+                    policy.WithOrigins("https://localhost:7206", "https://chatappdenysmr.azurewebsites.net/")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();

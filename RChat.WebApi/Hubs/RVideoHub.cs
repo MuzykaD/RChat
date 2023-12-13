@@ -23,19 +23,17 @@ namespace RChat.WebApi.Hubs
 
         public async Task RegisterMultipleGroupsAsync(IEnumerable<int> groupsId)
         {
-            var tasks = new List<Task>();
             string groupName;
-            foreach (int id in groupsId)
+            foreach (var item in groupsId)
             {
-                groupName = $"video-{id}";
-                tasks.Add(Groups.AddToGroupAsync(Context.ConnectionId, groupName));
+                groupName = $"video-{item}";
+                await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
             }
-            await Task.WhenAll(tasks);
         }
 
         public async Task AskForConfirmation(string channel, int chatId)
         {
-            await Clients.OthersInGroup(channel).SendAsync("AskClientForConfirmation", channel, chatId);
+            await Clients.OthersInGroup(channel).SendAsync("AskForConfirmation", channel, chatId);
         }
 
         public async Task ConfirmationResponse(string channel, bool isConfirmed)
