@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
+using RChat.Application.Assistant;
+using RChat.Application.Contracts.Assistant;
 using RChat.Domain.Common;
 using RChat.Domain.Messages.Dto;
 using RChat.UI.Common.ComponentHelpers.ChatWindowBase;
@@ -27,6 +29,8 @@ namespace RChat.UI.Pages.Chats
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public IJSRuntime Js { get; set; }
+        [Inject]
+        public IAssistantMessageService ChatAssistantService { get; set; }
         [CascadingParameter]
         public ISignalClientService SignalClientService { get; set; }
         [Parameter]
@@ -52,6 +56,7 @@ namespace RChat.UI.Pages.Chats
             var state = await StateProvider.GetAuthenticationStateAsync();
             _currentUserEmail = state.User.FindFirstValue(ClaimTypes.Email);
             _currentUserId = int.Parse(state.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            await ChatAssistantService.InitializeAsync(ChatViewModel.Assistant.Id);
             //
             NavigationManager.LocationChanged += async (sender, arg) => await LocationChanged(sender, arg);
             SignalClientService.OnMessageReceived -= OnMessageReceived;
@@ -152,6 +157,11 @@ namespace RChat.UI.Pages.Chats
             }
         }
 
+        protected async Task OnChatAssistAsync(string message)
+        {
+            var result = await ChatAssistantService.SendMessageAndGetResponseAsync(message);
+            MessageValue = result;
+        }
         protected void GoToCall()
         {
             NavigationManager.NavigateTo($"/chats/video?chatId={ChatViewModel.Id}");

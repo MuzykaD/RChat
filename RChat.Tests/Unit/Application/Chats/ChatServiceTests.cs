@@ -8,6 +8,7 @@ using Xunit;
 using RChat.Domain.Chats;
 using RChat.Application.Chats;
 using System.Linq.Expressions;
+using RChat.Application.Contracts.Assistant;
 
 namespace RChat.Tests.Unit.Application.Chats
 {
@@ -20,11 +21,12 @@ namespace RChat.Tests.Unit.Application.Chats
             var unitOfWorkMock = new Mock<IUnitOfWork>();
             var userRepoMock = new Mock<IRepository<User, int>>();
             var chatRepoMock = new Mock<IRepository<Chat, int>>();
+            var factory = new Mock<IAssistantFactory>();
 
             unitOfWorkMock.Setup(u => u.GetRepository<User, int>()).Returns(userRepoMock.Object);
             unitOfWorkMock.Setup(u => u.GetRepository<Chat, int>()).Returns(chatRepoMock.Object);
 
-            var chatService = new ChatService(unitOfWorkMock.Object);
+            var chatService = new ChatService(unitOfWorkMock.Object, factory.Object);
 
             var groupName = "TestGroup";
             var creatorId = 1;
@@ -44,10 +46,11 @@ namespace RChat.Tests.Unit.Application.Chats
             // Arrange
             var unitOfWorkMock = new Mock<IUnitOfWork>();
             var chatRepoMock = new Mock<IRepository<Chat, int>>();
+            var factory = new Mock<IAssistantFactory>();
 
             unitOfWorkMock.Setup(u => u.GetRepository<Chat, int>()).Returns(chatRepoMock.Object);
 
-            var sut = new ChatService(unitOfWorkMock.Object);
+            var sut = new ChatService(unitOfWorkMock.Object, factory.Object);
 
             var searchArguments = new SearchArguments(null, 1, 2, null, null);
 
@@ -82,10 +85,12 @@ namespace RChat.Tests.Unit.Application.Chats
             // Arrange
             var unitOfWorkMock = new Mock<IUnitOfWork>();
             var chatRepoMock = new Mock<IRepository<Chat, int>>();
+            var factory = new Mock<IAssistantFactory>();
+
 
             unitOfWorkMock.Setup(u => u.GetRepository<Chat, int>()).Returns(chatRepoMock.Object);
 
-            var chatService = new ChatService(unitOfWorkMock.Object);
+            var chatService = new ChatService(unitOfWorkMock.Object, factory.Object);
 
             var currentUserId = 1;
             var chatId = 1;
@@ -119,11 +124,12 @@ namespace RChat.Tests.Unit.Application.Chats
             var unitOfWorkMock = new Mock<IUnitOfWork>();
             var chatRepoMock = new Mock<IRepository<Chat, int>>();
             var userRepoMock = new Mock<IRepository<User, int>>();
+            var factory = new Mock<IAssistantFactory>();
 
             unitOfWorkMock.Setup(u => u.GetRepository<Chat, int>()).Returns(chatRepoMock.Object);
             unitOfWorkMock.Setup(u => u.GetRepository<User, int>()).Returns(userRepoMock.Object);
 
-            var chatService = new ChatService(unitOfWorkMock.Object);
+            var chatService = new ChatService(unitOfWorkMock.Object, factory.Object);
 
             var currentUserId = 1;
             var secondUserId = 2;
@@ -150,11 +156,12 @@ namespace RChat.Tests.Unit.Application.Chats
             var unitOfWorkMock = new Mock<IUnitOfWork>();
             var chatRepoMock = new Mock<IRepository<Chat, int>>();
             var userRepoMock = new Mock<IRepository<User, int>>();
+            var factory = new Mock<IAssistantFactory>();
 
             unitOfWorkMock.Setup(u => u.GetRepository<Chat, int>()).Returns(chatRepoMock.Object);
             unitOfWorkMock.Setup(u => u.GetRepository<User, int>()).Returns(userRepoMock.Object);
 
-            var chatService = new ChatService(unitOfWorkMock.Object);
+            var chatService = new ChatService(unitOfWorkMock.Object, factory.Object);
 
             var currentUserId = 1;
             var secondUserId = 2;
@@ -178,10 +185,12 @@ namespace RChat.Tests.Unit.Application.Chats
         public async Task GetGroupsIdentifiersAsync_ReturnValidId()
         {
             var unitOfWorkMock = new Mock<IUnitOfWork>();
+            var factory = new Mock<IAssistantFactory>();
             var chatRepoMock = new Mock<IRepository<Chat, int>>();
 
+
             unitOfWorkMock.Setup(u => u.GetRepository<Chat, int>()).Returns(chatRepoMock.Object);
-            var chatService = new ChatService(unitOfWorkMock.Object);
+            var chatService = new ChatService(unitOfWorkMock.Object, factory.Object);
             var user = new User() { Id = 1 };
             var anotherUser = new User() { Id = 2 };
             var existingChats = new List<Chat>(){

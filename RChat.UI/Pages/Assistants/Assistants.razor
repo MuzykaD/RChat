@@ -1,0 +1,24 @@
+﻿@using HigLabo.OpenAI;
+@using RChat.Domain.Assistants;
+@page "/assistant"
+@inherits AssistantComponent
+@attribute [Authorize]
+
+<h3>Assistant Files!</h3>
+<!--
+<InputFile OnChange="async (args) => await OnFileUploadChange(args)"></InputFile>
+<RadzenButton Disabled="!IsFileChosen" Text="Upload" Click=@( async () => await UploadFileActionAsync()) class="d-block mt-4" />
+    -->
+<RadzenDataGrid Data="@EntityList" TItem="Assistant">
+    <EmptyTemplate>
+        <p style="color: lightgrey; font-size: 24px; text-align: center; margin: 2rem;">No records to display.</p>
+    </EmptyTemplate>
+    <Columns>
+        <RadzenDataGridColumn TItem="Assistant" Property="Name" Title="Assistant Name"> </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Assistant">
+            <Template Context="data">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1"  Text="Update Files!"></RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>

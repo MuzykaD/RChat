@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RChat.Tests", "RChat.Tests\
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "RChat.Database", "RChat.Database\RChat.Database.sqlproj", "{6B6FA66B-1324-4D42-B98F-374772E6B31B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RChat.IntegrationTests", "RChat.IntegrationTests\RChat.IntegrationTests.csproj", "{B963F501-98AF-4F52-A4AB-67F2C6856B1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RChat.IntegrationTests", "RChat.IntegrationTests\RChat.IntegrationTests.csproj", "{B963F501-98AF-4F52-A4AB-67F2C6856B1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -22,6 +22,10 @@
                                         <RadzenButton ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click="async () => await DeleteMessageAsync(message.Id)">Delete</RadzenButton>
                                         <RadzenButton ButtonStyle="ButtonStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click="() => UpdateMessageButtonEvent(message.Id)">Edit</RadzenButton>
                                     }
+                                    else
+                                    {
+                                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click="async () => await OnChatAssistAsync(message.Content)">Assist</RadzenButton>
+                                    }
                                     <p class="content">@message.Content</p>
                                     <p class="sent-at">@message.SentAt.ToString("g")</p>
                                     <hr class="message-divider">

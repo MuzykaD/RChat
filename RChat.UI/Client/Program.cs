@@ -17,6 +17,8 @@ using RChat.UI.Services.ChatService;
 using RChat.UI.Services.MessageService;
 using RChat.UI.Services.SignalClientService;
 using RChat.UI.Services.WebRtcService;
+using RChat.Application.Assistant;
+using RChat.Application.Contracts.Assistant;
 
 namespace RChat.UI
 {
@@ -42,6 +44,8 @@ namespace RChat.UI
             builder.Services.AddScoped<IMessageService, MessageService>();
             builder.Services.AddScoped<ISignalClientService, SignalClientService>();
             builder.Services.AddScoped<IWebRtcService, WebRtcService>();
+            builder.Services.AddScoped<IAssistantMessageService, AssistantMessageService>();
+            builder.Services.AddScoped<IAssistantFileService, AssistantFileService>();
 
 
             builder.Services.AddBlazoredLocalStorage();

@@ -38,6 +38,7 @@ namespace RChat.Infrastructure.Configurations
                             j.HasKey("ChatsId", "UsersId");
                             j.ToTable("ChatUser");
                         });
+            builder.HasOne(c => c.Assistant).WithOne(c => c.Chat);
 
         }
     }

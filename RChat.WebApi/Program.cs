@@ -23,6 +23,9 @@ using RChat.Domain.Messages;
 using RChat.Application.Contracts.Messages;
 using RChat.Application.Messages;
 using RChat.WebApi.Hubs;
+using RChat.Application.Contracts.Assistant;
+using RChat.Application.Assistant;
+using System.Text.Json.Serialization;
 
 namespace RChat.WebApi
 {
@@ -37,7 +40,8 @@ namespace RChat.WebApi
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("RChatDbConnection"));
             });
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+            .AddJsonOptions(options => { options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -73,6 +77,9 @@ namespace RChat.WebApi
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<IMessageService, MessageService>();
+            builder.Services.AddScoped<IAssistantFileService, AssistantFileService>();
+            builder.Services.AddScoped<IAssistantService, AssistantService>();
+            builder.Services.AddScoped<IAssistantFactory, AssistantFactory>();
            
            
            

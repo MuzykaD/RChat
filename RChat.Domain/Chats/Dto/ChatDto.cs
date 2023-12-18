@@ -1,4 +1,5 @@
-﻿using RChat.Domain.Messages.Dto;
+﻿using RChat.Domain.Assistants;
+using RChat.Domain.Messages.Dto;
 using RChat.Domain.Users.DTO;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,6 @@ namespace RChat.Domain.Chats.Dto
         public HashSet<UserInformationDto> Users { get; set; }
         public List<MessageInformationDto> Messages { get; set; }
         public bool IsGroupChat { get; set; }
+        public Assistant Assistant { get; set; }
     }
 }

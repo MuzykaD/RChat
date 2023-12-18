@@ -1,4 +1,5 @@
-﻿using RChat.Domain.Common;
+﻿using RChat.Domain.Assistants;
+using RChat.Domain.Common;
 using RChat.Domain.Messages;
 using RChat.Domain.Users;
 using System;
@@ -18,6 +19,6 @@ namespace RChat.Domain.Chats
         public bool IsGroupChat { get; set; }
         public virtual ICollection<User> Users { get; set; } = new HashSet<User>();
         public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
-
+        public Assistant Assistant { get; set; }
     }
 }

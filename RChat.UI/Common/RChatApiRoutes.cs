@@ -13,5 +13,7 @@
         public const string ChatsPrivate = "/api/v1/chats/private";
         public const string ChatsGroup = "/api/v1/chats/group";
         public const string Messages = "/api/v1/messages";
+        public const string Upload = "/api/v1/upload";
+        public const string Assistants = "/api/v1/assistants";
     }
 }
