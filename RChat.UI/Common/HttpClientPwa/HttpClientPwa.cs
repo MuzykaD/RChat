@@ -94,5 +94,10 @@ namespace RChat.UI.Common.HttpClientPwa
         {
             await HttpClient.DeleteAsync(url);
         }
+
+        public async Task SendPostRequestAsync<TArgument>(string url, TArgument data)
+        {
+            await HttpClient.PostAsJsonAsync(url, data);
+        }
     }
 }

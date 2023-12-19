@@ -10,7 +10,8 @@ namespace RChat.Application.Contracts.Assistant
     public interface IAssistantFileService : IAssistantInitializer
     {
         public Task<List<FileObject>> GetAllFilesAsync();
-        public Task AddFileAsync(string fileName, byte[] fileBytes, string purpose);
+        public Task<FileUploadResponse> AddFileAsync(string fileName, byte[] fileBytes, string purpose);
+        public Task AttachFileToAssistantAsync(string assistantId, string fileId);
         public Task RemoveFileAsync(string fileId);
     }
 }

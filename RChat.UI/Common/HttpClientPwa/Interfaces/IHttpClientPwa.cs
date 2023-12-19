@@ -3,6 +3,7 @@
     public interface IHttpClientPwa
     {
         public Task<ApiRequestResult<TResult>> SendPostRequestAsync<TArgument, TResult>(string url, TArgument data);
+        public Task SendPostRequestAsync<TArgument>(string url, TArgument data);
         public Task<ApiRequestResult<TResult>> SendPutRequestAsync<TArgument, TResult>(string url, TArgument data);
         public Task<ApiRequestResult<TResult>> SendGetRequestAsync< TResult>(string url);
         public Task SendDeleteRequestAsync(string url);

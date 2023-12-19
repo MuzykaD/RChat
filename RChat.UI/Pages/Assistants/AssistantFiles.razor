@@ -1,0 +1,26 @@
+﻿@page "/assistant-files/{AssistantId}"
+@inherits AssistantFilesComponent
+@using RChat.Domain.AssistantFiles;
+@using RChat.Domain.Assistants;
+@attribute [Authorize]
+
+<h3>AssistantFiles</h3>
+
+
+<InputFile OnChange="async (args) => await OnFileUploadChange(args)"></InputFile>
+<RadzenButton Disabled="!IsFileChosen" Text="Upload" Click=@( async () => await UploadFileActionAsync()) class="d-block mt-4" />
+    
+<RadzenDataGrid Data="@EntityList" TItem="AssistantFile">
+    <EmptyTemplate>
+        <p style="color: lightgrey; font-size: 24px; text-align: center; margin: 2rem;">No records to display.</p>
+    </EmptyTemplate>
+    <Columns>
+        <RadzenDataGridColumn TItem="AssistantFile" Property="Name" Title="FileName"> </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="AssistantFile" Property="CreatedAt" Title="CreatedAt"> </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="AssistantFile">
+            <Template Context="data">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter" Click="async() => await DeleteFileActionAsync(data.Id)" Icon="info" class="m-1" Text="Delete"></RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
