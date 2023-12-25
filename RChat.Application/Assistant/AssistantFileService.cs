@@ -34,14 +34,15 @@ namespace RChat.Application.Assistant
             var files = await OpenAIClient.FilesAsync();
             return files.Data;
         }
-
+        // to check another way
         public async Task RemoveFileAsync(string fileId)
         {
+            var assistantFileUrl = $"https://api.openai.com/v1/assistants/{_currentAssistantId}/files/{fileId}";
+            var fileUrl = $"https://api.openai.com/v1/files/{fileId}";
             OpenAIClient.HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", $"{_assistantApiKey}");
             OpenAIClient.HttpClient.DefaultRequestHeaders.Add("OpenAI-Beta", "assistants=v1");
-            var url = $"https://api.openai.com/v1/assistants/{_currentAssistantId}/files/{fileId}";
-            var result = await OpenAIClient.HttpClient.DeleteAsync(url);
-
+            await OpenAIClient.HttpClient.DeleteAsync(assistantFileUrl);
+            await OpenAIClient.HttpClient.DeleteAsync(fileUrl);
         }
 
         public async Task InitializeAsync(string assistantId)

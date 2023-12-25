@@ -14,6 +14,7 @@ namespace RChat.Domain.Assistants
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public string Instructions { get; set; }
         public int ChatId { get; set; }
         public Chat Chat { get; set; }
         public  ICollection<AssistantFile> AssistantFiles { get; set; } = new List<AssistantFile>();

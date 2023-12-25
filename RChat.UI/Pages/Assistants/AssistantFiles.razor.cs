@@ -31,8 +31,6 @@ namespace RChat.UI.Pages.Assistants
             await AssistantFileService.InitializeAsync(AssistantId);
             var apiResponse = await HttpClientPwa.SendGetRequestAsync<GridListDto<AssistantFile>>(RChatApiRoutes.AssistantFiles + $"?assistantId={AssistantId}");
             EntityList = apiResponse.Result.SelectedEntities.ToList();
-
-
         }
 
         
@@ -45,7 +43,10 @@ namespace RChat.UI.Pages.Assistants
                 var file = new CreateAssistantFileDto() { Name = ChosenFile.Name, Id = fileAddResult.Id, AssistantId = AssistantId, CreatedAt = DateTime.Now };
                 await HttpClientPwa.SendPostRequestAsync<CreateAssistantFileDto, ApiRequestResult<ApiResponse>>(RChatApiRoutes.AssistantFile, file);
                 await AssistantFileService.AttachFileToAssistantAsync(AssistantId, file.Id);
+                // Investigate issue
                 EntityList.Add(new() { Name = file.Name, CreatedAt = file.CreatedAt } );
+                EntityList = new List<AssistantFile>(EntityList);
+                //
                 ChosenFile = null;
                 StateHasChanged();
             }

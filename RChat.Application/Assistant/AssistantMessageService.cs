@@ -33,7 +33,7 @@ namespace RChat.Application.Assistant
                 Thread_Id = _currentThreadId!,
                 Assistant_Id = _currentAssistantId!
             };
-            var run = await OpenAIClient.RunCreateAsync(runCreateParameter);
+            var run = await OpenAIClient.RunCreateAsync(runCreateParameter);           
             return await GetAssistantResponseAsync(_currentThreadId!, run.Id);    
         }
 

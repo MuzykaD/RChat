@@ -10,6 +10,7 @@ using RChat.Domain.Users;
 using RChat.Infrastructure.Contracts.UnitOfWork;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
@@ -40,7 +41,8 @@ namespace RChat.Application.Chats
                 IsGroupChat = true,
                 Users = chatUsers.ToList(),
                 CreatorId = creatorId,
-                Assistant = new() { Id = assistantResponse.Id, Name = assistantResponse.Name }
+                Assistant = new() { Id = assistantResponse.Id, Name = assistantResponse.Name,
+                                    Instructions = assistantResponse.Instructions}
             };
             await chatRepos.CreateAsync(chat);
             await _unitOfWork.SaveChangesAsync();
@@ -124,7 +126,7 @@ namespace RChat.Application.Chats
                 };
                 newChat.Name = $"{string.Join("-", newChat.Users.Select(u => u.UserName))}";
                 var assistantResponse = await _assistantFactory.CreateAssistantForGroupAsync(newChat.Name);
-                newChat.Assistant = new() { Id = assistantResponse.Id, Name = assistantResponse.Name };
+                newChat.Assistant = new() { Id = assistantResponse.Id, Name = assistantResponse.Name, Instructions = assistantResponse.Instructions };
                 await chatRepository.CreateAsync(newChat);
                 await _unitOfWork.SaveChangesAsync();
                 return newChat;

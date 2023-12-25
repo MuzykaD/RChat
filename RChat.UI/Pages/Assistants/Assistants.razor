@@ -4,7 +4,7 @@
 @inherits AssistantComponent
 @attribute [Authorize]
 
-<h3>Assistant Files!</h3>
+<h3>Assistants!</h3>
 
 <RadzenDataGrid Data="@EntityList" TItem="Assistant">
     <EmptyTemplate>
@@ -14,7 +14,7 @@
         <RadzenDataGridColumn TItem="Assistant" Property="Name" Title="Assistant Name"> </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Assistant">
             <Template Context="data">
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click="() => NavigateToAssistantFiles(data.Id)" Text="Update Files!"></RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click="() => NavigateToAssistantInfo(data.Id)" Text="Go to info!"></RadzenButton>
             </Template>
         </RadzenDataGridColumn>
     </Columns>

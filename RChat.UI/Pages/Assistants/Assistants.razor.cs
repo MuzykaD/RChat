@@ -32,13 +32,18 @@ namespace RChat.UI.Pages.Assistants
 
         protected override async Task OnInitializedAsync()
         {
-            var assistants = await HttpClientPwa.SendGetRequestAsync<GridListDto<Assistant>>(RChatApiRoutes.Assistants);
+            var assistants = await HttpClientPwa.SendGetRequestAsync<GridListDto<Assistant>>(RChatApiRoutes.AssistantsAvailable);
             EntityList = assistants.Result.SelectedEntities.ToList();
 
         }
         protected void NavigateToAssistantFiles(string assistantId)
         {
             NavigationManager.NavigateTo($"/assistant-files/{assistantId}");
+        }
+
+        protected void NavigateToAssistantInfo(string assistantId) 
+        {
+            NavigationManager.NavigateTo($"/assistant-info/{assistantId}");
         }
     }
 }
