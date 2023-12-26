@@ -18,5 +18,6 @@
         public const string Assistants = "/api/v1/assistants";
         public const string AssistantFiles = "/api/v1/assistants/files";
         public const string AssistantFile = "/api/v1/assistants/file";
+        public const string Shopping = "/api/v1/Shopping";
     }
 }

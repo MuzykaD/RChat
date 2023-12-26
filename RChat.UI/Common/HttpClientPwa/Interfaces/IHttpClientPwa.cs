@@ -7,6 +7,7 @@
         public Task<ApiRequestResult<TResult>> SendPutRequestAsync<TArgument, TResult>(string url, TArgument data);
         public Task<ApiRequestResult<TResult>> SendGetRequestAsync< TResult>(string url);
         public Task SendDeleteRequestAsync(string url);
+        public Task<string> GetAsStringAsync(string url);
         void TryAddJwtToken(string token);
         void TryDeleteJwtToken();
     }

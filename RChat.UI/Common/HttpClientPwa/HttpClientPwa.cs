@@ -99,5 +99,10 @@ namespace RChat.UI.Common.HttpClientPwa
         {
             await HttpClient.PostAsJsonAsync(url, data);
         }
+
+        public async Task<string> GetAsStringAsync(string url)
+        {
+            return await HttpClient.GetStringAsync(url);
+        }
     }
 }

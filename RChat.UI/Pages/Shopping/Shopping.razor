@@ -1,0 +1,27 @@
+﻿@using RChat.Domain.Shopping;
+@using RChat.UI.ViewModels.Shopping;
+@attribute [Authorize]
+@page "/shopping";
+@inherits ShoppingComponent
+<h3>Shopping</h3>
+
+<RadzenTextBox Placeholder="Search" @bind-Value=@SearchValue TValue="string"/>
+<RadzenButton Disabled="@string.IsNullOrWhiteSpace(SearchValue)" ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click=@(() => SearchProductsAsync()) Text="Search!" />
+<RadzenDataGrid Data="@EntityList" TItem="ShoppingProduct">
+    <EmptyTemplate>
+        <p style="color: lightgrey; font-size: 24px; text-align: center; margin: 2rem;">No records to display.</p>
+    </EmptyTemplate>
+    <Columns>       
+        <RadzenDataGridColumn TItem="ShoppingProduct" Property="ImageUrl" Title="Image">
+            <Template Context="data">
+                <RadzenImage Path="@data.ImageUrl" class="rz-gravatar" AlternateText="@(data.Name)" />
+            </Template>           
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ShoppingProduct" Property="Name" Title="Creator Name"> </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ShoppingProduct">
+            <Template Context="data">
+                <RadzenLink Path="@data.ProductUrl" Text="Go to page" />
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>

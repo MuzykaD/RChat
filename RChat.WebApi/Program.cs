@@ -80,6 +80,8 @@ namespace RChat.WebApi
             builder.Services.AddScoped<IAssistantFileService, AssistantFileService>();
             builder.Services.AddScoped<IAssistantService, AssistantService>();
             builder.Services.AddScoped<IAssistantFactory, AssistantFactory>();
+            builder.Services.AddScoped<IShoppingAssistantService, ShoppingAssistantService>();
+            builder.Services.AddScoped<IHtmlScrapper, HtmlScrapper>();
            
            
            
