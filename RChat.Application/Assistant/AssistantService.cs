@@ -28,7 +28,7 @@ namespace RChat.Application.Assistant
             OpenAIClient = new OpenAIClient(configuration["AssistantsApiKey"]!);
         }
 
-        public async Task CreateAssitantFileAsync(CreateAssistantFileDto createFileDto)
+        public async Task CreateAssitantFileAsync(int currentUserId, CreateAssistantFileDto createFileDto)
         {
             var filesRepo = _unitOfWork.GetRepository<AssistantFile, string>();
             var newFile = new AssistantFile()
@@ -37,6 +37,7 @@ namespace RChat.Application.Assistant
                 Name = createFileDto.Name,
                 AssistantId = createFileDto.AssistantId,
                 CreatedAt = createFileDto.CreatedAt,
+                UserId = currentUserId
             };
             await filesRepo.CreateAsync(newFile);
             await _unitOfWork.SaveChangesAsync();

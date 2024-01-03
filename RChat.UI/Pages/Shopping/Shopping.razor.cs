@@ -13,15 +13,15 @@ namespace RChat.UI.Pages.Shopping
     public class ShoppingComponent : ComponentBase
     {
         [Inject]
-        public IHttpClientPwa HttpClientPwa { get; set; }
-        [Inject] 
-        public IShoppingAssistantService ShoppingAssistantService { get; set; }
+        public IHttpClientPwa HttpClientPwa { get; set; }      
         public List<ShoppingProduct> EntityList { get; set; } = new();
         public string SearchValue { get; set; }
+        public int Amount { get; set; } = 3;
+        public bool ProgressBarVisible { get; set; } = false;
 
         protected async override Task OnInitializedAsync()
         {
-            await ShoppingAssistantService.InitializeAsync("asst_7mGXlx3iUrxvFwlCh6TBpXK6");
+            
         }
 
         protected async Task SearchProductsAsync()
@@ -29,8 +29,10 @@ namespace RChat.UI.Pages.Shopping
             if(!string.IsNullOrWhiteSpace(SearchValue))
             {
                 var queryValue = SearchValue.Replace(' ', '+');
-                var result = await HttpClientPwa.SendGetRequestAsync<GridListDto<ShoppingProduct>>(RChatApiRoutes.Shopping + $"?searchValue={queryValue}");
+                ProgressBarVisible = true;
+                var result = await HttpClientPwa.SendGetRequestAsync<GridListDto<ShoppingProduct>>(RChatApiRoutes.Shopping + $"?searchValue={queryValue}&amount={Amount}");
                 EntityList = result.Result.SelectedEntities.ToList();
+                ProgressBarVisible = false;
                 StateHasChanged();
             }
                

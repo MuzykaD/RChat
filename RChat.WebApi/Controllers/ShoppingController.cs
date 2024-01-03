@@ -15,28 +15,28 @@ namespace RChat.WebApi.Controllers
     {
         protected IShoppingAssistantService ShoppingAssistantService { get; set; }
         protected IHtmlScrapper HtmlScrapper { get; set; }
-        protected string ShopUrl { get; set; }
+        private string _shopUrl;
+        private string _shoppingAssistantId;
         public ShoppingController(IShoppingAssistantService shoppingAssistantService,
                                   IHtmlScrapper htmlScrapper,
                                   IConfiguration config)
         {
             ShoppingAssistantService = shoppingAssistantService;
             HtmlScrapper = htmlScrapper;
-            ShopUrl = config["ShopUrl"]!;
+            _shopUrl = config["ShopUrl"]!;
+            _shoppingAssistantId = config["ShoppingAssistantId"]!;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProductsFromPage([FromQuery] string searchValue)
+        public async Task<IActionResult> GetProductsFromPage([FromQuery] string searchValue, [FromQuery] int amount)
         {
             await ShoppingAssistantService.InitializeAsync("asst_7mGXlx3iUrxvFwlCh6TBpXK6");
-            var fullUrl = ShopUrl + searchValue.Replace(' ', '+');
-            var htmlPage = await HtmlScrapper.GetPageAsStringByUrlAsync(fullUrl);
+           // var fullUrl = _shopUrl + searchValue.Replace(' ', '+');
+            var htmlPage = await HtmlScrapper.GetPageAsStringByUrlAsync("s?k=" + searchValue.Replace(' ', '+'));
             var htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(htmlPage);
-            var nodes = htmlDocument.DocumentNode
-                .Descendants("div").Where(n => n.Attributes.Contains("data-component-type") && n.Attributes["data-component-type"].Value.Equals("s-search-result")
-                && n.Attributes["data-component-type"] != null).ToList();
-            var result = await ShoppingAssistantService.GetListOfShoppingProductsAsync(nodes.Select(n => n.OuterHtml).ToArray());
+            var nodes = await HtmlScrapper.GetNodesWithAttributeByValueAsync(htmlDocument, "data-component-type", "s-search-result");
+            var result = await ShoppingAssistantService.GetListOfShoppingProductsAsync(nodes.Select(n => n.OuterHtml).Take(amount).ToArray());
 
             return Ok(new GridListDto<ShoppingProduct>()
             {

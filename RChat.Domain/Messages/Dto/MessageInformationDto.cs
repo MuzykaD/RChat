@@ -14,5 +14,6 @@ namespace RChat.Domain.Messages.Dto
         public int SenderId { get; set; }
         public string? SenderEmail { get; set; }
         public int ChatId { get; set; }
+        public bool IsAssistnatGenerated { get; set; }
     }
 }

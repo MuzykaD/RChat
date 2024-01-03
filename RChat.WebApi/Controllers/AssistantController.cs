@@ -45,7 +45,8 @@ namespace RChat.WebApi.Controllers
         [HttpPost("file")]
         public async Task<IActionResult> CreateAssistantFileAsync([FromBody] CreateAssistantFileDto createFileDto)
         {
-            await AssistantService.CreateAssitantFileAsync(createFileDto);
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            await AssistantService.CreateAssitantFileAsync(int.Parse(currentUserId), createFileDto);
             return Ok(new ApiResponse() { IsSucceed = true });
         }
 

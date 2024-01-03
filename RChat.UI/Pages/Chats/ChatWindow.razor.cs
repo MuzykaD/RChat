@@ -46,7 +46,7 @@ namespace RChat.UI.Pages.Chats
         public string? MessageValue { get; set; }
         protected MessageInformationDto? MessageToUpdate { get; set; }
         protected bool UpdateModeEnabled { get; set; }
-
+        protected bool IsLastMessageAssistantGenerated = false;
         protected async override Task OnInitializedAsync()
         {
             var apiResponse = await ChatService.GetPrivateChatByUserIdAsync(UserId);
@@ -74,7 +74,8 @@ namespace RChat.UI.Pages.Chats
             if (!string.IsNullOrWhiteSpace(MessageValue))
             {
                 var message = new MessageInformationDto()
-                { SenderId = _currentUserId, SenderEmail = _currentUserEmail, ChatId = ChatViewModel.Id, Content = MessageValue, SentAt = DateTime.Now };
+                { SenderId = _currentUserId, SenderEmail = _currentUserEmail, ChatId = ChatViewModel.Id, Content = MessageValue, SentAt = DateTime.Now, IsAssistnatGenerated = IsLastMessageAssistantGenerated };
+                IsLastMessageAssistantGenerated = false;
                 var messageId = await MessageService.SendMessageAsync(message);
                 message.Id = messageId;
                 var notificationArguments = new NotificationArguments()
@@ -160,6 +161,7 @@ namespace RChat.UI.Pages.Chats
         protected async Task OnChatAssistAsync(string message)
         {
             var result = await ChatAssistantService.SendMessageAndGetResponseAsync(message);
+            IsLastMessageAssistantGenerated = true;
             MessageValue = result;
         }
         protected void GoToCall()

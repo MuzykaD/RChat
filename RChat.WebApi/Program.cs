@@ -42,7 +42,10 @@ namespace RChat.WebApi
             });
             builder.Services.AddControllers()
             .AddJsonOptions(options => { options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; });
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddHttpClient("ShoppingHttpClient", client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["ShopUrl"]!);
+            });
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddSignalR(options =>
@@ -81,7 +84,8 @@ namespace RChat.WebApi
             builder.Services.AddScoped<IAssistantService, AssistantService>();
             builder.Services.AddScoped<IAssistantFactory, AssistantFactory>();
             builder.Services.AddScoped<IShoppingAssistantService, ShoppingAssistantService>();
-            builder.Services.AddScoped<IHtmlScrapper, HtmlScrapper>();
+            builder.Services.AddSingleton<IHtmlScrapper, HtmlScrapper>();
+            builder.Services.AddSingleton<IShoppingHttpClientService, ShoppingHttpClientService>();
            
            
            

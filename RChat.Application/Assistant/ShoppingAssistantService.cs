@@ -44,12 +44,10 @@ namespace RChat.Application.Assistant
 
         public async Task<List<ShoppingProduct>> GetListOfShoppingProductsAsync(string[] htmlCards)
         {
-            var results = new List<ShoppingProduct>();
-            
-
+            var results = new List<ShoppingProduct>();          
             var tasks = new List<Task<string>>();
 
-            foreach (var htmlCard in htmlCards.Take(3))
+            foreach (var htmlCard in htmlCards)
             {
                 if (string.IsNullOrWhiteSpace(_currentThreadId))
                     await CreateThreadAsync();

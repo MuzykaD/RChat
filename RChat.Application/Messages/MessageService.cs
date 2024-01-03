@@ -37,6 +37,7 @@ namespace RChat.Application.Messages
                     Content = message.Content,
                     ChatId = message.ChatId,
                     SentAt = message.SentAt,
+                    IsAssistantGenerated = message.IsAssistnatGenerated
                 };
                 await messageRepository.CreateAsync(newMessage);
                 await _unitOfWork.SaveChangesAsync();

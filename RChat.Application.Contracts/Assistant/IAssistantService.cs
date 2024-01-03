@@ -12,7 +12,7 @@ namespace RChat.Application.Contracts.Assistant
 {
     public interface IAssistantService
     {
-        Task CreateAssitantFileAsync(CreateAssistantFileDto createFileDto);
+        Task CreateAssitantFileAsync(int currentUserId,CreateAssistantFileDto createFileDto);
         Task DeleteAssitantFileAsync(string fileId);
         Task UpdateAssistantAsync(string assistantId, AssistantUpdateDto assistantUpdateDto);
         Task<AssistantInfoDto> GetAssistantInfoByIdAsync(string assistantId);

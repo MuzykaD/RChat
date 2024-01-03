@@ -4,8 +4,12 @@
 @page "/shopping";
 @inherits ShoppingComponent
 <h3>Shopping</h3>
-
+<RadzenProgressBarCircular Visible="@ProgressBarVisible"ShowValue="true" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large">
+    <Template>Wait</Template>
+</RadzenProgressBarCircular>
 <RadzenTextBox Placeholder="Search" @bind-Value=@SearchValue TValue="string"/>
+<RadzenNumeric Min="1" Max="8" @bind-Value=@Amount InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+
 <RadzenButton Disabled="@string.IsNullOrWhiteSpace(SearchValue)" ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click=@(() => SearchProductsAsync()) Text="Search!" />
 <RadzenDataGrid Data="@EntityList" TItem="ShoppingProduct">
     <EmptyTemplate>
@@ -17,7 +21,7 @@
                 <RadzenImage Path="@data.ImageUrl" class="rz-gravatar" AlternateText="@(data.Name)" />
             </Template>           
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ShoppingProduct" Property="Name" Title="Creator Name"> </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ShoppingProduct" Property="Name" Title="Name"> </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ShoppingProduct">
             <Template Context="data">
                 <RadzenLink Path="@data.ProductUrl" Text="Go to page" />

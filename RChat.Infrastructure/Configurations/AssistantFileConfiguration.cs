@@ -14,6 +14,7 @@ namespace RChat.Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<AssistantFile> builder)
         {
             builder.HasOne(af => af.Assistant).WithMany(a => a.AssistantFiles);
+            builder.HasOne(af => af.User).WithMany(u => u.UploadedFiles);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using RChat.Domain.Assistants;
 using RChat.Domain.Common;
+using RChat.Domain.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,7 @@ namespace RChat.Domain.AssistantFiles
         public string Name { get; set; }
         public string AssistantId { get; set; }
         public Assistant Assistant { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
     }
 }
