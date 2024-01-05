@@ -7,14 +7,10 @@ using RChat.Domain.Chats;
 using RChat.Domain.Chats.Dto;
 using RChat.Domain.Repsonses;
 using RChat.Domain.Users;
+using RChat.Infrastructure.Contracts.Common;
 using RChat.Infrastructure.Contracts.UnitOfWork;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace RChat.Application.Chats
 {
@@ -22,37 +18,45 @@ namespace RChat.Application.Chats
     {
         private IUnitOfWork _unitOfWork;
         private IAssistantFactory _assistantFactory;
+        private IRepository<Chat, int> _chatRepository;
+        private IRepository<User, int> _userRepository;
 
         public ChatService(IUnitOfWork unitOfWork, IAssistantFactory factory)
         {
             _unitOfWork = unitOfWork;
+            _chatRepository = _unitOfWork.GetRepository<Chat, int>();
+            _userRepository = _unitOfWork.GetRepository<User, int>();
             _assistantFactory = factory;
         }
 
         public async Task<bool> CreatePublicGroupAsync(string groupName, int creatorId, IEnumerable<int> membersId)
         {
-            var userRepo = _unitOfWork.GetRepository<User, int>();
-            var chatRepos = _unitOfWork.GetRepository<Chat, int>();
-            var chatUsers = await userRepo.GetAllAsync(u => membersId.Contains(u.Id));
+
+            var chatUsers = await _userRepository.GetAllAsync(u => membersId.Contains(u.Id));
             var assistantResponse = await _assistantFactory.CreateAssistantForGroupAsync(groupName);
+
             var chat = new Chat()
             {
                 Name = groupName,
                 IsGroupChat = true,
                 Users = chatUsers.ToList(),
                 CreatorId = creatorId,
-                Assistant = new() { Id = assistantResponse.Id, Name = assistantResponse.Name,
-                                    Instructions = assistantResponse.Instructions}
+                Assistant = new()
+                {
+                    Id = assistantResponse.Id,
+                    Name = assistantResponse.Name,
+                    Instructions = assistantResponse.Instructions
+                }
             };
-            await chatRepos.CreateAsync(chat);
+
+            await _chatRepository.CreateAsync(chat);
             await _unitOfWork.SaveChangesAsync();
             return chat.Id != 0;
         }
 
         public async Task<GridListDto<ChatInformationDto>> GetChatsInformationListAsync(SearchArguments searchArguments)
         {
-            var chatRepository = _unitOfWork.GetRepository<Chat, int>();
-            var infoQuery = chatRepository
+            var infoQuery = _chatRepository
                 .GetAllAsQueryable()
                 .Select(c =>
             new ChatInformationDto()
@@ -62,7 +66,7 @@ namespace RChat.Application.Chats
                 CreatorName = c.Creator == null ? null : c.Creator.UserName,
                 UsersCount = c.Users.Count(),
                 IsGroup = c.IsGroupChat,
-                
+
             });
             if (searchArguments.SearchRequired)
                 infoQuery = QueryBuilder<ChatInformationDto>.BuildSearchQuery(infoQuery, searchArguments.Value!);
@@ -77,28 +81,29 @@ namespace RChat.Application.Chats
             };
         }
 
-        public async Task<Chat> GetGroupChatByIdAsync(int currentUserId,int chatId)
+        public async Task<Chat> GetGroupChatByIdAsync(int currentUserId, int chatId)
         {
-            var chatRepository = _unitOfWork.GetRepository<Chat, int>();
-            var chat =  chatRepository
+            var chat = _chatRepository
                 .GetAllIncluding(c => c.Users, c => c.Messages, c => c.Assistant)
                 .FirstOrDefault(c => c.Id == chatId);
+
             if (!chat.Users.Any(c => c.Id == currentUserId))
                 await AddUserToGroupChat(currentUserId, chatId);
+
             return await Task.FromResult(chat);
         }
 
         private async Task AddUserToGroupChat(int currentUserId, int chatId)
         {
-            var userRepo = _unitOfWork.GetRepository<User, int>();
-            var chatRepos = _unitOfWork.GetRepository<Chat, int>();
-            var user = await userRepo.GetByIdAsync(currentUserId);
-            var chat =  chatRepos
+            var user = await _userRepository.GetByIdAsync(currentUserId);
+            var chat = _chatRepository
                 .GetAllIncluding(c => c.Users)
                 .FirstOrDefault(c => c.Id == chatId);
+
             chat.Users.Add(user);
-            chatRepos.Update(chat);
-            await _unitOfWork.SaveChangesAsync();   
+
+            _chatRepository.Update(chat);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         /// <summary>
@@ -110,8 +115,8 @@ namespace RChat.Application.Chats
         /// <returns> required private chat </returns>
         public async Task<Chat?> GetPrivateChatByUsersIdAsync(int currentUserId, int secondUserId)
         {
-            var chatRepository = _unitOfWork.GetRepository<Chat, int>();
-            var requiredChat = chatRepository.GetAllIncluding(c => c.Users, c => c.Messages, c => c.Assistant).FirstOrDefault(
+
+            var requiredChat = _chatRepository.GetAllIncluding(c => c.Users, c => c.Messages, c => c.Assistant).FirstOrDefault(
                 c => !c.IsGroupChat &&
                 c.Users.All(u => u.Id == currentUserId || u.Id == secondUserId));
 
@@ -127,7 +132,7 @@ namespace RChat.Application.Chats
                 newChat.Name = $"{string.Join("-", newChat.Users.Select(u => u.UserName))}";
                 var assistantResponse = await _assistantFactory.CreateAssistantForGroupAsync(newChat.Name);
                 newChat.Assistant = new() { Id = assistantResponse.Id, Name = assistantResponse.Name, Instructions = assistantResponse.Instructions };
-                await chatRepository.CreateAsync(newChat);
+                await _chatRepository.CreateAsync(newChat);
                 await _unitOfWork.SaveChangesAsync();
                 return newChat;
             }
@@ -136,8 +141,11 @@ namespace RChat.Application.Chats
 
         public async Task<IEnumerable<int>> GetGroupsIdentifiersAsync(int currentUserId)
         {
-            var chatRepo =  _unitOfWork.GetRepository<Chat, int>();
-            var result = chatRepo.GetAllIncluding(c => c.Users).Where(c => c.Users.Any(u => u.Id.Equals(currentUserId))).Select(c => c.Id).ToList();
+            var result = _chatRepository
+                .GetAllIncluding(c => c.Users)
+                .Where(c => c.Users.Any(u => u.Id.Equals(currentUserId)))
+                .Select(c => c.Id).ToList();
+
             return await Task.FromResult(result);
         }
     }

@@ -43,14 +43,11 @@ namespace RChat.UI.Pages.Assistants
                 var file = new CreateAssistantFileDto() { Name = ChosenFile.Name, Id = fileAddResult.Id, AssistantId = AssistantId, CreatedAt = DateTime.Now };
                 await HttpClientPwa.SendPostRequestAsync<CreateAssistantFileDto, ApiRequestResult<ApiResponse>>(RChatApiRoutes.AssistantFile, file);
                 await AssistantFileService.AttachFileToAssistantAsync(AssistantId, file.Id);
-                // Investigate issue
                 EntityList.Add(new() { Name = file.Name, CreatedAt = file.CreatedAt } );
                 EntityList = new List<AssistantFile>(EntityList);
-                //
                 ChosenFile = null;
                 StateHasChanged();
             }
-            StateHasChanged();
         }
         private async Task<byte[]> ChosenFileToByteArrayAsync()
         {
@@ -70,21 +67,6 @@ namespace RChat.UI.Pages.Assistants
         protected async Task OnFileUploadChange(InputFileChangeEventArgs args)
         {
             ChosenFile = args.File;
-        }
-
-       
-       public void OnProgress(UploadProgressArgs args, string name)
-        {
-            Console.WriteLine($"{args.Progress}% '{name}' / {args.Loaded} of {args.Total} bytes.");
-
-            if (args.Progress == 100)
-            {
-                foreach (var file in args.Files)
-                {
-                    Console.WriteLine($"Uploaded: {file.Name} / {file.Size} bytes");
-                }
-            }
-        }
-             
+        }                
     }
 }

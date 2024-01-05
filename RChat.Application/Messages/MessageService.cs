@@ -8,6 +8,7 @@ using RChat.Domain.Chats.Dto;
 using RChat.Domain.Messages;
 using RChat.Domain.Messages.Dto;
 using RChat.Domain.Repsonses;
+using RChat.Infrastructure.Contracts.Common;
 using RChat.Infrastructure.Contracts.UnitOfWork;
 using System;
 using System.Collections.Generic;
@@ -22,15 +23,16 @@ namespace RChat.Application.Messages
     public class MessageService : IMessageService
     {
         private IUnitOfWork _unitOfWork;
+        private IRepository<Message, int> _messageRepository;
 
         public MessageService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+            _messageRepository = _unitOfWork.GetRepository<Message, int>();
         }
 
         public async Task<int?> CreateMessageAsync(int senderId, MessageInformationDto message)
-        {
-            var messageRepository = _unitOfWork.GetRepository<Message, int>();            
+        {          
                 Message newMessage = new()
                 {
                     SenderId = senderId,
@@ -39,18 +41,19 @@ namespace RChat.Application.Messages
                     SentAt = message.SentAt,
                     IsAssistantGenerated = message.IsAssistnatGenerated
                 };
-                await messageRepository.CreateAsync(newMessage);
+
+                await _messageRepository.CreateAsync(newMessage);
                 await _unitOfWork.SaveChangesAsync();
                 return newMessage.Id;
         }
 
         public async Task<bool> DeleteMessageAsync(int messageId, int currentUserId)
         {
-            var messageRepository = _unitOfWork.GetRepository<Message, int>();
-            var message = await messageRepository.GetByIdAsync(messageId);
+
+            var message = await _messageRepository.GetByIdAsync(messageId);
             if (message.SenderId == currentUserId)
             {
-                await messageRepository.DeleteAsync(messageId);
+                await _messageRepository.DeleteAsync(messageId);
                 return true;
             }
             else
@@ -59,8 +62,7 @@ namespace RChat.Application.Messages
 
         public async Task<GridListDto<MessageInformationDto>> GetMessagesInformationListAsync(SearchArguments searchArguments)
         {
-            var messageRepository = _unitOfWork.GetRepository<Message, int>();
-            var query = messageRepository.GetAllAsQueryable();
+            var query = _messageRepository.GetAllIncluding(c => c.Chat, c => c.Sender);
             if (searchArguments.SearchRequired)
                 query = QueryBuilder<Message>.BuildSearchQuery(query, searchArguments.Value!);
 
@@ -68,28 +70,30 @@ namespace RChat.Application.Messages
                 query = QueryBuilder<Message>.BuildOrderByQuery(query, searchArguments.OrderBy!, searchArguments.OrderByType!);
 
             var totalCount = query.Count();
-            var chatInfo =
-                query
+            var chatInfo = query
                 .Skip(searchArguments.Skip)
                 .Take(searchArguments.Take)
                 .Select(c => c.ToMessageInformationDto()).ToList();
-            return new GridListDto<MessageInformationDto>()
+
+            return await Task.FromResult(new GridListDto<MessageInformationDto>()
             {
                 SelectedEntities = chatInfo,
                 TotalCount = totalCount
-            };
+            });
         }
 
         public async Task<bool> UpdateMessageAsync(int currentUserId, MessageInformationDto message)
         {
-            var messageRepo = _unitOfWork.GetRepository<Message, int>();
-            var messageToUpdate = await messageRepo.GetByIdAsync(message.Id);
+            var messageToUpdate = await _messageRepository.GetByIdAsync(message.Id);
+
             if(messageToUpdate == null)
                 return false;
+
             if(messageToUpdate.Id == message.Id && messageToUpdate.SenderId == message.SenderId && message.SenderId == currentUserId)
             {
                 messageToUpdate.Content = message.Content;
-                messageRepo.Update(messageToUpdate);
+
+                _messageRepository.Update(messageToUpdate);
                 await _unitOfWork.SaveChangesAsync();
                 return true;
             }

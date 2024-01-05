@@ -7,6 +7,7 @@ using RChat.Domain.AssistantFiles;
 using RChat.Domain.Assistants.Dto;
 using RChat.Domain.Chats;
 using RChat.Domain.Users;
+using RChat.Infrastructure.Contracts.Common;
 using RChat.Infrastructure.Contracts.UnitOfWork;
 using System;
 using System.Collections.Generic;
@@ -22,15 +23,21 @@ namespace RChat.Application.Assistant
     {
         private IUnitOfWork _unitOfWork;
         private OpenAIClient OpenAIClient { get; set; }
+        private IRepository<Chat, int> _chatRepository;
+        private IRepository<AssistantFile, string> _assistantFileRepository;
+        private IRepository<Domain.Assistants.Assistant, string> _assistantRepository;
         public AssistantService(IUnitOfWork unitOfWork, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
+            _chatRepository = _unitOfWork.GetRepository<Chat, int>();
+            _assistantFileRepository = _unitOfWork.GetRepository<AssistantFile, string>();
+            _assistantRepository = _unitOfWork.GetRepository<Domain.Assistants.Assistant, string>();
             OpenAIClient = new OpenAIClient(configuration["AssistantsApiKey"]!);
         }
 
         public async Task CreateAssitantFileAsync(int currentUserId, CreateAssistantFileDto createFileDto)
         {
-            var filesRepo = _unitOfWork.GetRepository<AssistantFile, string>();
+
             var newFile = new AssistantFile()
             {
                 Id = createFileDto.Id,
@@ -39,24 +46,23 @@ namespace RChat.Application.Assistant
                 CreatedAt = createFileDto.CreatedAt,
                 UserId = currentUserId
             };
-            await filesRepo.CreateAsync(newFile);
+            await _assistantFileRepository.CreateAsync(newFile);
             await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteAssitantFileAsync(string fileId)
         {
-            var filesRepo = _unitOfWork.GetRepository<AssistantFile, string>();
-            await filesRepo.DeleteAsync(fileId);
+            await _assistantFileRepository.DeleteAsync(fileId);
         }
 
         public async Task UpdateAssistantAsync(string assistantId,AssistantUpdateDto assistantUpdateDto)
         {
             //db update
-            var assistantRepo = _unitOfWork.GetRepository<Domain.Assistants.Assistant, string>();
-            var assistant = await assistantRepo.GetByIdAsync(assistantId);
+            var assistant = await _assistantRepository.GetByIdAsync(assistantId);
             assistant.Instructions = assistantUpdateDto.Instructions;
             assistant.Name = assistantUpdateDto.Name;
-            assistantRepo.Update(assistant);
+            _assistantRepository.Update(assistant);
+
             await _unitOfWork.SaveChangesAsync();
 
             //open ai data update
@@ -71,8 +77,7 @@ namespace RChat.Application.Assistant
 
         public async Task<AssistantInfoDto> GetAssistantInfoByIdAsync(string assistantId)
         {
-            var assistantRepo = _unitOfWork.GetRepository<Domain.Assistants.Assistant, string>();
-            var assistant = assistantRepo.GetAllAsQueryable()
+            var assistant = _assistantRepository.GetAllAsQueryable()
                                           .Where(a => a.Id.Equals(assistantId))
                                           .Select(a => new AssistantInfoDto()
                                           {
@@ -86,21 +91,17 @@ namespace RChat.Application.Assistant
 
         public async Task<List<Domain.Assistants.Assistant>> GetAvailableAssistantsAsync(int userId)
         {
-            var chatRepo = _unitOfWork.GetRepository<Chat, int>();
-            var groupIdentifiers = chatRepo.GetAllIncluding(c => c.Users).Where(c => c.Users.Any(u => u.Id.Equals(userId))).Select(c => c.Id).ToList();
+            var groupIdentifiers = _chatRepository.GetAllIncluding(c => c.Users).Where(c => c.Users.Any(u => u.Id.Equals(userId))).Select(c => c.Id).ToList();
 
-            var assistantRepo = _unitOfWork.GetRepository<Domain.Assistants.Assistant, string>();
 
-            var assistants = assistantRepo.GetAllIncluding(a => a.AssistantFiles).Where(a => groupIdentifiers.Contains(a.ChatId)).ToList();
+            var assistants = _assistantRepository.GetAllIncluding(a => a.AssistantFiles).Where(a => groupIdentifiers.Contains(a.ChatId)).ToList();
 
             return await Task.FromResult(assistants);
         }
 
         public async Task<List<AssistantFile>> GetFilesByAssistantIdAsync(string assistantId)
         {
-            var filesRepo = _unitOfWork.GetRepository<AssistantFile, string>();
-
-            var result = await filesRepo.GetAllAsync(af => af.AssistantId.Equals(assistantId));
+            var result = await _assistantFileRepository.GetAllAsync(af => af.AssistantId.Equals(assistantId));
             return result.ToList();
         }
     }

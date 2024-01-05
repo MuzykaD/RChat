@@ -16,7 +16,7 @@
                             @foreach (var message in ChatViewModel.Messages)
                             {
                                 <div class="message-container">
-                                    <p class="sender">@message.SenderId  @(message.IsAssistnatGenerated? "AI" : "")</p>
+                                    <p class="sender">@message.SenderUserName  @(message.IsAssistnatGenerated? "AI" : "")</p>
                                     @if (message.SenderId == _currentUserId)
                                     {
                                         <RadzenButton ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click="async () => await DeleteMessageAsync(message.Id)">Delete</RadzenButton>

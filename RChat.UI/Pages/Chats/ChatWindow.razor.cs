@@ -17,7 +17,7 @@ using System.Security.Claims;
 
 namespace RChat.UI.Pages.Chats
 {
-    public partial class ChatWindowComponent : ComponentBase, IChatWindowBase
+    public partial class ChatWindowComponent : ComponentBase, IChatWindowBase, IDisposable
     {
         [Inject]
         public IChatService ChatService { get; set; }
@@ -59,11 +59,8 @@ namespace RChat.UI.Pages.Chats
             await ChatAssistantService.InitializeAsync(ChatViewModel.Assistant.Id);
             //
             NavigationManager.LocationChanged += async (sender, arg) => await LocationChanged(sender, arg);
-            SignalClientService.OnMessageReceived -= OnMessageReceived;
             SignalClientService.OnMessageReceived += OnMessageReceived;
-            SignalClientService.OnMessageDelete -= OnMessageDeleted;
             SignalClientService.OnMessageDelete += OnMessageDeleted;
-            SignalClientService.OnMessageUpdate -= OnMessageUpdate;
             SignalClientService.OnMessageUpdate += OnMessageUpdate;
             await SignalClientService.JoinChatGroupAsync(ChatViewModel.Id);
             InitComplete = true;
@@ -167,6 +164,13 @@ namespace RChat.UI.Pages.Chats
         protected void GoToCall()
         {
             NavigationManager.NavigateTo($"/chats/video?chatId={ChatViewModel.Id}");
+        }
+
+        public void Dispose()
+        {
+            SignalClientService.OnMessageReceived -= OnMessageReceived;
+            SignalClientService.OnMessageDelete -= OnMessageDeleted;
+            SignalClientService.OnMessageUpdate -= OnMessageUpdate;
         }
     }
 }

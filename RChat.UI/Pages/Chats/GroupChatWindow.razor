@@ -19,7 +19,7 @@
                                     @foreach (var message in ChatViewModel.Messages)
                                     {
                                         <div class="message-container">
-                                            <p class="sender">@message.SenderId</p>
+                                            <p class="sender">@message.SenderUserName</p>
                                             @if (message.SenderId == _currentUserId)
                                             {
                                                 <RadzenButton ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click="async () => await DeleteMessageAsync(message.Id)">Delete</RadzenButton>
@@ -73,7 +73,6 @@
 </div>
 
 <style>
-    /* Add or modify styles as needed */
     .container {
         max-width: 1400px;
     }

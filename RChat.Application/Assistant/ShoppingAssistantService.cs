@@ -136,8 +136,6 @@ namespace RChat.Application.Assistant
                     counter++;
                 }
             }
-            return "Error occured";
-
         }
 
 

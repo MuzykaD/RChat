@@ -18,6 +18,7 @@ namespace RChat.Application.Mappers
                 Content = message.Content,
                 ChatId = message.ChatId,
                 SenderId = message.SenderId,
+                SenderUserName = message.Sender.UserName!,
                 SentAt = message.SentAt,
                 IsAssistnatGenerated = message.IsAssistantGenerated
             };

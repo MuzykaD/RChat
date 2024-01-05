@@ -13,7 +13,7 @@ using System.Security.Claims;
 
 namespace RChat.UI.Pages.Chats
 {
-    public partial class GroupChatWindowComponent : ComponentBase, IChatWindowBase
+    public partial class GroupChatWindowComponent : ComponentBase, IChatWindowBase, IDisposable
     {
         [Parameter]
         [SupplyParameterFromQuery]
@@ -52,13 +52,8 @@ namespace RChat.UI.Pages.Chats
             _currentUserId = int.Parse(state.User.FindFirstValue(ClaimTypes.NameIdentifier));
             //
             NavigationManager.LocationChanged += async (sender, arg) => await LocationChanged(sender, arg);
-            SignalClientService.OnMessageReceived -= OnMessageReceived;
             SignalClientService.OnMessageReceived += OnMessageReceived;
-
-            SignalClientService.OnMessageDelete -= OnMessageDeleted;
             SignalClientService.OnMessageDelete += OnMessageDeleted;
-
-            SignalClientService.OnMessageUpdate -= OnMessageUpdate;
             SignalClientService.OnMessageUpdate += OnMessageUpdate;
             await SignalClientService.JoinChatGroupAsync(ChatViewModel.Id);
             InitComplete = true;
@@ -156,6 +151,11 @@ namespace RChat.UI.Pages.Chats
             NavigationManager.NavigateTo($"/chats/private?userId={userId}");
         }
 
-
+        public void Dispose()
+        {
+            SignalClientService.OnMessageReceived -= OnMessageReceived;
+            SignalClientService.OnMessageDelete -= OnMessageDeleted;
+            SignalClientService.OnMessageUpdate -= OnMessageUpdate;
+        }
     }
 }
