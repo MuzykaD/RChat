@@ -4,7 +4,7 @@
     {
         public static void ConfigureHttpClient(this IServiceCollection services, IConfiguration configuration) 
         {
-            services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(configuration["ApiHost"])});
+            services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(configuration["ApiHost"]!)});
         }
 
     }

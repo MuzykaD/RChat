@@ -19,6 +19,7 @@ using RChat.UI.Services.SignalClientService;
 using RChat.UI.Services.WebRtcService;
 using RChat.Application.Assistant;
 using RChat.Application.Contracts.Assistant;
+using RChat.UI.Services.JarvisService;
 
 namespace RChat.UI
 {
@@ -46,6 +47,7 @@ namespace RChat.UI
             builder.Services.AddScoped<IWebRtcService, WebRtcService>();
             builder.Services.AddScoped<IAssistantMessageService, AssistantMessageService>();
             builder.Services.AddScoped<IAssistantFileService, AssistantFileService>();
+            builder.Services.AddScoped<IJarvisService, JarvisService>();
 
 
             builder.Services.AddBlazoredLocalStorage();

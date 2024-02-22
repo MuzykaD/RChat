@@ -52,12 +52,11 @@ namespace RChat.UI.Pages.Chats
             var apiResponse = await ChatService.GetPrivateChatByUserIdAsync(UserId);
             ChatViewModel = apiResponse.Result!;
             
-            //todo
             var state = await StateProvider.GetAuthenticationStateAsync();
             _currentUserEmail = state.User.FindFirstValue(ClaimTypes.Email);
             _currentUserId = int.Parse(state.User.FindFirstValue(ClaimTypes.NameIdentifier));
             await ChatAssistantService.InitializeAsync(ChatViewModel.Assistant.Id);
-            //
+
             NavigationManager.LocationChanged += async (sender, arg) => await LocationChanged(sender, arg);
             SignalClientService.OnMessageReceived += OnMessageReceived;
             SignalClientService.OnMessageDelete += OnMessageDeleted;

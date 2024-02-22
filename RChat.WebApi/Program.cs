@@ -26,6 +26,9 @@ using RChat.WebApi.Hubs;
 using RChat.Application.Contracts.Assistant;
 using RChat.Application.Assistant;
 using System.Text.Json.Serialization;
+using RChat.Application.ChatKernel;
+using Microsoft.OpenApi.Models;
+using RChat.Application.Contracts.ChatKernel;
 
 namespace RChat.WebApi
 {
@@ -47,7 +50,34 @@ namespace RChat.WebApi
                 client.BaseAddress = new Uri(builder.Configuration["ShopUrl"]!);
             });
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter your JWT Token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] { }
+                }
+            });
+            });
+
             builder.Services.AddSignalR(options =>
             {
                 options.EnableDetailedErrors = true;
@@ -86,6 +116,7 @@ namespace RChat.WebApi
             builder.Services.AddScoped<IShoppingAssistantService, ShoppingAssistantService>();
             builder.Services.AddSingleton<IHtmlScrapper, HtmlScrapper>();
             builder.Services.AddSingleton<IShoppingHttpClientService, ShoppingHttpClientService>();
+            builder.Services.AddScoped<IChatKernelService,ChatKernelService>();
            
            
            
